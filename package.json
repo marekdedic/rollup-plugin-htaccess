@@ -27,6 +27,10 @@
     "type": "git",
     "url": "git+https://github.com/marekdedic/rollup-plugin-htaccess.git"
   },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "clean": "rimraf dist/*",
     "prebuild": "npm run clean",
