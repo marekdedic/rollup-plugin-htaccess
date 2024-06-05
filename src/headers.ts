@@ -6,11 +6,16 @@ import {
   buildStrictTransportSecurityValue,
   type StrictTransportSecuritySpec,
 } from "./headers/StrictTransportSecurity";
+import {
+  buildXContentTypeOptionsValue,
+  type XContentTypeOptionsSpec,
+} from "./headers/XContentTypeOptions";
 
 /* eslint-disable @typescript-eslint/naming-convention -- These are header names */
 interface HeaderValueSpecMap {
   "Referrer-Policy": ReferrerPolicySpec;
   "Strict-Transport-Security": StrictTransportSecuritySpec;
+  "X-Content-Type-Options": XContentTypeOptionsSpec;
 }
 /* eslint-enable */
 
@@ -57,6 +62,8 @@ function buildHeaderValue<
       return buildReferrerPolicyValue(value);
     case "Strict-Transport-Security":
       return buildStrictTransportSecurityValue(value);
+    case "X-Content-Type-Options":
+      return buildXContentTypeOptionsValue();
   }
   throw new Error('Unknown header type "' + header + '".');
 }
