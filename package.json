@@ -44,7 +44,16 @@
     "lint": "eslint --color 'src/**/*.ts' 'rollup.config.js'"
   },
   "peerDependencies": {
-    "rollup": "^4.0.0"
+    "rollup": "^3.0.0 || ^4.0.0",
+    "vite": "^4.0.0 || ^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "rollup": {
+      "optional": true
+    },
+    "vite": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/node": "^20.14.1",
@@ -59,7 +68,7 @@
     "eslint-plugin-simple-import-sort": "^12.1.0",
     "prettier": "^3.3.0",
     "rimraf": "^5.0.7",
-    "rollup": "^4.18.0",
+    "rollup": "^3.29.4",
     "rollup-plugin-typescript2": "^0.36.0",
     "typescript": "^5.3.3"
   }
