@@ -36,6 +36,9 @@
     "lint:typecheck": "tsc --noEmit",
     "lint": "run-p -c --aggregate-output lint:*"
   },
+  "peerDependencies": {
+    "rollup": "^4.0.0"
+  },
   "devDependencies": {
     "@types/node": "^20.14.1",
     "@typescript-eslint/eslint-plugin": "^7.11.0",
