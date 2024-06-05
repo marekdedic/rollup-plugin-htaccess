@@ -11,6 +11,10 @@ import {
   type XContentTypeOptionsSpec,
 } from "./headers/XContentTypeOptions";
 import {
+  buildXFrameOptionsValue,
+  type XFrameOptionsSpec,
+} from "./headers/XFrameOptions";
+import {
   buildXXssProtectionValue,
   type XXssProtectionSpec,
 } from "./headers/XXssProtection";
@@ -20,6 +24,7 @@ interface HeaderValueSpecMap {
   "Referrer-Policy": ReferrerPolicySpec;
   "Strict-Transport-Security": StrictTransportSecuritySpec;
   "X-Content-Type-Options": XContentTypeOptionsSpec;
+  "X-Frame-Options": XFrameOptionsSpec;
   "X-Xss-Protection": XXssProtectionSpec;
 }
 /* eslint-enable */
@@ -69,6 +74,8 @@ function buildHeaderValue<
       return buildStrictTransportSecurityValue(value);
     case "X-Content-Type-Options":
       return buildXContentTypeOptionsValue();
+    case "X-Frame-Options":
+      return buildXFrameOptionsValue(value);
     case "X-Xss-Protection":
       return buildXXssProtectionValue(value);
   }
