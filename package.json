@@ -41,8 +41,8 @@
     "prebuild": "npm run clean",
     "build": "rollup -c",
     "start": "rollup -cw",
-    "test": "jest",
-    "lint": "eslint --color 'src/**/*.ts' 'rollup.config.js'"
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx jest",
+    "lint": "eslint --color 'src/**/*.ts' '__tests__/**/*.ts' 'rollup.config.js'"
   },
   "peerDependencies": {
     "rollup": "^3.0.0 || ^4.0.0",
