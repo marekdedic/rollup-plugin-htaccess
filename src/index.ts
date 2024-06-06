@@ -16,7 +16,7 @@ function buildHtaccessFile(options: Options, root: string): string {
     output +=
       fs
         .readFileSync(path.join(root, options.template), "utf8")
-        .replaceAll("\r", "") + "\n";
+        .replace(/\r/g, "") + "\n";
   }
   for (const header of options.headers) {
     output += buildHeader(header) + "\n";
