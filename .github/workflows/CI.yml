@@ -17,17 +17,8 @@ jobs:
 
       - name: "Setup node"
         uses: actions/setup-node@v4.0.2
-
-      - name: "Cache NPM dependencies"
-        uses: actions/cache@v4
         with:
-          path: |
-            "~/.npm"
-            "~/.cache/puppeteer"
-          key: npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
-          restore-keys: |
-            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
-            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-
+          cache: 'npm'
 
       - name: "Install NPM dependencies"
         run: |
@@ -79,17 +70,8 @@ jobs:
 
       - name: "Setup node"
         uses: actions/setup-node@v4.0.2
-
-      - name: "Cache NPM dependencies"
-        uses: actions/cache@v4
         with:
-          path: |
-            "~/.npm"
-            "~/.cache/puppeteer"
-          key: npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
-          restore-keys: |
-            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
-            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-
+          cache: 'npm'
 
       - name: "Install NPM dependencies"
         run: |
