@@ -1,3 +1,4 @@
+import assert from "assert";
 import { type OutputAsset, rollup, type RollupOutput } from "rollup";
 import { build } from "vite";
 
@@ -8,7 +9,7 @@ function extractFileContents(output: RollupOutput): string {
     (file): file is OutputAsset =>
       file.type === "asset" && file.fileName === ".htaccess",
   );
-  expect(htaccessFiles).toHaveLength(1);
+  assert(htaccessFiles.length === 1);
   return htaccessFiles[0].source.toString();
 }
 

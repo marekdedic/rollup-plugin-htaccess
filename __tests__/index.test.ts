@@ -1,6 +1,7 @@
 import { compileRollup, compileVite } from "./utils";
 
 test("Basic rollup", async () => {
+  expect.assertions(1);
   const htaccess = await compileRollup({
     headers: [
       {
@@ -14,6 +15,7 @@ test("Basic rollup", async () => {
 });
 
 test("Basic vite", async () => {
+  expect.assertions(1);
   const htaccess = await compileVite({
     headers: [
       {
