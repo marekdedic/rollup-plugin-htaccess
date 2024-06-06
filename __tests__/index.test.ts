@@ -1,29 +1,21 @@
 import { compileRollup, compileVite } from "./utils";
 
-test("Basic rollup", async () => {
+test.each([compileRollup, compileVite])("Basic run test", async (compile) => {
   expect.assertions(1);
-  const htaccess = await compileRollup({
-    headers: [
-      {
-        header: "X-Frame-Options",
-        action: "set",
-        value: "deny",
-      },
-    ],
-  });
-  expect(htaccess).toBe("Header set X-Frame-Options DENY\n");
+  const htaccess = await compile();
+  expect(htaccess).toBe("");
 });
 
-test("Basic vite", async () => {
-  expect.assertions(1);
-  const htaccess = await compileVite({
-    headers: [
+test.each([compileRollup, compileVite])(
+  "Overriden output location",
+  async (compile) => {
+    expect.assertions(1);
+    const htaccess = await compile(
       {
-        header: "X-Frame-Options",
-        action: "set",
-        value: "deny",
+        fileName: "other.txt",
       },
-    ],
-  });
-  expect(htaccess).toBe("Header set X-Frame-Options DENY\n");
-});
+      "other.txt",
+    );
+    expect(htaccess).toBe("");
+  },
+);

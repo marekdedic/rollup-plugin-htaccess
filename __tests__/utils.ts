@@ -4,10 +4,10 @@ import { build } from "vite";
 
 import htaccess, { type Options } from "../src";
 
-function extractFileContents(output: RollupOutput): string {
+function extractFileContents(output: RollupOutput, fileName: string): string {
   const htaccessFiles = output.output.filter(
     (file): file is OutputAsset =>
-      file.type === "asset" && file.fileName === ".htaccess",
+      file.type === "asset" && file.fileName === fileName,
   );
   assert(htaccessFiles.length === 1);
   return htaccessFiles[0].source.toString();
@@ -15,16 +15,20 @@ function extractFileContents(output: RollupOutput): string {
 
 export async function compileRollup(
   options?: Partial<Options>,
+  fileName = ".htaccess",
 ): Promise<string> {
   const bundle = await rollup({
     input: "__tests__/fixtures/dummy.js",
     plugins: [htaccess(options)],
   });
   const output = await bundle.generate({});
-  return extractFileContents(output);
+  return extractFileContents(output, fileName);
 }
 
-export async function compileVite(options?: Partial<Options>): Promise<string> {
+export async function compileVite(
+  options?: Partial<Options>,
+  fileName = ".htaccess",
+): Promise<string> {
   const output = (await build({
     logLevel: "warn",
     build: {
@@ -36,5 +40,8 @@ export async function compileVite(options?: Partial<Options>): Promise<string> {
     },
     plugins: [htaccess(options)],
   })) as Array<RollupOutput> | RollupOutput;
-  return extractFileContents(Array.isArray(output) ? output[0] : output);
+  return extractFileContents(
+    Array.isArray(output) ? output[0] : output,
+    fileName,
+  );
 }
