@@ -37,6 +37,39 @@ jobs:
         run: |
           npm run build
 
+  test:
+    name: "Test"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        versions: [
+          {node: "14", rollup: "3", vite: "4"},
+          {node: "16", rollup: "3", vite: "4"},
+          {node: "18", rollup: "4", vite: "5"},
+          {node: "20", rollup: "4", vite: "5"},
+          {node: "22", rollup: "4", vite: "5"}]
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4.1.1
+
+      - name: "Setup Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.versions.node }}
+          cache: 'npm'
+
+      - name: "Install NPM dependencies"
+        run: |
+          npm install
+
+      - name: "Install rollup & vite"
+        run: |
+          npm install rollup@${{ matrix.versions.rollup }} vite@${{ matrix.versions.vite }}
+
+      - name: "Run tests"
+        run: |
+          npm run test
+
   lint:
     name: "Lint"
     runs-on: ubuntu-latest
