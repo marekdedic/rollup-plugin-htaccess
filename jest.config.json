@@ -1,0 +1,9 @@
+{
+  "collectCoverage": true,
+  "collectCoverageFrom": [
+    "src/**/*"
+  ],
+  "coverageDirectory": "coverage",
+  "resetMocks": true,
+  "preset": "ts-jest"
+}
