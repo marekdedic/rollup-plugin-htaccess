@@ -31,7 +31,7 @@ export default function htaccess(opts?: Partial<Options>): Plugin {
     headers: [],
     ...opts,
   };
-  let root = "/";
+  let root = "";
 
   return {
     name: "htaccess",

@@ -10,7 +10,7 @@ function extractFileContents(output: RollupOutput, fileName: string): string {
       file.type === "asset" && file.fileName === fileName,
   );
   assert(htaccessFiles.length === 1);
-  return htaccessFiles[0].source.toString();
+  return htaccessFiles[0].source.toString().trim();
 }
 
 export async function compileRollup(

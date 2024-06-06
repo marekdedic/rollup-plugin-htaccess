@@ -19,3 +19,13 @@ test.each([compileRollup, compileVite])(
     expect(htaccess).toBe("");
   },
 );
+
+test.each([compileRollup, compileVite])("Template", async (compile) => {
+  expect.assertions(1);
+  const htaccess = await compile({
+    template: "__tests__/fixtures/template.txt",
+  });
+  expect(htaccess).toBe(
+    "HTACCESS template\nThese isn't even valid .htacccess file\n# Comment",
+  );
+});
