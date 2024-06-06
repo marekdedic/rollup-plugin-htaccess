@@ -61,6 +61,21 @@ jobs:
         run: |
           npm run test
 
+      - name: "Upload coverage results"
+        uses: coverallsapp/github-action@v2.2.3
+        with:
+          parallel: true
+
+  close-coverage:
+    name: "Close parallel coverage"
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: "Close parallel coverage"
+        uses: coverallsapp/github-action@v2.2.3
+        with:
+          parallel-finished: true
+
   lint:
     name: "Lint"
     runs-on: ubuntu-latest
