@@ -6,5 +6,6 @@
   "coverageDirectory": "coverage",
   "resetMocks": true,
   "extensionsToTreatAsEsm": [".ts"],
-  "preset": "ts-jest/presets/default-esm"
+  "preset": "ts-jest/presets/default-esm",
+  "testMatch": ["**/__tests__/**/*.test.ts"]
 }
