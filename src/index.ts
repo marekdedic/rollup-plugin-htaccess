@@ -4,7 +4,7 @@ import type { Plugin } from "rollup";
 
 import { buildHeader, type HeaderSpecUnion } from "./headers";
 
-interface Options {
+export interface Options {
   fileName: string;
   template: string | undefined;
   headers: Array<HeaderSpecUnion>;
@@ -24,7 +24,7 @@ function buildHtaccessFile(options: Options, root: string): string {
   return output;
 }
 
-export default function htaccess(opts: Partial<Options>): Plugin {
+export default function htaccess(opts?: Partial<Options>): Plugin {
   const options: Options = {
     fileName: ".htaccess",
     template: undefined,
