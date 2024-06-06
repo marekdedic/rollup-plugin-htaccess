@@ -29,3 +29,17 @@ test.each([compileRollup, compileVite])("Template", async (compile) => {
     "HTACCESS template\nThese isn't even valid .htacccess file\n# Comment",
   );
 });
+
+test("Vite root", async () => {
+  expect.assertions(1);
+  const htaccess = await compileVite(
+    {
+      template: "fixtures/template.txt",
+    },
+    ".htaccess",
+    { root: "__tests__" },
+  );
+  expect(htaccess).toBe(
+    "HTACCESS template\nThese isn't even valid .htacccess file\n# Comment",
+  );
+});

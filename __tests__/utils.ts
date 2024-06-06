@@ -1,5 +1,11 @@
 import assert from "assert";
-import { type OutputAsset, rollup, type RollupOutput } from "rollup";
+import {
+  type OutputAsset,
+  rollup,
+  type RollupOptions,
+  type RollupOutput,
+} from "rollup";
+import type { InlineConfig } from "vite";
 import { build } from "vite";
 
 import htaccess, { type Options } from "../src";
@@ -16,10 +22,12 @@ function extractFileContents(output: RollupOutput, fileName: string): string {
 export async function compileRollup(
   options?: Partial<Options>,
   fileName = ".htaccess",
+  rollupOptions: RollupOptions = {},
 ): Promise<string> {
   const bundle = await rollup({
     input: "__tests__/fixtures/dummy.js",
     plugins: [htaccess(options)],
+    ...rollupOptions,
   });
   const output = await bundle.generate({});
   return extractFileContents(output, fileName);
@@ -28,6 +36,7 @@ export async function compileRollup(
 export async function compileVite(
   options?: Partial<Options>,
   fileName = ".htaccess",
+  viteOptions: InlineConfig = {},
 ): Promise<string> {
   const output = (await build({
     logLevel: "warn",
@@ -39,6 +48,7 @@ export async function compileVite(
       },
     },
     plugins: [htaccess(options)],
+    ...viteOptions,
   })) as Array<RollupOutput> | RollupOutput;
   return extractFileContents(
     Array.isArray(output) ? output[0] : output,

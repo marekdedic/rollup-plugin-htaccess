@@ -36,7 +36,7 @@ export default function htaccess(opts?: Partial<Options>): Plugin {
   return {
     name: "htaccess",
     configResolved: (config: { root: string }): void => {
-      root = config.root === "" ? "./" : config.root;
+      root = config.root;
     },
     generateBundle(): void {
       this.emitFile({
