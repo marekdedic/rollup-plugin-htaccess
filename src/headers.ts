@@ -1,4 +1,8 @@
 import {
+  buildContentSecurityPolicyValue,
+  type ContentSecurityPolicySpec,
+} from "./headers/ContentSecurityPolicy";
+import {
   buildPermissionsPolicyValue,
   type PermissionsPolicySpec,
 } from "./headers/PermissionsPolicy";
@@ -25,6 +29,7 @@ import {
 
 /* eslint-disable @typescript-eslint/naming-convention -- These are header names */
 interface HeaderValueSpecMap {
+  "Content-Security-Policy": ContentSecurityPolicySpec;
   "Permissions-Policy": PermissionsPolicySpec;
   "Referrer-Policy": ReferrerPolicySpec;
   "Strict-Transport-Security": StrictTransportSecuritySpec;
@@ -73,6 +78,8 @@ function buildHeaderValue<
     return buildReferrerPolicyValue(value);
   }
   switch (header) {
+    case "Content-Security-Policy":
+      return buildContentSecurityPolicyValue(value);
     case "Permissions-Policy":
       return buildPermissionsPolicyValue(value);
     case "Referrer-Policy":
