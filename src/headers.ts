@@ -75,9 +75,6 @@ function buildHeaderValue<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Needed to correctly infer value type
   V extends HeaderValueSpecMap[T] & Record<T, any>,
 >(header: T, value: V[T]): string {
-  if (header === "Referrer-Policy") {
-    return buildReferrerPolicyValue(value);
-  }
   switch (header) {
     case "Content-Security-Policy":
       return buildContentSecurityPolicyValue(value);
