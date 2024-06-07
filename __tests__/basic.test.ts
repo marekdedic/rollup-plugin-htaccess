@@ -1,33 +1,32 @@
 import { compileRollup, compileVite } from "./utils";
 
-test.each([compileRollup, compileVite])("Basic run test", async (compile) => {
-  expect.assertions(1);
-  const htaccess = await compile();
-  expect(htaccess).toBe("");
+test("Basic run test", async () => {
+  expect.assertions(2);
+  await expect(compileRollup()).resolves.toBe("");
+  await expect(compileVite()).resolves.toBe("");
 });
 
-test.each([compileRollup, compileVite])(
-  "Overriden output location",
-  async (compile) => {
-    expect.assertions(1);
-    const htaccess = await compile(
-      {
-        fileName: "other.txt",
-      },
-      "other.txt",
-    );
-    expect(htaccess).toBe("");
-  },
-);
+test("Overriden output location", async () => {
+  expect.assertions(2);
+  const args = [
+    {
+      fileName: "other.txt",
+    },
+    "other.txt",
+  ] as const;
+  await expect(compileRollup(...args)).resolves.toBe("");
+  await expect(compileVite(...args)).resolves.toBe("");
+});
 
-test.each([compileRollup, compileVite])("Template", async (compile) => {
-  expect.assertions(1);
-  const htaccess = await compile({
+test("Template", async () => {
+  expect.assertions(2);
+  const options = {
     template: "__tests__/fixtures/template.txt",
-  });
-  expect(htaccess).toBe(
-    "HTACCESS template\nThese isn't even valid .htacccess file\n# Comment",
-  );
+  };
+  const output =
+    "HTACCESS template\nThese isn't even valid .htacccess file\n# Comment";
+  await expect(compileRollup(options)).resolves.toBe(output);
+  await expect(compileVite(options)).resolves.toBe(output);
 });
 
 test("Vite root", async () => {
