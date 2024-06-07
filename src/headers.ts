@@ -121,7 +121,7 @@ export function buildHeader(spec: HeaderSpecUnion): string {
           spec.condition.envVar,
       );
     } else if ("expression" in spec.condition) {
-      parts.push("expr=" + spec.condition.expression);
+      parts.push('"expr=' + escapeValue(spec.condition.expression) + '"');
     }
   }
   return parts.join(" ");
