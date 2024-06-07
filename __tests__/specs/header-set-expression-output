@@ -1,0 +1,1 @@
+Header set X-Content-Type-Options nosniff "expr=%{md5:foo}"
