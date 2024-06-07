@@ -4,7 +4,7 @@ import type { Plugin } from "rollup";
 
 import { buildHeader, type HeaderSpecUnion } from "./headers";
 
-interface Options {
+export interface Options {
   fileName: string;
   template: string | undefined;
   headers: Array<HeaderSpecUnion>;
@@ -16,7 +16,7 @@ function buildHtaccessFile(options: Options, root: string): string {
     output +=
       fs
         .readFileSync(path.join(root, options.template), "utf8")
-        .replaceAll("\r", "") + "\n";
+        .replace(/\r/g, "") + "\n";
   }
   for (const header of options.headers) {
     output += buildHeader(header) + "\n";
@@ -24,19 +24,19 @@ function buildHtaccessFile(options: Options, root: string): string {
   return output;
 }
 
-export default function htaccess(opts: Partial<Options>): Plugin {
+export default function htaccess(opts?: Partial<Options>): Plugin {
   const options: Options = {
     fileName: ".htaccess",
     template: undefined,
     headers: [],
     ...opts,
   };
-  let root = "/";
+  let root = "";
 
   return {
     name: "htaccess",
     configResolved: (config: { root: string }): void => {
-      root = config.root === "" ? "./" : config.root;
+      root = config.root;
     },
     generateBundle(): void {
       this.emitFile({

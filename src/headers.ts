@@ -26,6 +26,7 @@ import {
   buildXXssProtectionValue,
   type XXssProtectionSpec,
 } from "./headers/XXssProtection";
+import { escapeValue } from "./utils";
 
 /* eslint-disable @typescript-eslint/naming-convention -- These are header names */
 interface HeaderValueSpecMap {
@@ -110,13 +111,9 @@ export function buildHeader(spec: HeaderSpecUnion): string {
       ),
     );
   } else if (["edit", "edit*"].includes(spec.action)) {
+    parts.push('"' + escapeValue((spec as { value: string }).value) + '"');
     parts.push(
-      '"' + (spec as { value: string }).value.replaceAll('"', '\\"') + '"',
-    );
-    parts.push(
-      '"' +
-        (spec as { replacement: string }).replacement.replaceAll('"', '\\"') +
-        '"',
+      '"' + escapeValue((spec as { replacement: string }).replacement) + '"',
     );
   }
   if (spec.condition !== undefined) {

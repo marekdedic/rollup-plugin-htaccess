@@ -1,3 +1,5 @@
+import { escapeValue } from "../utils";
+
 type ContentSecurityPolicySourceDirective =
   | "base-uri"
   | "connect-src"
@@ -144,9 +146,7 @@ function buildSourcePart(
     }
   }
   if (sourceSpec.hosts !== undefined) {
-    sources.push(
-      ...sourceSpec.hosts.map((host) => host.replaceAll('"', '\\"')),
-    );
+    sources.push(...sourceSpec.hosts.map(escapeValue));
   }
   if (sources.length === 0) {
     sources.push("'none'");

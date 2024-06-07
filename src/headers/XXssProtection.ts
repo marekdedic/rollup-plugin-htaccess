@@ -1,3 +1,5 @@
+import { escapeValue } from "../utils";
+
 export type XXssProtectionSpec =
   | {
       mode: "block";
@@ -22,6 +24,6 @@ export function buildXXssProtectionValue(spec: XXssProtectionSpec): string {
     case "sanitize":
       return "1";
     case "sanitize+report":
-      return '"1; report=' + spec.reportUri.replaceAll('"', '\\"') + '"';
+      return '"1; report=' + escapeValue(spec.reportUri) + '"';
   }
 }
