@@ -1,6 +1,6 @@
 {
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "project": "./lint.tsconfig.json"
   },
   "env": {
     "browser": false,

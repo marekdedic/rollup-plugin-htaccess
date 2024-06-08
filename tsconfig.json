@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es2020",
     "declaration": true,
+    "outDir": "dist",
     "module": "es2020",
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -11,5 +12,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true
-  }
+  },
+  "include": ["src/**/*.ts"]
 }
