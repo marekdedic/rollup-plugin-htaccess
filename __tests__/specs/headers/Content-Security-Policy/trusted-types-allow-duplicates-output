@@ -1,0 +1,1 @@
+Header set Content-Security-Policy "trusted-types abc def 'allow-duplicates'"

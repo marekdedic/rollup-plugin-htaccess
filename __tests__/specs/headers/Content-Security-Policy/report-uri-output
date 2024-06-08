@@ -1,0 +1,1 @@
+Header set Content-Security-Policy "report-uri https://report-uri.example http://site2.example"
