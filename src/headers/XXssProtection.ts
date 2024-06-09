@@ -9,10 +9,7 @@ export type XXssProtectionSpec =
     }
   | {
       mode: "sanitize";
-    }
-  | {
-      mode: "sanitize+report";
-      reportUri: string;
+      reportUri?: string;
     };
 
 export function buildXXssProtectionValue(spec: XXssProtectionSpec): string {
@@ -22,8 +19,9 @@ export function buildXXssProtectionValue(spec: XXssProtectionSpec): string {
     case "disabled":
       return "0";
     case "sanitize":
+      if (spec.reportUri !== undefined) {
+        return '"1; report=' + escapeValue(spec.reportUri) + '"';
+      }
       return "1";
-    case "sanitize+report":
-      return '"1; report=' + escapeValue(spec.reportUri) + '"';
   }
 }
