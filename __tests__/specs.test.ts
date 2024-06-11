@@ -37,7 +37,7 @@ async function loadOptions(spec: string): Promise<Options> {
 }
 
 function loadOutput(spec: string): string {
-  return readFileSync("__tests__/specs/" + spec + "-output", "utf8").trim();
+  return readFileSync("__tests__/specs/" + spec + "-output.txt", "utf8").trim();
 }
 
 describe("Spec tests", () => {
