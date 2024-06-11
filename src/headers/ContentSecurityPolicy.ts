@@ -67,7 +67,7 @@ type ContentSecurityPolicySandboxValue =
 
 /* eslint-disable @typescript-eslint/naming-convention -- These are directive names and values */
 interface ContentSecurityPolicyTrustedTypesValue {
-  policies: Array<string>;
+  policies?: Array<string>;
   "allow-duplicates"?: boolean;
 }
 
@@ -96,7 +96,7 @@ function buildSandboxPart(
 function buildTrustedTypesPart(
   valueSpec: ContentSecurityPolicyTrustedTypesValue,
 ): string {
-  const parts = ["trusted-types", ...valueSpec.policies];
+  const parts = ["trusted-types", ...(valueSpec.policies ?? [])];
   if (valueSpec["allow-duplicates"] === true) {
     parts.push("'allow-duplicates'");
   }
