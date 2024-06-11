@@ -65,12 +65,12 @@ type ContentSecurityPolicySandboxValue =
   | "allow-top-navigation"
   | undefined;
 
+/* eslint-disable @typescript-eslint/naming-convention -- These are directive names and values */
 interface ContentSecurityPolicyTrustedTypesValue {
   policies: Array<string>;
-  allowDuplicates?: boolean;
+  "allow-duplicates"?: boolean;
 }
 
-/* eslint-disable @typescript-eslint/naming-convention -- These are directive names */
 export type ContentSecurityPolicySpec = Partial<
   Record<ContentSecurityPolicySourceDirective, ContentSecurityPolicySources> & {
     sandbox: ContentSecurityPolicySandboxValue;
@@ -97,7 +97,7 @@ function buildTrustedTypesPart(
   valueSpec: ContentSecurityPolicyTrustedTypesValue,
 ): string {
   const parts = ["trusted-types", ...valueSpec.policies];
-  if (valueSpec.allowDuplicates === true) {
+  if (valueSpec["allow-duplicates"] === true) {
     parts.push("'allow-duplicates'");
   }
   return parts.join(" ");
