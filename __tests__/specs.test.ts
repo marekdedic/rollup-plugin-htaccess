@@ -5,6 +5,16 @@ import { join } from "path";
 import type { Options } from "../src";
 import { compileRollup, compileVite } from "./utils";
 
+function getSpecPrefix(): string | null {
+  const ind = process.argv.findIndex((value) =>
+    value.endsWith("/specs.test.ts"),
+  );
+  if (ind < 0 || process.argv.length <= ind + 1) {
+    return null;
+  }
+  return process.argv[ind + 1];
+}
+
 function listDir(path: string): [Array<string>, Array<string>] {
   const files = readdirSync(path, { withFileTypes: true });
   const dirs = files
@@ -16,8 +26,8 @@ function listDir(path: string): [Array<string>, Array<string>] {
   return [dirs, specs];
 }
 
-function listSpecs(): Array<string> {
-  const [dirs, specs] = listDir("__tests__/specs");
+function listSpecs(prefix: string | null): Array<string> {
+  const [dirs, specs] = listDir(prefix ?? "__tests__/specs");
   while (dirs.length > 0) {
     const dir = dirs.pop()!;
     const [newDirs, newSpecs] = listDir(dir);
@@ -53,7 +63,7 @@ function loadError(spec: string): string {
 }
 
 describe("Spec tests", () => {
-  test.each(listSpecs())("Spec %s", async (spec) => {
+  test.each(listSpecs(getSpecPrefix()))("Spec %s", async (spec) => {
     expect.assertions(2);
 
     const options = await loadOptions(spec);
