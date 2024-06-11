@@ -63,14 +63,14 @@ type ContentSecurityPolicySandboxValue =
   | "allow-top-navigation-by-user-activation"
   | "allow-top-navigation-to-custom-protocols"
   | "allow-top-navigation"
-  | undefined;
+  | null;
 
+/* eslint-disable @typescript-eslint/naming-convention -- These are directive names and values */
 interface ContentSecurityPolicyTrustedTypesValue {
-  policies: Array<string>;
-  allowDuplicates?: boolean;
+  policies?: Array<string>;
+  "allow-duplicates"?: boolean;
 }
 
-/* eslint-disable @typescript-eslint/naming-convention -- These are directive names */
 export type ContentSecurityPolicySpec = Partial<
   Record<ContentSecurityPolicySourceDirective, ContentSecurityPolicySources> & {
     sandbox: ContentSecurityPolicySandboxValue;
@@ -86,7 +86,7 @@ export type ContentSecurityPolicySpec = Partial<
 function buildSandboxPart(
   valueSpec: ContentSecurityPolicySandboxValue,
 ): string {
-  if (valueSpec !== undefined) {
+  if (valueSpec !== null) {
     return "sandbox " + valueSpec;
   } else {
     return "sandbox";
@@ -96,8 +96,8 @@ function buildSandboxPart(
 function buildTrustedTypesPart(
   valueSpec: ContentSecurityPolicyTrustedTypesValue,
 ): string {
-  const parts = ["trusted-types", ...valueSpec.policies];
-  if (valueSpec.allowDuplicates === true) {
+  const parts = ["trusted-types", ...(valueSpec.policies ?? [])];
+  if (valueSpec["allow-duplicates"] === true) {
     parts.push("'allow-duplicates'");
   }
   return parts.join(" ");

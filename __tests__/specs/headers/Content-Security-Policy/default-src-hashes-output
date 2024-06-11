@@ -1,0 +1,1 @@
+Header set Content-Security-Policy "default-src sha256-test sha256-abc sha512-def"

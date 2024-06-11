@@ -1,0 +1,1 @@
+Header set Permissions-Policy fullscreen=(self src "https://site1.example" "http://site2.example" "https://site3.example")
