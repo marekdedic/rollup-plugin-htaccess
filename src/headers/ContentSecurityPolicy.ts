@@ -63,7 +63,7 @@ type ContentSecurityPolicySandboxValue =
   | "allow-top-navigation-by-user-activation"
   | "allow-top-navigation-to-custom-protocols"
   | "allow-top-navigation"
-  | undefined;
+  | null;
 
 /* eslint-disable @typescript-eslint/naming-convention -- These are directive names and values */
 interface ContentSecurityPolicyTrustedTypesValue {
@@ -86,7 +86,7 @@ export type ContentSecurityPolicySpec = Partial<
 function buildSandboxPart(
   valueSpec: ContentSecurityPolicySandboxValue,
 ): string {
-  if (valueSpec !== undefined) {
+  if (valueSpec !== null) {
     return "sandbox " + valueSpec;
   } else {
     return "sandbox";
