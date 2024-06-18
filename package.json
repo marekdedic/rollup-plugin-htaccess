@@ -43,7 +43,7 @@
     "start": "rollup -cw",
     "pretest": "npx tsc --noEmit $(find __tests__/specs/ -name '*.ts' | tr '\\n' ' ')",
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx jest",
-    "lint": "eslint --color 'src/**/*.ts' '__tests__/**/*.ts' 'rollup.config.js'"
+    "lint": "eslint --color 'src/**/*.ts' '__tests__/**/*.ts' '*.config.{js,ts}'"
   },
   "peerDependencies": {
     "rollup": "^3.29.4 || ^4.0.0",
