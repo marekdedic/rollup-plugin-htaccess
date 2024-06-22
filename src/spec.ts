@@ -1,12 +1,12 @@
 import { buildHeader, type HeaderSpecUnion } from "./headers";
 
 export interface Spec {
-  headers?: Array<HeaderSpecUnion>;
+  Header?: Array<HeaderSpecUnion>;
 }
 
 export function buildSpec(spec: Spec): string {
   let output = "";
-  for (const header of spec.headers ?? []) {
+  for (const header of spec.Header ?? []) {
     output += buildHeader(header) + "\n";
   }
   return output;

@@ -1,18 +1,20 @@
 import type { Options } from "../../../../src";
 
 export default {
-  headers: [
-    {
-      action: "set",
-      header: "Content-Security-Policy",
-      value: {
+  spec: {
+    Header: [
+      {
+        action: "set",
+        header: "Content-Security-Policy",
         /* eslint-disable @typescript-eslint/naming-convention -- CSP Policy values */
-        "trusted-types": {
-          policies: ["abc", "def"],
-          "allow-duplicates": true,
+        value: {
+          "trusted-types": {
+            policies: ["abc", "def"],
+            "allow-duplicates": true,
+          },
         },
         /* eslint-enable */
       },
-    },
-  ],
+    ],
+  },
 } as Partial<Options>;
