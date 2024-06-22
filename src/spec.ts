@@ -1,4 +1,4 @@
-import { buildHeader, type HeaderSpecUnion } from "./headers";
+import { buildHeader, type HeaderSpecUnion } from "./directives/Header";
 
 export interface Spec {
   Header?: Array<HeaderSpecUnion>;
