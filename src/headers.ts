@@ -28,7 +28,6 @@ import {
 } from "./headers/XXssProtection";
 import { escapeValue } from "./utils";
 
-/* eslint-disable @typescript-eslint/naming-convention -- These are header names */
 interface HeaderValueSpecMap {
   "Content-Security-Policy": ContentSecurityPolicySpec;
   "Permissions-Policy": PermissionsPolicySpec;
@@ -38,7 +37,6 @@ interface HeaderValueSpecMap {
   "X-Frame-Options": XFrameOptionsSpec;
   "X-Xss-Protection": XXssProtectionSpec;
 }
-/* eslint-enable */
 
 type HeaderSpec<T extends keyof HeaderValueSpecMap> = {
   header: T;

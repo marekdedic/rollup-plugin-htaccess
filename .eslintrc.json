@@ -52,7 +52,45 @@
     "@typescript-eslint/init-declarations": "error",
     "@typescript-eslint/member-ordering": "error",
     "@typescript-eslint/method-signature-style": ["error", "method"],
-    "@typescript-eslint/naming-convention": "error",
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "default",
+        "format": ["camelCase"],
+        "leadingUnderscore": "allow",
+        "trailingUnderscore": "allow"
+      },
+      {
+        "selector": "import",
+        "format": ["camelCase", "PascalCase"]
+      },
+      {
+        "selector": "variable",
+        "format": ["camelCase", "UPPER_CASE"],
+        "leadingUnderscore": "allow",
+        "trailingUnderscore": "allow"
+      },
+      {
+        "selector": "typeLike",
+        "format": ["PascalCase"]
+      },
+      {
+        "selector": "objectLiteralProperty",
+        "format": null,
+        "custom": {
+          "match": true,
+          "regex": "^[a-zA-Z0-9]*$|^[a-z0-9-]*$"
+        }
+      },
+      {
+        "selector": "typeProperty",
+        "format": null,
+        "custom": {
+          "match": true,
+          "regex": "^[a-zA-Z0-9]*$|^[a-z0-9-]*$|^[A-Z][a-zA-Z0-9]*(?:-[A-Z][a-zA-Z0-9]*)*$"
+        }
+      }
+    ],
     "@typescript-eslint/no-base-to-string": ["error", { "ignoredTypeNames": ["FormData", "Payload"] }],
     "@typescript-eslint/no-dynamic-delete": "off",
     "@typescript-eslint/no-import-type-side-effects": "error",

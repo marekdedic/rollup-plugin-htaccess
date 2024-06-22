@@ -1,26 +1,23 @@
-import * as fs from "fs";
-import * as path from "path";
 import type { Plugin } from "rollup";
 
-import { buildHeader, type HeaderSpecUnion } from "./headers";
+import { buildSpec, type Spec } from "./spec";
+import { readTemplate } from "./template";
 
 export interface Options {
   fileName: string;
   template: string | undefined;
-  headers: Array<HeaderSpecUnion>;
+  spec: Spec;
 }
 
-function buildHtaccessFile(options: Options, root: string): string {
+async function buildHtaccessFile(
+  options: Options,
+  root: string,
+): Promise<string> {
   let output = "";
   if (options.template !== undefined) {
-    output +=
-      fs
-        .readFileSync(path.join(root, options.template), "utf8")
-        .replace(/\r/g, "") + "\n";
+    output += await readTemplate(root, options.template);
   }
-  for (const header of options.headers) {
-    output += buildHeader(header) + "\n";
-  }
+  output += buildSpec(options.spec);
   return output;
 }
 
@@ -28,7 +25,7 @@ export default function htaccess(opts?: Partial<Options>): Plugin {
   const options: Options = {
     fileName: ".htaccess",
     template: undefined,
-    headers: [],
+    spec: {},
     ...opts,
   };
   let root = "";
@@ -38,11 +35,11 @@ export default function htaccess(opts?: Partial<Options>): Plugin {
     configResolved: (config: { root: string }): void => {
       root = config.root;
     },
-    generateBundle(): void {
+    async generateBundle(): Promise<void> {
       this.emitFile({
         type: "asset",
         fileName: options.fileName,
-        source: buildHtaccessFile(options, root),
+        source: await buildHtaccessFile(options, root),
       });
     },
   } as Plugin;
