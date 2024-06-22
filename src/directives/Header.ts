@@ -1,32 +1,32 @@
+import { escapeValue } from "../utils";
 import {
   buildContentSecurityPolicyValue,
   type ContentSecurityPolicySpec,
-} from "./headers/ContentSecurityPolicy";
+} from "./Header/ContentSecurityPolicy";
 import {
   buildPermissionsPolicyValue,
   type PermissionsPolicySpec,
-} from "./headers/PermissionsPolicy";
+} from "./Header/PermissionsPolicy";
 import {
   buildReferrerPolicyValue,
   type ReferrerPolicySpec,
-} from "./headers/ReferrerPolicy";
+} from "./Header/ReferrerPolicy";
 import {
   buildStrictTransportSecurityValue,
   type StrictTransportSecuritySpec,
-} from "./headers/StrictTransportSecurity";
+} from "./Header/StrictTransportSecurity";
 import {
   buildXContentTypeOptionsValue,
   type XContentTypeOptionsSpec,
-} from "./headers/XContentTypeOptions";
+} from "./Header/XContentTypeOptions";
 import {
   buildXFrameOptionsValue,
   type XFrameOptionsSpec,
-} from "./headers/XFrameOptions";
+} from "./Header/XFrameOptions";
 import {
   buildXXssProtectionValue,
   type XXssProtectionSpec,
-} from "./headers/XXssProtection";
-import { escapeValue } from "./utils";
+} from "./Header/XXssProtection";
 
 interface HeaderValueSpecMap {
   "Content-Security-Policy": ContentSecurityPolicySpec;

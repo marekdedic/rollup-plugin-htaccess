@@ -1,4 +1,4 @@
-import { escapeValue } from "../utils";
+import { escapeValue } from "../../utils";
 
 export type XXssProtectionSpec =
   | {
