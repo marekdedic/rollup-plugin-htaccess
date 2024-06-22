@@ -13,10 +13,12 @@ A plugin for Rollup and Vite that enables you to create htaccess files as part o
 
 ## Requirements
 
-* Rollup 4 and Node 18 or newer
+- Node 18 or newer
 
 ## How to install
 
 ```sh
 $ npm install --save-dev rollup-plugin-htaccess
 ```
+
+## [Supported directives](./docs/directives.md)
