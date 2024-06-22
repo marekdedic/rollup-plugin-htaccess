@@ -285,7 +285,7 @@
 | :x:    | mod_expires | ExpiresByType | |
 | :x:    | mod_expires | ExpiresDefault | |
 | :x:    | mod_ext_filter | ExtFilterOptions | |
-| :construction: | mod_headers | Header | #1 |
+| :construction: | mod_headers | Header | See [supported headers](./response-headers.md) |
 | :x:    | mod_headers | RequestHeader | |
 | :x:    | mod_http2 | H2CopyFiles | |
 | :x:    | mod_http2 | H2EarlyHint | |
