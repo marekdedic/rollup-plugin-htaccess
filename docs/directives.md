@@ -45,7 +45,7 @@
 | :x:    | MaxRangeOverlaps | |
 | :x:    | MaxRangeReversals | |
 | :x:    | MaxRanges | |
-| :x:    | Options | |
+| :white_check_mark: | Options | |
 | :x:    | QualifyRedirectURL | |
 | :x:    | ReadBufferSize | |
 | :x:    | RLimitCPU | |
