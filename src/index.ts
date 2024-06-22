@@ -1,11 +1,7 @@
 import type { Plugin } from "rollup";
 
-import { buildHeader, type HeaderSpecUnion } from "./headers";
+import { buildSpec, type Spec } from "./spec";
 import { readTemplate } from "./template";
-
-interface Spec {
-  headers?: Array<HeaderSpecUnion>;
-}
 
 export interface Options {
   fileName: string;
@@ -21,9 +17,7 @@ async function buildHtaccessFile(
   if (options.template !== undefined) {
     output += await readTemplate(root, options.template);
   }
-  for (const header of options.spec.headers ?? []) {
-    output += buildHeader(header) + "\n";
-  }
+  output += buildSpec(options.spec);
   return output;
 }
 
