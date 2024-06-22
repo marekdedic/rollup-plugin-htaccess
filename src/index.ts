@@ -4,10 +4,14 @@ import type { Plugin } from "rollup";
 
 import { buildHeader, type HeaderSpecUnion } from "./headers";
 
+interface Spec {
+  headers?: Array<HeaderSpecUnion>;
+}
+
 export interface Options {
   fileName: string;
   template: string | undefined;
-  headers: Array<HeaderSpecUnion>;
+  spec: Spec;
 }
 
 function buildHtaccessFile(options: Options, root: string): string {
@@ -18,7 +22,7 @@ function buildHtaccessFile(options: Options, root: string): string {
         .readFileSync(path.join(root, options.template), "utf8")
         .replace(/\r/g, "") + "\n";
   }
-  for (const header of options.headers) {
+  for (const header of options.spec.headers ?? []) {
     output += buildHeader(header) + "\n";
   }
   return output;
@@ -28,7 +32,7 @@ export default function htaccess(opts?: Partial<Options>): Plugin {
   const options: Options = {
     fileName: ".htaccess",
     template: undefined,
-    headers: [],
+    spec: {},
     ...opts,
   };
   let root = "";
