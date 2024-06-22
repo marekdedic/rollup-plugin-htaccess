@@ -76,11 +76,19 @@
       },
       {
         "selector": "objectLiteralProperty",
-        "format": ["camelCase", "PascalCase"]
+        "format": null,
+        "custom": {
+          "match": true,
+          "regex": "^[a-zA-Z0-9]*$|^[a-z0-9-]*$"
+        }
       },
       {
         "selector": "typeProperty",
-        "format": ["camelCase", "PascalCase"]
+        "format": null,
+        "custom": {
+          "match": true,
+          "regex": "^[a-zA-Z0-9]*$|^[a-z0-9-]*$|^[A-Z][a-zA-Z0-9]*(?:-[A-Z][a-zA-Z0-9]*)*$"
+        }
       }
     ],
     "@typescript-eslint/no-base-to-string": ["error", { "ignoredTypeNames": ["FormData", "Payload"] }],

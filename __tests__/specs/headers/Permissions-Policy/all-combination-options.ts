@@ -6,7 +6,6 @@ export default {
       {
         action: "set",
         header: "Permissions-Policy",
-        /* eslint-disable @typescript-eslint/naming-convention -- Values fro the header specification */
         value: {
           accelerometer: "*",
           "ambient-light-sensor": { src: true },
@@ -76,7 +75,6 @@ export default {
           "window-management": "*",
           "xr-spatial-tracking": {},
         },
-        /* eslint-enable */
       },
     ],
   },

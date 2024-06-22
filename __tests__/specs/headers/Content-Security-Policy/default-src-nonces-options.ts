@@ -7,7 +7,6 @@ export default {
         action: "set",
         header: "Content-Security-Policy",
         value: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention -- CSP Policy name
           "default-src": {
             nonces: ["test", "abc"],
           },

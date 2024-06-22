@@ -6,7 +6,6 @@ export default {
       {
         action: "set",
         header: "Content-Security-Policy",
-        /* eslint-disable @typescript-eslint/naming-convention -- CSP Policy names */
         value: {
           "base-uri": { hosts: ["https://site.example"] },
           "connect-src": { schemes: { data: true } },
@@ -28,7 +27,6 @@ export default {
           "style-src": {},
           "worker-src": { self: true },
         },
-        /* eslint-enable */
       },
     ],
   },

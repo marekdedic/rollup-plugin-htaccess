@@ -21,7 +21,6 @@ type ContentSecurityPolicySourceDirective =
   | "style-src"
   | "worker-src";
 
-/* eslint-disable @typescript-eslint/naming-convention -- These are CSP values */
 interface ContentSecurityPolicySources {
   hosts?: Array<string>;
   schemes?: {
@@ -45,7 +44,6 @@ interface ContentSecurityPolicySources {
   "report-sample"?: boolean;
   "inline-speculation-rules"?: boolean;
 }
-/* eslint-enable */
 
 type ContentSecurityPolicySandboxValue =
   | "allow-downloads-without-user-activation Experimental"
@@ -65,7 +63,6 @@ type ContentSecurityPolicySandboxValue =
   | "allow-top-navigation"
   | null;
 
-/* eslint-disable @typescript-eslint/naming-convention -- These are directive names and values */
 interface ContentSecurityPolicyTrustedTypesValue {
   policies?: Array<string>;
   "allow-duplicates"?: boolean;
@@ -81,7 +78,6 @@ export type ContentSecurityPolicySpec = Partial<
     "trusted-types": ContentSecurityPolicyTrustedTypesValue;
   }
 >;
-/* eslint-enable */
 
 function buildSandboxPart(
   valueSpec: ContentSecurityPolicySandboxValue,
