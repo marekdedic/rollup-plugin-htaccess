@@ -23,7 +23,7 @@
 | :x:    | EnableMMAP | |
 | :x:    | EnableSendfile | |
 | :x:    | Error | |
-| :x:    | ErrorDocument | |
+| :white_check_mark: | ErrorDocument | |
 | :x:    | FileETag | |
 | :x:    | \<Files\> | |
 | :x:    | \<FilesMatch\> | |
