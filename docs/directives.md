@@ -77,7 +77,7 @@
 | :x:    | AddInputFilter | |
 | :x:    | AddLanguage | |
 | :x:    | AddOutputFilter | |
-| :x:    | AddOutputFilterByType | |
+| :white_check_mark: | AddOutputFilterByType | |
 | :x:    | AddType | |
 | :x:    | Alias | |
 | :x:    | AuthBasicAuthoritative | |
