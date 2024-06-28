@@ -1,0 +1,2 @@
+RewriteEngine on
+RewriteRule "foo" "-" [B,BNP,BCTLS,BNE=#;,C,CO=cookie1:cookieval1:example.test,DPI,E=varname:val1,END,F,G,H=application/x-httpd-php,L,N,NC,NE,NS,P,QSA,QSD,QSL,R=301,S=2,T=text/plain,UnsafeAllow3F,UnsafePrefixStat]
