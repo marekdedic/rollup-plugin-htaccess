@@ -334,11 +334,11 @@
 | :x:    | mod_proxy_ftp | ProxyFtpListOnWildcard | |
 | :x:    | mod_proxy_scgi | ProxySCGIInternalRedirect | |
 | :x:    | mod_proxy_scgi | ProxySCGISendfile | |
-| :x:    | mod_rewrite | RewriteBase | |
-| :x:    | mod_rewrite | RewriteCond | |
-| :x:    | mod_rewrite | RewriteEngine | |
-| :x:    | mod_rewrite | RewriteOptions | |
-| :x:    | mod_rewrite | RewriteRule | |
+| :white_check_mark: | mod_rewrite | RewriteBase | |
+| :white_check_mark: | mod_rewrite | RewriteCond | |
+| :white_check_mark: | mod_rewrite | RewriteEngine | |
+| :white_check_mark: | mod_rewrite | RewriteOptions | |
+| :white_check_mark: | mod_rewrite | RewriteRule | |
 | :x:    | mod_session | Session | |
 | :x:    | mod_session | SessionEnv | |
 | :x:    | mod_session | SessionExclude | |

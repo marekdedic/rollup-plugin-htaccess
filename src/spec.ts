@@ -8,7 +8,7 @@ import {
 } from "./directives/ErrorDocument";
 import { buildHeader, type HeaderSpecUnion } from "./directives/Header";
 import { buildOptions, type OptionsSpec } from "./directives/Options";
-import type { RewriteSpec } from "./mod_rewrite";
+import { buildRewrite, type RewriteSpec } from "./mod_rewrite";
 
 export interface Spec {
   AddOutputFilterByType?: AddOutputFilterByTypeSpec;
@@ -31,6 +31,9 @@ export function buildSpec(spec: Spec): string {
   }
   for (const header of spec.Header ?? []) {
     output += buildHeader(header) + "\n";
+  }
+  if (spec.rewrite !== undefined) {
+    output += buildRewrite(spec.rewrite) + "\n";
   }
   return output;
 }
