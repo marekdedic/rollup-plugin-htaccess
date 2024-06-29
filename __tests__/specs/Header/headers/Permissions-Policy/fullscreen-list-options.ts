@@ -1,6 +1,6 @@
 import type { Options } from "../../../../../src";
 
-export default {
+const options: Partial<Options> = {
   spec: {
     Header: [
       {
@@ -18,4 +18,6 @@ export default {
       },
     ],
   },
-} as Partial<Options>;
+};
+
+export default options;

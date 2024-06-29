@@ -1,9 +1,11 @@
 import type { Options } from "../../../src";
 
-export default {
+const options: Partial<Options> = {
   spec: {
     rewrite: {
       base: "/folder",
     },
   },
-} as Partial<Options>;
+};
+
+export default options;

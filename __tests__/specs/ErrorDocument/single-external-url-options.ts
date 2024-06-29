@@ -1,9 +1,11 @@
 import type { Options } from "../../../src";
 
-export default {
+const options: Partial<Options> = {
   spec: {
     ErrorDocument: {
       404: "https://site.example/uh-oh",
     },
   },
-} as Partial<Options>;
+};
+
+export default options;
