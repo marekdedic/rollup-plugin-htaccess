@@ -1,13 +1,13 @@
 import {
   type AddOutputFilterByTypeSpec,
   buildAddOutputFilterByType,
-} from "./directives/AddOutputFilterByType";
-import {
   buildErrorDocument,
+  buildHeader,
+  buildOptions,
   type ErrorDocumentSpec,
-} from "./directives/ErrorDocument";
-import { buildHeader, type HeaderSpecUnion } from "./directives/Header";
-import { buildOptions, type OptionsSpec } from "./directives/Options";
+  type HeaderSpecUnion,
+  type OptionsSpec,
+} from "./directives";
 import { buildRewrite, type RewriteSpec } from "./rewrite";
 
 export interface Spec {
