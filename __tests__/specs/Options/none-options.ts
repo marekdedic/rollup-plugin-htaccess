@@ -1,7 +1,9 @@
 import type { Options } from "../../../src";
 
-export default {
+const options: Partial<Options> = {
   spec: {
     Options: "None",
   },
-} as Partial<Options>;
+};
+
+export default options;

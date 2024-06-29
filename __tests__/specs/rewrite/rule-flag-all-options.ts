@@ -1,6 +1,6 @@
 import type { Options } from "../../../src";
 
-export default {
+const options: Partial<Options> = {
   spec: {
     rewrite: {
       rules: [
@@ -46,4 +46,6 @@ export default {
       ],
     },
   },
-} as Partial<Options>;
+};
+
+export default options;

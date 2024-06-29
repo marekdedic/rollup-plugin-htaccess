@@ -1,6 +1,6 @@
 import type { Options } from "../../../src";
 
-export default {
+const options: Partial<Options> = {
   spec: {
     Options: {
       plus: ["All", "ExecCGI", "FollowSymLinks", "Includes"],
@@ -12,4 +12,6 @@ export default {
       ],
     },
   },
-} as Partial<Options>;
+};
+
+export default options;
