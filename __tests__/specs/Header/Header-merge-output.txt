@@ -1,1 +1,1 @@
-Header merge X-Content-Type-Options nosniff
+Header merge X-Content-Type-Options "nosniff"

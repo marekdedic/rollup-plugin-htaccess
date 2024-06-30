@@ -1,1 +1,1 @@
-Header set Permissions-Policy fullscreen=*
+Header set Permissions-Policy "fullscreen=*"

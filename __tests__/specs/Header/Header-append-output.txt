@@ -1,1 +1,1 @@
-Header append X-Content-Type-Options nosniff
+Header append X-Content-Type-Options "nosniff"

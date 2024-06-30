@@ -185,5 +185,5 @@ export function buildContentSecurityPolicyValue(
       ),
     );
   }
-  return '"' + parts.join("; ") + '"';
+  return parts.join("; ");
 }

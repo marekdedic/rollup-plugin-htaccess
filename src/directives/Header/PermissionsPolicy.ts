@@ -52,7 +52,8 @@ function buildAllowlist(allowlist: PermissionsPolicyAllowlist): string {
     return "*";
   }
   const list =
-    allowlist.origins?.map((origin) => '"' + escapeValue(origin) + '"') ?? [];
+    allowlist.origins?.map((origin) => '\\"' + escapeValue(origin) + '\\"') ??
+    [];
   if (allowlist.src === true) {
     list.unshift("src");
   }

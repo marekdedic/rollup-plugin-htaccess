@@ -1,1 +1,1 @@
-Header setifempty X-Content-Type-Options nosniff
+Header setifempty X-Content-Type-Options "nosniff"
