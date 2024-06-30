@@ -131,13 +131,13 @@ function buildSourcePart(
     }
   }
   if (sourceSpec.nonces !== undefined) {
-    sources.push(...sourceSpec.nonces.map((nonce) => "nonce-" + nonce));
+    sources.push(...sourceSpec.nonces.map((nonce) => "'nonce-" + nonce + "'"));
   }
   if (sourceSpec.hashes !== undefined) {
     for (const algo of ["sha256", "sha384", "sha512"] as const) {
       const hashes = sourceSpec.hashes[algo];
       if (hashes !== undefined) {
-        sources.push(...hashes.map((hash) => algo + "-" + hash));
+        sources.push(...hashes.map((hash) => "'" + algo + "-" + hash + "'"));
       }
     }
   }

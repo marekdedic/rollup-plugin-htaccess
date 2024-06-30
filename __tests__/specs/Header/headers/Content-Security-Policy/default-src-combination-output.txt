@@ -1,1 +1,1 @@
-Header set Content-Security-Policy "default-src 'unsafe-eval' 'unsafe-inline' data: filesystem: nonce-abc sha256-def sha256-ghi https://site.example"
+Header set Content-Security-Policy "default-src 'unsafe-eval' 'unsafe-inline' data: filesystem: 'nonce-abc' 'sha256-def' 'sha256-ghi' https://site.example"
