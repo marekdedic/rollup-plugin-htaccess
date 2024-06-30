@@ -1,1 +1,1 @@
-Header set Strict-Transport-Security max-age=42; includeSubDomains
+Header set Strict-Transport-Security "max-age=42; includeSubDomains"

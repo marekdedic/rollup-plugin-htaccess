@@ -1,1 +1,1 @@
-Header set Permissions-Policy fullscreen=("https://site1.example" "http://site2.example" "https://site3.example")
+Header set Permissions-Policy "fullscreen=(\"https://site1.example\" \"http://site2.example\" \"https://site3.example\")"

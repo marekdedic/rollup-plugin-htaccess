@@ -1,1 +1,1 @@
-Header set Referrer-Policy origin-when-cross-origin
+Header set Referrer-Policy "origin-when-cross-origin"

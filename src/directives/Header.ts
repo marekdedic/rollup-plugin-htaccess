@@ -100,10 +100,13 @@ export function buildHeader(spec: HeaderSpecUnion): string {
   parts.push(spec.action, spec.header);
   if (["add", "append", "merge", "set", "setifempty"].includes(spec.action)) {
     parts.push(
-      buildHeaderValue(
-        spec.header,
-        (spec as { value: HeaderValueSpecMap[keyof HeaderValueSpecMap] }).value,
-      ),
+      '"' +
+        buildHeaderValue(
+          spec.header,
+          (spec as { value: HeaderValueSpecMap[keyof HeaderValueSpecMap] })
+            .value,
+        ) +
+        '"',
     );
   } else if (["edit", "edit*"].includes(spec.action)) {
     parts.push('"' + escapeValue((spec as { value: string }).value) + '"');
