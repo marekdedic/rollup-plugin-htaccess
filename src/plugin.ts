@@ -40,7 +40,7 @@ export function htaccess(opts?: Partial<Options>): RollupPlugin & VitePlugin {
   };
   let root = "";
 
-  let rollupPlugin: RollupPlugin & VitePlugin = {
+  const rollupPlugin: RollupPlugin & VitePlugin = {
     name: "htaccess",
     configResolved: (config: { root: string }): void => {
       root = config.root;
@@ -52,12 +52,7 @@ export function htaccess(opts?: Partial<Options>): RollupPlugin & VitePlugin {
         source: await buildHtaccessFile(options, root),
       });
     },
+    ...extractMetaCSP(options),
   };
-  if (options.extractMetaCSP.enabled) {
-    rollupPlugin = {
-      ...rollupPlugin,
-      ...extractMetaCSP(options.extractMetaCSP, options.fileName),
-    };
-  }
   return rollupPlugin;
 }

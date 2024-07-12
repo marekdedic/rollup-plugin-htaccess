@@ -4,6 +4,7 @@ import { ElementType, parseDocument } from "htmlparser2";
 import { join } from "path";
 import type { OutputOptions, PluginHooks } from "rollup";
 
+import type { Options } from "./index";
 import { escapeValue } from "./utils";
 
 /**
@@ -103,12 +104,12 @@ function closeBundle(
   };
 }
 
-export function extractMetaCSP(
-  options: ExtractMetaCSPEnabledOptions,
-  htaccessFileName: string,
-): Partial<PluginHooks> {
+export function extractMetaCSP(options: Options): Partial<PluginHooks> {
+  if (!options.extractMetaCSP.enabled) {
+    return {};
+  }
   return {
     renderStart,
-    closeBundle: closeBundle(options, htaccessFileName),
+    closeBundle: closeBundle(options.extractMetaCSP, options.fileName),
   };
 }
