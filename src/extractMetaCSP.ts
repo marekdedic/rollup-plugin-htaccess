@@ -1,13 +1,17 @@
 import { findAll } from "domutils";
 import { readFile, writeFile } from "fs";
 import { ElementType, parseDocument } from "htmlparser2";
-import type { PluginHooks } from "rollup";
+import { join } from "path";
+import type { OutputOptions, PluginHooks } from "rollup";
+
+import { escapeValue } from "./utils";
 
 /**
  * @public
  */
 export interface ExtractMetaCSPEnabledOptions {
   enabled: true;
+  htaccessFile?: string;
   files: Array<string>;
 }
 
@@ -37,8 +41,15 @@ async function asyncWriteFile(path: string, contents: string): Promise<void> {
   });
 }
 
+let outputOptions: OutputOptions = {};
+
+function renderStart(outputOptionsValue: OutputOptions): void {
+  outputOptions = outputOptionsValue;
+}
+
 function closeBundle(
   options: ExtractMetaCSPEnabledOptions,
+  htaccessFileName: string,
 ): PluginHooks["closeBundle"] {
   return {
     order: "post",
@@ -70,15 +81,34 @@ function closeBundle(
         }
         await asyncWriteFile(file, fileContents);
       }
-      console.log(cspValues);
+      const htaccessFilePath =
+        options.htaccessFile ?? join(outputOptions.dir ?? "", htaccessFileName);
+      let htaccessFile = await asyncReadFile(htaccessFilePath);
+      if (htaccessFile === null) {
+        throw new Error("TODO");
+      }
+      htaccessFile +=
+        cspValues
+          .map(
+            (value) =>
+              'Header always set Content-Security-Policy "' +
+              escapeValue(value) +
+              '"',
+          )
+          .join("\n") + "\n";
+      console.log(htaccessFilePath);
+      console.log(htaccessFile);
+      await asyncWriteFile(htaccessFilePath, htaccessFile);
     },
   };
 }
 
 export function extractMetaCSP(
   options: ExtractMetaCSPEnabledOptions,
+  htaccessFileName: string,
 ): Partial<PluginHooks> {
   return {
-    closeBundle: closeBundle(options),
+    renderStart,
+    closeBundle: closeBundle(options, htaccessFileName),
   };
 }

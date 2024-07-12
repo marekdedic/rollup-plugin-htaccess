@@ -56,7 +56,7 @@ export function htaccess(opts?: Partial<Options>): RollupPlugin & VitePlugin {
   if (options.extractMetaCSP.enabled) {
     rollupPlugin = {
       ...rollupPlugin,
-      ...extractMetaCSP(options.extractMetaCSP),
+      ...extractMetaCSP(options.extractMetaCSP, options.fileName),
     };
   }
   return rollupPlugin;
