@@ -1,10 +1,7 @@
 import type { Plugin as RollupPlugin } from "rollup";
 import type { Plugin as VitePlugin } from "vite";
 
-import {
-  extractMetaCSPCloseBundle,
-  type ExtractMetaCSPOptions,
-} from "./extractMetaCSP";
+import { extractMetaCSP, type ExtractMetaCSPOptions } from "./extractMetaCSP";
 import { buildSpec, type Spec } from "./spec";
 import { readTemplate } from "./template";
 
@@ -43,7 +40,7 @@ export function htaccess(opts?: Partial<Options>): RollupPlugin & VitePlugin {
   };
   let root = "";
 
-  const rollupPlugin: RollupPlugin & VitePlugin = {
+  let rollupPlugin: RollupPlugin & VitePlugin = {
     name: "htaccess",
     configResolved: (config: { root: string }): void => {
       root = config.root;
@@ -57,9 +54,10 @@ export function htaccess(opts?: Partial<Options>): RollupPlugin & VitePlugin {
     },
   };
   if (options.extractMetaCSP.enabled) {
-    rollupPlugin.closeBundle = extractMetaCSPCloseBundle(
-      options.extractMetaCSP,
-    );
+    rollupPlugin = {
+      ...rollupPlugin,
+      ...extractMetaCSP(options.extractMetaCSP),
+    };
   }
   return rollupPlugin;
 }
