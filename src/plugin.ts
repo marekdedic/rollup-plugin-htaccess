@@ -1,4 +1,5 @@
-import type { Plugin } from "rollup";
+import type { Plugin as RollupPlugin } from "rollup";
+import type { Plugin as VitePlugin } from "vite";
 
 import { buildSpec, type Spec } from "./spec";
 import { readTemplate } from "./template";
@@ -27,7 +28,7 @@ async function buildHtaccessFile(
 /**
  * @public
  */
-export function htaccess(opts?: Partial<Options>): Plugin {
+export function htaccess(opts?: Partial<Options>): RollupPlugin & VitePlugin {
   const options: Options = {
     fileName: ".htaccess",
     template: undefined,
@@ -36,7 +37,7 @@ export function htaccess(opts?: Partial<Options>): Plugin {
   };
   let root = "";
 
-  return {
+  const rollupPlugin: RollupPlugin & VitePlugin = {
     name: "htaccess",
     configResolved: (config: { root: string }): void => {
       root = config.root;
@@ -48,5 +49,6 @@ export function htaccess(opts?: Partial<Options>): Plugin {
         source: await buildHtaccessFile(options, root),
       });
     },
-  } as Plugin;
+  };
+  return rollupPlugin;
 }
