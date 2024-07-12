@@ -86,7 +86,9 @@ function closeBundle(
         options.htaccessFile ?? join(outputOptions.dir ?? "", htaccessFileName);
       let htaccessFile = await asyncReadFile(htaccessFilePath);
       if (htaccessFile === null) {
-        throw new Error("TODO");
+        throw new Error(
+          'Could not read htaccess file at path "' + htaccessFilePath + '".',
+        );
       }
       htaccessFile +=
         cspValues
