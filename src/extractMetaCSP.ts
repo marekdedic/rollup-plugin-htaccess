@@ -48,6 +48,57 @@ function renderStart(outputOptionsValue: OutputOptions): void {
   outputOptions = outputOptionsValue;
 }
 
+async function extractCSPValuesFromHTMLFile(
+  fileName: string,
+): Promise<Array<string>> {
+  let fileContents = await asyncReadFile(fileName);
+  if (fileContents === null) {
+    return [];
+  }
+  const dom = parseDocument(fileContents, {
+    withStartIndices: true,
+    withEndIndices: true,
+  });
+  const cspMetaElems = findAll(
+    (elem) =>
+      elem.type === ElementType.Tag &&
+      elem.name === "meta" &&
+      elem.attribs["http-equiv"] === "content-security-policy",
+    dom.children,
+  );
+  const cspValues = cspMetaElems.map((elem) => elem.attribs.content);
+  for (const cspMetaElem of cspMetaElems) {
+    fileContents =
+      fileContents.substring(0, cspMetaElem.startIndex!) +
+      fileContents.substring(cspMetaElem.endIndex! + 1);
+  }
+  await asyncWriteFile(fileName, fileContents);
+  return cspValues;
+}
+
+async function writeCSPValuesToHtaccessFile(
+  cspValues: Array<string>,
+  options: ExtractMetaCSPEnabledOptions,
+  htaccessFileName: string,
+): Promise<void> {
+  const path =
+    options.htaccessFile ?? join(outputOptions.dir ?? "", htaccessFileName);
+  let fileContents = await asyncReadFile(path);
+  if (fileContents === null) {
+    throw new Error('Could not read htaccess file at path "' + path + '".');
+  }
+  fileContents +=
+    cspValues
+      .map(
+        (value) =>
+          'Header always set Content-Security-Policy "' +
+          escapeValue(value) +
+          '"',
+      )
+      .join("\n") + "\n";
+  await asyncWriteFile(path, fileContents);
+}
+
 function closeBundle(
   options: ExtractMetaCSPEnabledOptions,
   htaccessFileName: string,
@@ -56,52 +107,12 @@ function closeBundle(
     order: "post",
     sequential: true,
     handler: async (): Promise<void> => {
-      const cspValues: Array<string> = [];
-      const files = options.files;
-      for (const file of files) {
-        let fileContents = await asyncReadFile(file);
-        if (fileContents === null) {
-          continue;
-        }
-        const dom = parseDocument(fileContents, {
-          withStartIndices: true,
-          withEndIndices: true,
-        });
-        const cspMetaElems = findAll(
-          (elem) =>
-            elem.type === ElementType.Tag &&
-            elem.name === "meta" &&
-            elem.attribs["http-equiv"] === "content-security-policy",
-          dom.children,
-        );
-        cspValues.push(...cspMetaElems.map((elem) => elem.attribs.content));
-        for (const cspMetaElem of cspMetaElems) {
-          fileContents =
-            fileContents.substring(0, cspMetaElem.startIndex!) +
-            fileContents.substring(cspMetaElem.endIndex! + 1);
-        }
-        await asyncWriteFile(file, fileContents);
-      }
-      const htaccessFilePath =
-        options.htaccessFile ?? join(outputOptions.dir ?? "", htaccessFileName);
-      let htaccessFile = await asyncReadFile(htaccessFilePath);
-      if (htaccessFile === null) {
-        throw new Error(
-          'Could not read htaccess file at path "' + htaccessFilePath + '".',
-        );
-      }
-      htaccessFile +=
-        cspValues
-          .map(
-            (value) =>
-              'Header always set Content-Security-Policy "' +
-              escapeValue(value) +
-              '"',
-          )
-          .join("\n") + "\n";
-      console.log(htaccessFilePath);
-      console.log(htaccessFile);
-      await asyncWriteFile(htaccessFilePath, htaccessFile);
+      const cspValues = (
+        await Promise.all(
+          options.files.map(async (file) => extractCSPValuesFromHTMLFile(file)),
+        )
+      ).flat();
+      await writeCSPValuesToHtaccessFile(cspValues, options, htaccessFileName);
     },
   };
 }
