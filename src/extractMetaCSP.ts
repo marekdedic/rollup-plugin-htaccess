@@ -1,4 +1,6 @@
-import { readFile } from "fs";
+import { findAll } from "domutils";
+import { readFile, writeFile } from "fs";
+import { ElementType, parseDocument } from "htmlparser2";
 import type { PluginHooks } from "rollup";
 
 /**
@@ -22,6 +24,14 @@ async function asyncReadFile(path: string): Promise<string | null> {
   });
 }
 
+async function asyncWriteFile(path: string, contents: string): Promise<void> {
+  return new Promise<void>((resolve) => {
+    writeFile(path, contents, () => {
+      resolve();
+    });
+  });
+}
+
 export const extractMetaCSPCloseBundle: (
   options: ExtractMetaCSPOptions & { enabled: true },
 ) => PluginHooks["closeBundle"] = (
@@ -30,14 +40,32 @@ export const extractMetaCSPCloseBundle: (
   order: "post",
   sequential: true,
   handler: async (): Promise<void> => {
+    const cspValues: Array<string> = [];
     const files = options.files;
     for (const file of files) {
-      const fileContents = await asyncReadFile(file);
+      let fileContents = await asyncReadFile(file);
       if (fileContents === null) {
         continue;
       }
-      console.log(fileContents);
+      const dom = parseDocument(fileContents, {
+        withStartIndices: true,
+        withEndIndices: true,
+      });
+      const cspMetaElems = findAll(
+        (elem) =>
+          elem.type === ElementType.Tag &&
+          elem.name === "meta" &&
+          elem.attribs["http-equiv"] === "content-security-policy",
+        dom.children,
+      );
+      cspValues.push(...cspMetaElems.map((elem) => elem.attribs.content));
+      for (const cspMetaElem of cspMetaElems) {
+        fileContents =
+          fileContents.substring(0, cspMetaElem.startIndex!) +
+          fileContents.substring(cspMetaElem.endIndex! + 1);
+      }
+      await asyncWriteFile(file, fileContents);
     }
-    console.log("CLOSE BUNDLE");
+    console.log(cspValues);
   },
 });
