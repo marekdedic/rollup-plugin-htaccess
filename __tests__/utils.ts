@@ -30,7 +30,9 @@ export async function compileRollup(
     ...rollupOptions,
   });
   const output = await bundle.generate({});
-  return extractFileContents(output, fileName);
+  const fileContents = extractFileContents(output, fileName);
+  await bundle.close();
+  return fileContents;
 }
 
 export async function compileVite(
