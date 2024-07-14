@@ -48,6 +48,7 @@ export async function compileVite(
           app: "__tests__/fixtures/dummy.html",
         },
       },
+      write: false,
     },
     plugins: [htaccess(options)],
     ...viteOptions,
