@@ -37,9 +37,12 @@
     "npm": ">=8.0.0"
   },
   "scripts": {
-    "clean": "rimraf dist/*",
+    "clean": "rimraf dist/* types/*",
     "prebuild": "npm run clean",
-    "build": "rollup -c",
+    "build:rollup": "rollup -c",
+    "build:api-extractor": "api-extractor run",
+    "build": "npm run build:rollup && npm run build:api-extractor",
+    "postbuild": "rimraf dist/types",
     "start": "rollup -cw",
     "pretest": "npx tsc --noEmit $(find __tests__/specs/ -name '*.ts' | tr '\\n' ' ')",
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx jest",
@@ -58,6 +61,7 @@
     }
   },
   "devDependencies": {
+    "@microsoft/api-extractor": "^7.47.2",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.14.1",
