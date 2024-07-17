@@ -86,6 +86,9 @@ export interface ContentSecurityPolicyTrustedTypesValue {
 export type ContentSecurityPolicySpec = Partial<
   Record<ContentSecurityPolicySourceDirective, ContentSecurityPolicySources> & {
     sandbox: ContentSecurityPolicySandboxValue;
+    /**
+     * @deprecated The report-uri directive is deprecated and it's recommended to send CSP reports using report-to instead.
+     */
     "report-uri": Array<string>;
     "report-to": string;
     "require-trusted-types-for": "script";
