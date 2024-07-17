@@ -2,20 +2,20 @@ import { compileRollup, compileVite } from "./utils";
 
 test("Basic run test", async () => {
   expect.assertions(2);
-  await expect(compileRollup()).resolves.toBe("");
-  await expect(compileVite()).resolves.toBe("");
+  await expect(compileRollup({})).resolves.toBe("");
+  await expect(compileVite({})).resolves.toBe("");
 });
 
 test("Overriden output location", async () => {
   expect.assertions(2);
-  const args = [
-    {
-      fileName: "other.txt",
-    },
-    "other.txt",
-  ] as const;
-  await expect(compileRollup(...args)).resolves.toBe("");
-  await expect(compileVite(...args)).resolves.toBe("");
+  const pluginOptions = {
+    fileName: "other.txt",
+  };
+  const compileOptions = {
+    fileName: "other.txt",
+  };
+  await expect(compileRollup(pluginOptions, compileOptions)).resolves.toBe("");
+  await expect(compileVite(pluginOptions, compileOptions)).resolves.toBe("");
 });
 
 test("Template", async () => {
@@ -35,8 +35,10 @@ test("Vite root", async () => {
     {
       template: "fixtures/template.txt",
     },
-    ".htaccess",
-    { root: "__tests__" },
+    {
+      fileName: ".htaccess",
+      bundlerOptions: { root: "__tests__" },
+    },
   );
   expect(htaccess).toBe(
     "HTACCESS template\nThese isn't even valid .htacccess file\n# Comment",

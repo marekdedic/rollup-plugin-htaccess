@@ -5,7 +5,7 @@ import {
   type RollupOptions,
   type RollupOutput,
 } from "rollup";
-import type { InlineConfig } from "vite";
+import type { InlineConfig as ViteOptions } from "vite";
 import { build } from "vite";
 
 import htaccess, { type Options } from "../src";
@@ -19,26 +19,32 @@ function extractFileContents(output: RollupOutput, fileName: string): string {
   return htaccessFiles[0].source.toString().trim();
 }
 
+export interface CompileOptions {
+  fileName?: string;
+  bundlerOptions?: RollupOptions & ViteOptions;
+}
+
 export async function compileRollup(
-  options?: Partial<Options>,
-  fileName = ".htaccess",
-  rollupOptions: RollupOptions = {},
+  pluginOptions: Partial<Options>,
+  compileOptions: CompileOptions = {},
 ): Promise<string> {
   const bundle = await rollup({
     input: "__tests__/fixtures/dummy.js",
-    plugins: [htaccess(options)],
-    ...rollupOptions,
+    plugins: [htaccess(pluginOptions)],
+    ...compileOptions.bundlerOptions,
   });
   const output = await bundle.generate({});
-  const fileContents = extractFileContents(output, fileName);
+  const fileContents = extractFileContents(
+    output,
+    compileOptions.fileName ?? ".htaccess",
+  );
   await bundle.close();
   return fileContents;
 }
 
 export async function compileVite(
-  options?: Partial<Options>,
-  fileName = ".htaccess",
-  viteOptions: InlineConfig = {},
+  pluginOptions: Partial<Options>,
+  compileOptions: CompileOptions = {},
 ): Promise<string> {
   const output = (await build({
     logLevel: "warn",
@@ -50,11 +56,11 @@ export async function compileVite(
       },
       write: false,
     },
-    plugins: [htaccess(options)],
-    ...viteOptions,
+    plugins: [htaccess(pluginOptions)],
+    ...compileOptions.bundlerOptions,
   })) as Array<RollupOutput> | RollupOutput;
   return extractFileContents(
     Array.isArray(output) ? output[0] : output,
-    fileName,
+    compileOptions.fileName ?? ".htaccess",
   );
 }
