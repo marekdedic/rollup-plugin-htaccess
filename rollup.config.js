@@ -5,12 +5,12 @@ export default {
   external: ["fs", "path"],
   output: [
     {
-      file: "dist/index.cjs",
+      file: "dist/rollup-plugin-htaccess.cjs",
       format: "cjs",
       compact: true,
     },
     {
-      file: "dist/index.js",
+      file: "dist/rollup-plugin-htaccess.js",
       format: "es",
       compact: true,
     },

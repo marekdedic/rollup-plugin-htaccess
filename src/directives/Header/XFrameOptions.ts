@@ -1,3 +1,6 @@
+/**
+ * @public
+ */
 export type XFrameOptionsSpec = "deny" | "sameorigin";
 
 export function buildXFrameOptionsValue(spec: XFrameOptionsSpec): string {

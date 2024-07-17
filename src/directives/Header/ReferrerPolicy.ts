@@ -1,3 +1,6 @@
+/**
+ * @public
+ */
 export type ReferrerPolicySpec =
   | "no-referrer-when-downgrade"
   | "no-referrer"

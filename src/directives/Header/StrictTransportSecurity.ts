@@ -1,3 +1,6 @@
+/**
+ * @public
+ */
 export interface StrictTransportSecuritySpec {
   maxAge: number;
   includeSubDomains?: boolean;

@@ -1,6 +1,9 @@
 import { escapeValue } from "./utils";
 
-interface RewriteOptionsSpec {
+/**
+ * @public
+ */
+export interface RewriteOptionsSpec {
   Inherit?: boolean;
   InheritDown?: boolean;
   InheritDownBefore?: boolean;
@@ -12,7 +15,10 @@ interface RewriteOptionsSpec {
   LegacyPrefixDocRoot?: boolean;
 }
 
-interface RewriteCondSpec {
+/**
+ * @public
+ */
+export interface RewriteCondSpec {
   testString: string;
   conditionPattern: string;
   flags?: {
@@ -22,13 +28,19 @@ interface RewriteCondSpec {
   };
 }
 
-interface RewriteRuleCookieFlagMinimalSpec {
+/**
+ * @public
+ */
+export interface RewriteRuleCookieFlagMinimalSpec {
   name: string;
   value: string;
   domain: string;
 }
 
-type RewriteRuleCookieFlagSpec = RewriteRuleCookieFlagMinimalSpec &
+/**
+ * @public
+ */
+export type RewriteRuleCookieFlagSpec = RewriteRuleCookieFlagMinimalSpec &
   (
     | {
         lifetime?: number;
@@ -57,7 +69,10 @@ type RewriteRuleCookieFlagSpec = RewriteRuleCookieFlagMinimalSpec &
       }
   );
 
-interface StandardRewriteRuleFlags {
+/**
+ * @public
+ */
+export interface StandardRewriteRuleFlags {
   B?: boolean | string;
   backrefnoplus?: boolean;
   BCTLS?: boolean;
@@ -83,7 +98,10 @@ interface StandardRewriteRuleFlags {
   UnsafePrefixStat?: boolean;
 }
 
-interface MetadataRewriteRuleFlags {
+/**
+ * @public
+ */
+export interface MetadataRewriteRuleFlags {
   env?: {
     variable: string;
     value: string | null;
@@ -92,7 +110,10 @@ interface MetadataRewriteRuleFlags {
   type?: string;
 }
 
-type RewriteRuleSpec = {
+/**
+ * @public
+ */
+export type RewriteRuleSpec = {
   conditions?: Array<RewriteCondSpec>;
   pattern: string;
 } & (
@@ -106,6 +127,9 @@ type RewriteRuleSpec = {
     }
 );
 
+/**
+ * @public
+ */
 export interface RewriteSpec {
   base?: string;
   options?: RewriteOptionsSpec;

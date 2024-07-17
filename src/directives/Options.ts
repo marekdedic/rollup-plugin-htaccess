@@ -1,4 +1,7 @@
-type Option =
+/**
+ * @public
+ */
+export type OptionName =
   | "All"
   | "ExecCGI"
   | "FollowSymLinks"
@@ -8,14 +11,17 @@ type Option =
   | "MultiViews"
   | "SymLinksIfOwnerMatch";
 
+/**
+ * @public
+ */
 export type OptionsSpec =
   | "None"
   | {
-      plus?: Array<Option>;
-      minus?: Array<Option>;
+      plus?: Array<OptionName>;
+      minus?: Array<OptionName>;
     }
   | {
-      set: Array<Option>;
+      set: Array<OptionName>;
     };
 
 export function buildOptions(spec: OptionsSpec): string {

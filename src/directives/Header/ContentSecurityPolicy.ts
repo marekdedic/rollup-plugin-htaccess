@@ -1,6 +1,9 @@
 import { escapeValue } from "../../utils";
 
-type ContentSecurityPolicySourceDirective =
+/**
+ * @public
+ */
+export type ContentSecurityPolicySourceDirective =
   | "base-uri"
   | "connect-src"
   | "default-src"
@@ -21,7 +24,10 @@ type ContentSecurityPolicySourceDirective =
   | "style-src"
   | "worker-src";
 
-interface ContentSecurityPolicySources {
+/**
+ * @public
+ */
+export interface ContentSecurityPolicySources {
   hosts?: Array<string>;
   schemes?: {
     data?: boolean;
@@ -45,7 +51,10 @@ interface ContentSecurityPolicySources {
   "inline-speculation-rules"?: boolean;
 }
 
-type ContentSecurityPolicySandboxValue =
+/**
+ * @public
+ */
+export type ContentSecurityPolicySandboxValue =
   | "allow-downloads-without-user-activation Experimental"
   | "allow-downloads"
   | "allow-forms"
@@ -63,11 +72,17 @@ type ContentSecurityPolicySandboxValue =
   | "allow-top-navigation"
   | null;
 
-interface ContentSecurityPolicyTrustedTypesValue {
+/**
+ * @public
+ */
+export interface ContentSecurityPolicyTrustedTypesValue {
   policies?: Array<string>;
   "allow-duplicates"?: boolean;
 }
 
+/**
+ * @public
+ */
 export type ContentSecurityPolicySpec = Partial<
   Record<ContentSecurityPolicySourceDirective, ContentSecurityPolicySources> & {
     sandbox: ContentSecurityPolicySandboxValue;

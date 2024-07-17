@@ -10,6 +10,9 @@ import {
 } from "./directives";
 import { buildRewrite, type RewriteSpec } from "./rewrite";
 
+/**
+ * @public
+ */
 export interface Spec {
   AddOutputFilterByType?: AddOutputFilterByTypeSpec;
   ErrorDocument?: ErrorDocumentSpec;

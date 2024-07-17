@@ -1,6 +1,9 @@
 import { escapeValue } from "../../utils";
 
-type PermissionsPolicyDirectives =
+/**
+ * @public
+ */
+export type PermissionsPolicyDirectives =
   | "accelerometer"
   | "ambient-light-sensor"
   | "attribution-reporting"
@@ -39,10 +42,16 @@ type PermissionsPolicyDirectives =
   | "window-management"
   | "xr-spatial-tracking";
 
-type PermissionsPolicyAllowlist =
+/**
+ * @public
+ */
+export type PermissionsPolicyAllowlist =
   | "*"
   | { src?: boolean; self?: boolean; origins?: Array<string> };
 
+/**
+ * @public
+ */
 export type PermissionsPolicySpec = Partial<
   Record<PermissionsPolicyDirectives, PermissionsPolicyAllowlist>
 >;
