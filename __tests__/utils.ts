@@ -21,6 +21,7 @@ function extractFileContents(output: RollupOutput, fileName: string): string {
 
 export interface CompileOptions {
   fileName?: string;
+  write?: boolean;
   bundlerOptions?: RollupOptions & ViteOptions;
 }
 
@@ -38,6 +39,9 @@ export async function compileRollup(
     output,
     compileOptions.fileName ?? ".htaccess",
   );
+  if (compileOptions.write === true) {
+    await bundle.write({ dir: "__tests__/dist-rollup" });
+  }
   await bundle.close();
   return fileContents;
 }
@@ -54,7 +58,8 @@ export async function compileVite(
           app: "__tests__/fixtures/dummy.html",
         },
       },
-      write: false,
+      outDir: "__tests__/dist-vite",
+      write: compileOptions.write ?? false,
     },
     plugins: [htaccess(pluginOptions)],
     ...compileOptions.bundlerOptions,
