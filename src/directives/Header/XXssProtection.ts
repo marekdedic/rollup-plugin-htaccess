@@ -16,6 +16,7 @@ export type XXssProtectionSpec =
       reportUri?: string;
     };
 
+// eslint-disable-next-line deprecation/deprecation -- Internal deprecation
 export function buildXXssProtectionValue(spec: XXssProtectionSpec): string {
   switch (spec.mode) {
     case "block":
