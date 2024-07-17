@@ -37,7 +37,13 @@ export interface HeaderValueSpecMap {
   "Referrer-Policy": ReferrerPolicySpec;
   "Strict-Transport-Security": StrictTransportSecuritySpec;
   "X-Content-Type-Options": XContentTypeOptionsSpec;
+  /**
+   * @deprecated The Content-Security-Policy HTTP header has a frame-ancestors directive which obsoletes this header for supporting browsers.
+   */
   "X-Frame-Options": XFrameOptionsSpec;
+  /**
+   * @deprecated This feature is non-standard and is not on a standards track. Do not use it on production sites facing the Web: it will not work for every user. There may also be large incompatibilities between implementations and the behavior may change in the future.
+   */
   "X-Xss-Protection": XXssProtectionSpec;
 }
 
