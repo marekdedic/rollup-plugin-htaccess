@@ -14,13 +14,13 @@
   "license": "MIT",
   "author": "Marek Dědič",
   "type": "module",
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
+  "main": "dist/rollup-plugin-htaccess.cjs",
+  "module": "dist/rollup-plugin-htaccess.js",
   "types": "dist/rollup-plugin-htaccess.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": "./dist/rollup-plugin-htaccess.js",
+      "require": "./dist/rollup-plugin-htaccess.cjs"
     }
   },
   "files": [
