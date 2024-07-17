@@ -28,7 +28,10 @@ import {
   type XXssProtectionSpec,
 } from "./Header/XXssProtection";
 
-interface HeaderValueSpecMap {
+/**
+ * @public
+ */
+export interface HeaderValueSpecMap {
   "Content-Security-Policy": ContentSecurityPolicySpec;
   "Permissions-Policy": PermissionsPolicySpec;
   "Referrer-Policy": ReferrerPolicySpec;
@@ -38,7 +41,10 @@ interface HeaderValueSpecMap {
   "X-Xss-Protection": XXssProtectionSpec;
 }
 
-type HeaderSpec<T extends keyof HeaderValueSpecMap> = {
+/**
+ * @public
+ */
+export type HeaderSpec<T extends keyof HeaderValueSpecMap> = {
   header: T;
   always?: boolean;
   condition?:
@@ -64,6 +70,9 @@ type HeaderSpec<T extends keyof HeaderValueSpecMap> = {
     }
 );
 
+/**
+ * @public
+ */
 export type HeaderSpecUnion = {
   [K in keyof HeaderValueSpecMap]: HeaderSpec<K>;
 }[keyof HeaderValueSpecMap];

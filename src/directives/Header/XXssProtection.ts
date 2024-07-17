@@ -1,5 +1,8 @@
 import { escapeValue } from "../../utils";
 
+/**
+ * @public
+ */
 export type XXssProtectionSpec =
   | {
       mode: "block";

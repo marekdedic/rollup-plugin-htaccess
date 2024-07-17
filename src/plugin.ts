@@ -3,6 +3,9 @@ import type { Plugin } from "rollup";
 import { buildSpec, type Spec } from "./spec";
 import { readTemplate } from "./template";
 
+/**
+ * @public
+ */
 export interface Options {
   fileName: string;
   template: string | undefined;
@@ -21,6 +24,9 @@ async function buildHtaccessFile(
   return output;
 }
 
+/**
+ * @public
+ */
 export function htaccess(opts?: Partial<Options>): Plugin {
   const options: Options = {
     fileName: ".htaccess",
