@@ -1,3 +1,5 @@
+import type { PluginContext } from "rollup";
+
 import { escapeValue } from "../utils";
 import {
   buildContentSecurityPolicyValue,
@@ -89,7 +91,7 @@ function buildHeaderValue<
   T extends keyof HeaderValueSpecMap,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Needed to correctly infer value type
   V extends HeaderValueSpecMap[T] & Record<T, any>,
->(header: T, value: V[T]): string {
+>(context: PluginContext, header: T, value: V[T]): string {
   switch (header) {
     case "Content-Security-Policy":
       return buildContentSecurityPolicyValue(value);
@@ -98,7 +100,7 @@ function buildHeaderValue<
     case "Referrer-Policy":
       return buildReferrerPolicyValue(value);
     case "Strict-Transport-Security":
-      return buildStrictTransportSecurityValue(value);
+      return buildStrictTransportSecurityValue(context, value);
     case "X-Content-Type-Options":
       return buildXContentTypeOptionsValue();
     case "X-Frame-Options":
@@ -106,10 +108,13 @@ function buildHeaderValue<
     case "X-Xss-Protection":
       return buildXXssProtectionValue(value);
   }
-  throw new Error('Unknown header type "' + header + '".');
+  context.error('Unknown header type "' + header + '".');
 }
 
-export function buildHeader(spec: HeaderSpecUnion): string {
+export function buildHeader(
+  context: PluginContext,
+  spec: HeaderSpecUnion,
+): string {
   const parts = ["Header"];
   if (spec.always === true) {
     parts.push("always");
@@ -119,6 +124,7 @@ export function buildHeader(spec: HeaderSpecUnion): string {
     parts.push(
       '"' +
         buildHeaderValue(
+          context,
           spec.header,
           (spec as { value: HeaderValueSpecMap[keyof HeaderValueSpecMap] })
             .value,

@@ -1,4 +1,4 @@
-import type { Plugin as RollupPlugin } from "rollup";
+import type { Plugin as RollupPlugin, PluginContext } from "rollup";
 import type { Plugin as VitePlugin } from "vite";
 
 import { extractMetaCSP, type ExtractMetaCSPOptions } from "./extractMetaCSP";
@@ -16,14 +16,15 @@ export interface Options {
 }
 
 async function buildHtaccessFile(
+  context: PluginContext,
   options: Options,
   root: string,
 ): Promise<string> {
   let output = "";
   if (options.template !== undefined) {
-    output += await readTemplate(root, options.template);
+    output += await readTemplate(context, root, options.template);
   }
-  output += buildSpec(options.spec);
+  output += buildSpec(context, options.spec);
   return output;
 }
 
@@ -49,7 +50,7 @@ export function htaccess(opts?: Partial<Options>): RollupPlugin & VitePlugin {
       this.emitFile({
         type: "asset",
         fileName: options.fileName,
-        source: await buildHtaccessFile(options, root),
+        source: await buildHtaccessFile(this, options, root),
       });
     },
     ...extractMetaCSP(options),

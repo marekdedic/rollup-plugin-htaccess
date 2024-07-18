@@ -1,8 +1,10 @@
 import { join } from "path";
+import type { PluginContext } from "rollup";
 
 import { readFile } from "./utils";
 
 export async function readTemplate(
+  context: PluginContext,
   root: string,
   template: string,
 ): Promise<string> {
@@ -10,8 +12,8 @@ export async function readTemplate(
   try {
     fileContents = await readFile(join(root, template));
   } catch (err: unknown) {
-    throw new Error(
-      "Colud not read rollup-plugin-htaccess template file, Error: " +
+    context.error(
+      "Could not read rollup-plugin-htaccess template file, Error: " +
         (err as NodeJS.ErrnoException).message,
     );
   }

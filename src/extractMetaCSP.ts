@@ -1,7 +1,7 @@
 import { findAll } from "domutils";
 import { ElementType, parseDocument } from "htmlparser2";
 import { join } from "path";
-import type { OutputOptions, PluginHooks } from "rollup";
+import type { OutputOptions, PluginContext, PluginHooks } from "rollup";
 
 import type { Options } from "./index";
 import { escapeValue, readFile, writeFile } from "./utils";
@@ -60,6 +60,7 @@ async function extractCSPValuesFromHTMLFile(
 }
 
 async function writeCSPValuesToHtaccessFile(
+  context: PluginContext,
   cspValues: Array<string>,
   options: ExtractMetaCSPEnabledOptions,
   htaccessFileName: string,
@@ -70,7 +71,7 @@ async function writeCSPValuesToHtaccessFile(
   try {
     fileContents = await readFile(path);
   } catch {
-    throw new Error('Could not read htaccess file at path "' + path + '".');
+    context.error('Could not read htaccess file at path "' + path + '".');
   }
   fileContents +=
     cspValues
@@ -91,7 +92,7 @@ function closeBundle(
   return {
     order: "post",
     sequential: true,
-    handler: async (): Promise<void> => {
+    async handler(this: PluginContext): Promise<void> {
       let cspValues = (
         await Promise.all(
           options.files.map(async (file) => extractCSPValuesFromHTMLFile(file)),
@@ -99,11 +100,16 @@ function closeBundle(
       ).flat();
       cspValues = [...new Set(cspValues)];
       if (cspValues.length > 1) {
-        throw new Error(
+        this.error(
           "Found multiple conflicting CSP directives when extracting from meta tags.",
         );
       }
-      await writeCSPValuesToHtaccessFile(cspValues, options, htaccessFileName);
+      await writeCSPValuesToHtaccessFile(
+        this,
+        cspValues,
+        options,
+        htaccessFileName,
+      );
     },
   };
 }
