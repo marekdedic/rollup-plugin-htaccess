@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-htaccess",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "A rollup/vite plugin to generate .htaccess files",
   "keywords": [
     "rollup-plugin",
