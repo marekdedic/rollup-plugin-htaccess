@@ -91,11 +91,17 @@ function closeBundle(
     order: "post",
     sequential: true,
     handler: async (): Promise<void> => {
-      const cspValues = (
+      let cspValues = (
         await Promise.all(
           options.files.map(async (file) => extractCSPValuesFromHTMLFile(file)),
         )
       ).flat();
+      cspValues = [...new Set(cspValues)];
+      if (cspValues.length > 1) {
+        throw new Error(
+          "Found multiple conflicting CSP directives when extracting from meta tags.",
+        );
+      }
       await writeCSPValuesToHtaccessFile(cspValues, options, htaccessFileName);
     },
   };
