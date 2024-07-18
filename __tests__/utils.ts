@@ -1,4 +1,5 @@
 import assert from "assert";
+import { type Dirent, readdirSync as nodeReaddir } from "fs";
 import {
   type OutputAsset,
   rollup,
@@ -9,6 +10,12 @@ import type { InlineConfig as ViteOptions } from "vite";
 import { build } from "vite";
 
 import htaccess, { type Options } from "../src";
+
+type Directory = Pick<Dirent, "isDirectory" | "isFile" | "name">;
+
+export function readDirSync(path: string): Array<Directory> {
+  return nodeReaddir(path, { withFileTypes: true });
+}
 
 function extractFileContents(output: RollupOutput, fileName: string): string {
   const htaccessFiles = output.output.filter(

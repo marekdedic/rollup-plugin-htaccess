@@ -1,11 +1,10 @@
 import { findAll } from "domutils";
-import { readFile, writeFile } from "fs";
 import { ElementType, parseDocument } from "htmlparser2";
 import { join } from "path";
 import type { OutputOptions, PluginHooks } from "rollup";
 
 import type { Options } from "./index";
-import { escapeValue } from "./utils";
+import { escapeValue, readFile, writeFile } from "./utils";
 
 /**
  * @public
@@ -23,25 +22,6 @@ export type ExtractMetaCSPOptions =
   | ExtractMetaCSPEnabledOptions
   | { enabled: false };
 
-async function asyncReadFile(path: string): Promise<string | null> {
-  return new Promise<string | null>((resolve) => {
-    readFile(path, "utf8", (err, data) => {
-      if (err !== null) {
-        resolve(null);
-      }
-      resolve(data);
-    });
-  });
-}
-
-async function asyncWriteFile(path: string, contents: string): Promise<void> {
-  return new Promise<void>((resolve) => {
-    writeFile(path, contents, () => {
-      resolve();
-    });
-  });
-}
-
 let outputOptions: OutputOptions = {};
 
 function renderStart(outputOptionsValue: OutputOptions): void {
@@ -51,8 +31,10 @@ function renderStart(outputOptionsValue: OutputOptions): void {
 async function extractCSPValuesFromHTMLFile(
   fileName: string,
 ): Promise<Array<string>> {
-  let fileContents = await asyncReadFile(fileName);
-  if (fileContents === null) {
+  let fileContents = "";
+  try {
+    fileContents = await readFile(fileName);
+  } catch {
     return [];
   }
   const dom = parseDocument(fileContents, {
@@ -72,7 +54,7 @@ async function extractCSPValuesFromHTMLFile(
       fileContents.substring(0, cspMetaElem.startIndex!) +
       fileContents.substring(cspMetaElem.endIndex! + 1);
   }
-  await asyncWriteFile(fileName, fileContents);
+  await writeFile(fileName, fileContents);
   return cspValues;
 }
 
@@ -83,8 +65,10 @@ async function writeCSPValuesToHtaccessFile(
 ): Promise<void> {
   const path =
     options.htaccessFile ?? join(outputOptions.dir ?? "", htaccessFileName);
-  let fileContents = await asyncReadFile(path);
-  if (fileContents === null) {
+  let fileContents = "";
+  try {
+    fileContents = await readFile(path);
+  } catch {
     throw new Error('Could not read htaccess file at path "' + path + '".');
   }
   fileContents +=
@@ -96,7 +80,7 @@ async function writeCSPValuesToHtaccessFile(
           '"',
       )
       .join("\n") + "\n";
-  await asyncWriteFile(path, fileContents);
+  await writeFile(path, fileContents);
 }
 
 function closeBundle(
