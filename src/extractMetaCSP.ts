@@ -45,6 +45,7 @@ async function extractCSPValuesFromHTMLFile(
     (elem) =>
       elem.type === ElementType.Tag &&
       elem.name === "meta" &&
+      "http-equiv" in elem.attribs &&
       elem.attribs["http-equiv"].toLowerCase() === "content-security-policy",
     dom.children,
   );

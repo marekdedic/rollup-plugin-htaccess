@@ -358,3 +358,46 @@ test("CSP meta element case sensitivity", async () => {
     output,
   );
 });
+
+test("CSP extraction with other meta tags", async () => {
+  expect.assertions(2);
+  function configGenerator(
+    distFolder: string,
+  ): [Partial<Options>, CompileOptions] {
+    const pluginOptions = {
+      extractMetaCSP: {
+        enabled: true,
+        files: [join("__tests__", distFolder, "index.html")],
+      },
+    };
+    const compileOptions: CompileOptions = {
+      write: true,
+      bundlerOptions: {
+        plugins: [
+          htaccess(pluginOptions),
+          {
+            name: "Emit index.html",
+            generateBundle(): void {
+              this.emitFile({
+                type: "asset",
+                fileName: "index.html",
+                source:
+                  '<!DOCTYPE html><html><head><meta charset="utf-8" /><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+              });
+            },
+          },
+        ],
+      },
+    };
+    return [pluginOptions, compileOptions];
+  }
+  const output = 'Header always set Content-Security-Policy "CSP-value"';
+  await compileRollup(...configGenerator("dist-rollup"));
+  expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
+    output,
+  );
+  await compileVite(...configGenerator("dist-vite"));
+  expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
+    output,
+  );
+});
