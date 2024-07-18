@@ -25,6 +25,10 @@ export type { XContentTypeOptionsSpec } from "./directives/Header/XContentTypeOp
 export type { XFrameOptionsSpec } from "./directives/Header/XFrameOptions";
 export type { XXssProtectionSpec } from "./directives/Header/XXssProtection";
 export type { OptionName, OptionsSpec } from "./directives/Options";
+export type {
+  ExtractMetaCSPEnabledOptions,
+  ExtractMetaCSPOptions,
+} from "./extractMetaCSP";
 export { htaccess as default, type Options } from "./plugin";
 export type {
   MetadataRewriteRuleFlags,

@@ -1,14 +1,21 @@
 import assert from "assert";
+import { type Dirent, readdirSync as nodeReaddir } from "fs";
 import {
   type OutputAsset,
   rollup,
   type RollupOptions,
   type RollupOutput,
 } from "rollup";
-import type { InlineConfig } from "vite";
+import type { InlineConfig as ViteOptions } from "vite";
 import { build } from "vite";
 
 import htaccess, { type Options } from "../src";
+
+type Directory = Pick<Dirent, "isDirectory" | "isFile" | "name">;
+
+export function readDirSync(path: string): Array<Directory> {
+  return nodeReaddir(path, { withFileTypes: true });
+}
 
 function extractFileContents(output: RollupOutput, fileName: string): string {
   const htaccessFiles = output.output.filter(
@@ -19,24 +26,36 @@ function extractFileContents(output: RollupOutput, fileName: string): string {
   return htaccessFiles[0].source.toString().trim();
 }
 
+export interface CompileOptions {
+  fileName?: string;
+  write?: boolean;
+  bundlerOptions?: RollupOptions & ViteOptions;
+}
+
 export async function compileRollup(
-  options?: Partial<Options>,
-  fileName = ".htaccess",
-  rollupOptions: RollupOptions = {},
+  pluginOptions: Partial<Options>,
+  compileOptions: CompileOptions = {},
 ): Promise<string> {
   const bundle = await rollup({
     input: "__tests__/fixtures/dummy.js",
-    plugins: [htaccess(options)],
-    ...rollupOptions,
+    plugins: [htaccess(pluginOptions)],
+    ...compileOptions.bundlerOptions,
   });
   const output = await bundle.generate({});
-  return extractFileContents(output, fileName);
+  const fileContents = extractFileContents(
+    output,
+    compileOptions.fileName ?? ".htaccess",
+  );
+  if (compileOptions.write === true) {
+    await bundle.write({ dir: "__tests__/dist-rollup" });
+  }
+  await bundle.close();
+  return fileContents;
 }
 
 export async function compileVite(
-  options?: Partial<Options>,
-  fileName = ".htaccess",
-  viteOptions: InlineConfig = {},
+  pluginOptions: Partial<Options>,
+  compileOptions: CompileOptions = {},
 ): Promise<string> {
   const output = (await build({
     logLevel: "warn",
@@ -46,12 +65,14 @@ export async function compileVite(
           app: "__tests__/fixtures/dummy.html",
         },
       },
+      outDir: "__tests__/dist-vite",
+      write: compileOptions.write ?? false,
     },
-    plugins: [htaccess(options)],
-    ...viteOptions,
+    plugins: [htaccess(pluginOptions)],
+    ...compileOptions.bundlerOptions,
   })) as Array<RollupOutput> | RollupOutput;
   return extractFileContents(
     Array.isArray(output) ? output[0] : output,
-    fileName,
+    compileOptions.fileName ?? ".htaccess",
   );
 }

@@ -44,7 +44,7 @@
     "build": "npm run build:rollup && npm run build:api-extractor",
     "postbuild": "rimraf dist/types",
     "start": "rollup -cw",
-    "pretest": "npx tsc --noEmit $(find __tests__/specs/ -name '*.ts' | tr '\\n' ' ')",
+    "pretest": "tsc --project test.tsconfig.json",
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx jest",
     "lint": "eslint --color 'src/**/*.ts' '__tests__/**/*.ts' '*.config.{js,ts}'"
   },
@@ -59,6 +59,10 @@
     "vite": {
       "optional": true
     }
+  },
+  "dependencies": {
+    "domutils": "^3.1.0",
+    "htmlparser2": "^9.1.0"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.47.2",
