@@ -1,3 +1,5 @@
+import type { PluginContext } from "rollup";
+
 /**
  * @public
  */
@@ -8,16 +10,17 @@ export interface StrictTransportSecuritySpec {
 }
 
 export function buildStrictTransportSecurityValue(
+  context: PluginContext,
   spec: StrictTransportSecuritySpec,
 ): string {
   if (spec.preload === true) {
     if (spec.maxAge < 31536000) {
-      throw new Error(
+      context.error(
         "The strict transport security header with preloading requires max age >= 31536000.",
       );
     }
     if (spec.includeSubDomains !== true) {
-      throw new Error(
+      context.error(
         "The strict transport security header with preloading requires subdomains to be included.",
       );
     }

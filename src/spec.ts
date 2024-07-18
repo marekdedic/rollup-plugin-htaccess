@@ -1,3 +1,5 @@
+import type { PluginContext } from "rollup";
+
 import {
   type AddOutputFilterByTypeSpec,
   buildAddOutputFilterByType,
@@ -21,7 +23,7 @@ export interface Spec {
   rewrite?: RewriteSpec;
 }
 
-export function buildSpec(spec: Spec): string {
+export function buildSpec(context: PluginContext, spec: Spec): string {
   let output = "";
   if (spec.AddOutputFilterByType !== undefined) {
     output += buildAddOutputFilterByType(spec.AddOutputFilterByType) + "\n";
@@ -33,7 +35,7 @@ export function buildSpec(spec: Spec): string {
     output += buildOptions(spec.Options) + "\n";
   }
   for (const header of spec.Header ?? []) {
-    output += buildHeader(header) + "\n";
+    output += buildHeader(context, header) + "\n";
   }
   if (spec.rewrite !== undefined) {
     output += buildRewrite(spec.rewrite) + "\n";
