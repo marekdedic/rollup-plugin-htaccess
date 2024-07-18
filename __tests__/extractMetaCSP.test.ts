@@ -49,9 +49,7 @@ test("Basic CSP extraction", async () => {
     output,
   );
   await compileVite(...configGenerator("dist-vite"));
-  expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
-    output,
-  );
+  expect((await readFile("__tests__/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
 test("CSP extraction disabled", async () => {
@@ -86,9 +84,7 @@ test("CSP extraction disabled", async () => {
     output,
   );
   await compileVite(pluginOptions, compileOptions);
-  expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
-    output,
-  );
+  expect((await readFile("__tests__/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
 test("CSP extraction with custom .htaccess", async () => {
@@ -132,7 +128,7 @@ test("CSP extraction with custom .htaccess", async () => {
     output,
   );
   await compileVite(...configGenerator("dist-vite"));
-  expect((await readFile("__tests__/dist-rollup/custom.txt")).trim()).toBe(
+  expect((await readFile("__tests__/dist-vite/custom.txt")).trim()).toBe(
     output,
   );
 });
@@ -175,9 +171,7 @@ test("CSP extraction with non-existent HTML file", async () => {
     output,
   );
   await compileVite(...configGenerator("dist-vite"));
-  expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
-    output,
-  );
+  expect((await readFile("__tests__/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
 test("CSP extraction with no valid meta tags", async () => {
@@ -218,9 +212,7 @@ test("CSP extraction with no valid meta tags", async () => {
     output,
   );
   await compileVite(...configGenerator("dist-vite"));
-  expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
-    output,
-  );
+  expect((await readFile("__tests__/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
 test("CSP extraction with non-existent .htaccess", async () => {
@@ -378,9 +370,7 @@ test("CSP meta element case sensitivity", async () => {
     output,
   );
   await compileVite(...configGenerator("dist-vite"));
-  expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
-    output,
-  );
+  expect((await readFile("__tests__/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
 test("CSP extraction with other meta tags", async () => {
@@ -421,7 +411,5 @@ test("CSP extraction with other meta tags", async () => {
     output,
   );
   await compileVite(...configGenerator("dist-vite"));
-  expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
-    output,
-  );
+  expect((await readFile("__tests__/dist-vite/.htaccess")).trim()).toBe(output);
 });
