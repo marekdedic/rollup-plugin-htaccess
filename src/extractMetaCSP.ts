@@ -71,7 +71,11 @@ async function writeCSPValuesToHtaccessFile(
   try {
     fileContents = await readFile(path);
   } catch {
-    context.error('Could not read htaccess file at path "' + path + '".');
+    context.warn(
+      'Could not read htaccess file at path "' +
+        path +
+        '", writing extracted CSP to new file.',
+    );
   }
   fileContents +=
     cspValues

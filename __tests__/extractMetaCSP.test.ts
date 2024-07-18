@@ -1,3 +1,4 @@
+import { jest } from "@jest/globals";
 import { join } from "path";
 import { rimraf } from "rimraf";
 
@@ -222,8 +223,8 @@ test("CSP extraction with no valid meta tags", async () => {
   );
 });
 
-test("CSP extraction with incorrect .htaccess", async () => {
-  expect.assertions(2);
+test("CSP extraction with non-existent .htaccess", async () => {
+  expect.assertions(8);
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
@@ -231,7 +232,7 @@ test("CSP extraction with incorrect .htaccess", async () => {
       fileName: "custom.txt",
       extractMetaCSP: {
         enabled: true,
-        htaccessFile: "incorrect.txt",
+        htaccessFile: join("__tests__", distFolder, "other.txt"),
         files: [join("__tests__", distFolder, "index.html")],
       },
     };
@@ -257,11 +258,34 @@ test("CSP extraction with incorrect .htaccess", async () => {
     };
     return [pluginOptions, compileOptions];
   }
-  await expect(
-    compileRollup(...configGenerator("dist-rollup")),
-  ).rejects.toThrow('Could not read htaccess file at path "incorrect.txt".');
-  await expect(compileVite(...configGenerator("dist-vite"))).rejects.toThrow(
-    'Could not read htaccess file at path "incorrect.txt".',
+  const output = "";
+  const otherOutput = 'Header always set Content-Security-Policy "CSP-value"';
+
+  const consoleWarn = jest
+    .spyOn(global.console, "warn")
+    // eslint-disable-next-line @typescript-eslint/no-empty-function -- The empty function is the point
+    .mockImplementation(() => {});
+  await compileRollup(...configGenerator("dist-rollup"));
+  expect(consoleWarn).toHaveBeenCalledTimes(1);
+  expect(consoleWarn.mock.calls[0][0]).toContain(
+    'Could not read htaccess file at path "__tests__/dist-rollup/other.txt", writing extracted CSP to new file.',
+  );
+  expect((await readFile("__tests__/dist-rollup/custom.txt")).trim()).toBe(
+    output,
+  );
+  expect((await readFile("__tests__/dist-rollup/other.txt")).trim()).toBe(
+    otherOutput,
+  );
+  await compileVite(...configGenerator("dist-vite"));
+  expect(consoleWarn).toHaveBeenCalledTimes(2);
+  expect(consoleWarn.mock.calls[1][0]).toContain(
+    'Could not read htaccess file at path "__tests__/dist-vite/other.txt", writing extracted CSP to new file.',
+  );
+  expect((await readFile("__tests__/dist-vite/custom.txt")).trim()).toBe(
+    output,
+  );
+  expect((await readFile("__tests__/dist-vite/other.txt")).trim()).toBe(
+    otherOutput,
   );
 });
 
