@@ -45,7 +45,7 @@ async function extractCSPValuesFromHTMLFile(
     (elem) =>
       elem.type === ElementType.Tag &&
       elem.name === "meta" &&
-      elem.attribs["http-equiv"] === "content-security-policy",
+      elem.attribs["http-equiv"].toLowerCase() === "content-security-policy",
     dom.children,
   );
   const cspValues = cspMetaElems.map((elem) => elem.attribs.content);
