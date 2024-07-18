@@ -37,7 +37,7 @@
     "npm": ">=8.0.0"
   },
   "scripts": {
-    "clean": "rimraf dist/* types/*",
+    "clean": "rimraf dist/*",
     "prebuild": "npm run clean",
     "build:rollup": "rollup -c",
     "build:api-extractor": "api-extractor run",
