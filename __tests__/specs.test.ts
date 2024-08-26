@@ -74,6 +74,7 @@ describe("Spec tests", () => {
       const error = await loadError(spec);
       // eslint-disable-next-line @typescript-eslint/no-empty-function -- The empty function is the point
       jest.spyOn(global.console, "error").mockImplementation(() => {});
+
       await expect(compileRollup(options)).rejects.toThrow(error);
       await expect(compileVite(options)).rejects.toThrow(error);
     }

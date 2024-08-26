@@ -13,6 +13,7 @@ beforeEach(async () => {
 
 test("Basic CSP extraction", async () => {
   expect.assertions(2);
+
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
@@ -45,15 +46,19 @@ test("Basic CSP extraction", async () => {
   }
   const output = 'Header always set Content-Security-Policy "CSP-value"';
   await compileRollup(...configGenerator("dist-rollup"));
+
   expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
     output,
   );
+
   await compileVite(...configGenerator("dist-vite"));
+
   expect((await readFile("__tests__/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
 test("CSP extraction disabled", async () => {
   expect.assertions(2);
+
   const pluginOptions = {
     extractMetaCSP: {
       enabled: false as const,
@@ -80,15 +85,19 @@ test("CSP extraction disabled", async () => {
   };
   const output = "";
   await compileRollup(pluginOptions, compileOptions);
+
   expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
     output,
   );
+
   await compileVite(pluginOptions, compileOptions);
+
   expect((await readFile("__tests__/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
 test("CSP extraction with custom .htaccess", async () => {
   expect.assertions(2);
+
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
@@ -124,10 +133,13 @@ test("CSP extraction with custom .htaccess", async () => {
   }
   const output = 'Header always set Content-Security-Policy "CSP-value"';
   await compileRollup(...configGenerator("dist-rollup"));
+
   expect((await readFile("__tests__/dist-rollup/custom.txt")).trim()).toBe(
     output,
   );
+
   await compileVite(...configGenerator("dist-vite"));
+
   expect((await readFile("__tests__/dist-vite/custom.txt")).trim()).toBe(
     output,
   );
@@ -135,6 +147,7 @@ test("CSP extraction with custom .htaccess", async () => {
 
 test("CSP extraction with non-existent HTML file", async () => {
   expect.assertions(2);
+
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
@@ -167,15 +180,19 @@ test("CSP extraction with non-existent HTML file", async () => {
   }
   const output = "";
   await compileRollup(...configGenerator("dist-rollup"));
+
   expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
     output,
   );
+
   await compileVite(...configGenerator("dist-vite"));
+
   expect((await readFile("__tests__/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
 test("CSP extraction with no valid meta tags", async () => {
   expect.assertions(2);
+
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
@@ -208,15 +225,19 @@ test("CSP extraction with no valid meta tags", async () => {
   }
   const output = "";
   await compileRollup(...configGenerator("dist-rollup"));
+
   expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
     output,
   );
+
   await compileVite(...configGenerator("dist-vite"));
+
   expect((await readFile("__tests__/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
 test("CSP extraction with non-existent .htaccess", async () => {
   expect.assertions(8);
+
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
@@ -258,6 +279,7 @@ test("CSP extraction with non-existent .htaccess", async () => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function -- The empty function is the point
     .mockImplementation(() => {});
   await compileRollup(...configGenerator("dist-rollup"));
+
   expect(consoleWarn).toHaveBeenCalledTimes(1);
   expect(consoleWarn.mock.calls[0][0]).toContain(
     'Could not read htaccess file at path "__tests__/dist-rollup/other.txt", writing extracted CSP to new file.',
@@ -268,7 +290,9 @@ test("CSP extraction with non-existent .htaccess", async () => {
   expect((await readFile("__tests__/dist-rollup/other.txt")).trim()).toBe(
     otherOutput,
   );
+
   await compileVite(...configGenerator("dist-vite"));
+
   expect(consoleWarn).toHaveBeenCalledTimes(2);
   expect(consoleWarn.mock.calls[1][0]).toContain(
     'Could not read htaccess file at path "__tests__/dist-vite/other.txt", writing extracted CSP to new file.',
@@ -283,6 +307,7 @@ test("CSP extraction with non-existent .htaccess", async () => {
 
 test("CSP extraction with conflicting directives", async () => {
   expect.assertions(2);
+
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
@@ -322,6 +347,7 @@ test("CSP extraction with conflicting directives", async () => {
     };
     return [pluginOptions, compileOptions];
   }
+
   await expect(
     compileRollup(...configGenerator("dist-rollup")),
   ).rejects.toThrow(
@@ -334,6 +360,7 @@ test("CSP extraction with conflicting directives", async () => {
 
 test("CSP meta element case sensitivity", async () => {
   expect.assertions(2);
+
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
@@ -366,15 +393,19 @@ test("CSP meta element case sensitivity", async () => {
   }
   const output = 'Header always set Content-Security-Policy "CSP-value"';
   await compileRollup(...configGenerator("dist-rollup"));
+
   expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
     output,
   );
+
   await compileVite(...configGenerator("dist-vite"));
+
   expect((await readFile("__tests__/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
 test("CSP extraction with other meta tags", async () => {
   expect.assertions(2);
+
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
@@ -407,9 +438,12 @@ test("CSP extraction with other meta tags", async () => {
   }
   const output = 'Header always set Content-Security-Policy "CSP-value"';
   await compileRollup(...configGenerator("dist-rollup"));
+
   expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
     output,
   );
+
   await compileVite(...configGenerator("dist-vite"));
+
   expect((await readFile("__tests__/dist-vite/.htaccess")).trim()).toBe(output);
 });
