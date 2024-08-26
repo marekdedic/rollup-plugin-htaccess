@@ -111,6 +111,7 @@ function buildHeaderValue<T extends keyof HeaderValueSpecMap>(
     default:
       context.error('Unknown header type "' + header + '".');
   }
+  return "";
 }
 
 export function buildHeader(
