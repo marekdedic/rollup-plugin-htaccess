@@ -1,5 +1,6 @@
-import { join } from "path";
 import type { PluginContext } from "rollup";
+
+import { join } from "path";
 
 import { readFile } from "./utils";
 

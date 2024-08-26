@@ -1,9 +1,11 @@
+import type { OutputOptions, PluginContext, PluginHooks } from "rollup";
+
 import { findAll } from "domutils";
 import { ElementType, parseDocument } from "htmlparser2";
 import { join } from "path";
-import type { OutputOptions, PluginContext, PluginHooks } from "rollup";
 
 import type { Options } from "./index";
+
 import { escapeValue, readFile, writeFile } from "./utils";
 
 /**
