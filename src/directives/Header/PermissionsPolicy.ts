@@ -77,6 +77,9 @@ export function buildPermissionsPolicyValue(
 ): string {
   const parts = [];
   for (const key in spec) {
+    if (!Object.prototype.hasOwnProperty.call(spec, key)) {
+      continue;
+    }
     parts.push(
       key + "=" + buildAllowlist(spec[key as PermissionsPolicyDirectives]!),
     );

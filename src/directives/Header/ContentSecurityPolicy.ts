@@ -196,6 +196,9 @@ export function buildContentSecurityPolicyValue(
 ): string {
   const parts = [];
   for (const directive in spec) {
+    if (!Object.prototype.hasOwnProperty.call(spec, directive)) {
+      continue;
+    }
     parts.push(
       buildPart(
         directive as keyof ContentSecurityPolicySpec,
