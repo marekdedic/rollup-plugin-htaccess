@@ -26,9 +26,9 @@ function extractFileContents(output: RollupOutput, fileName: string): string {
 }
 
 export interface CompileOptions {
+  bundlerOptions?: RollupOptions & ViteOptions;
   fileName?: string;
   write?: boolean;
-  bundlerOptions?: RollupOptions & ViteOptions;
 }
 
 export async function compileRollup(

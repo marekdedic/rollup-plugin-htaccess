@@ -4,8 +4,8 @@ import type { PluginContext } from "rollup";
  * @public
  */
 export interface StrictTransportSecuritySpec {
-  maxAge: number;
   includeSubDomains?: boolean;
+  maxAge: number;
   preload?: boolean;
 }
 

@@ -28,7 +28,15 @@ export type ContentSecurityPolicySourceDirective =
  * @public
  */
 export interface ContentSecurityPolicySources {
+  hashes?: {
+    sha256?: Array<string>;
+    sha384?: Array<string>;
+    sha512?: Array<string>;
+  };
   hosts?: Array<string>;
+  "inline-speculation-rules"?: boolean;
+  nonces?: Array<string>;
+  "report-sample"?: boolean;
   schemes?: {
     data?: boolean;
     mediastream?: boolean;
@@ -36,19 +44,11 @@ export interface ContentSecurityPolicySources {
     filesystem?: boolean;
   };
   self?: boolean;
+  "strict-dynamic"?: boolean;
   "unsafe-eval"?: boolean;
-  "wasm-unsafe-eval"?: boolean;
   "unsafe-hashes"?: boolean;
   "unsafe-inline"?: boolean;
-  nonces?: Array<string>;
-  hashes?: {
-    sha256?: Array<string>;
-    sha384?: Array<string>;
-    sha512?: Array<string>;
-  };
-  "strict-dynamic"?: boolean;
-  "report-sample"?: boolean;
-  "inline-speculation-rules"?: boolean;
+  "wasm-unsafe-eval"?: boolean;
 }
 
 /**
@@ -76,8 +76,8 @@ export type ContentSecurityPolicySandboxValue =
  * @public
  */
 export interface ContentSecurityPolicyTrustedTypesValue {
-  policies?: Array<string>;
   "allow-duplicates"?: boolean;
+  policies?: Array<string>;
 }
 
 /**

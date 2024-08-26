@@ -4,37 +4,37 @@ import { escapeValue } from "./utils";
  * @public
  */
 export interface RewriteOptionsSpec {
+  AllowAnyURI?: boolean;
+  AllowNoSlash?: boolean;
+  IgnoreContextInfo?: boolean;
+  IgnoreInherit?: boolean;
   Inherit?: boolean;
   InheritDown?: boolean;
   InheritDownBefore?: boolean;
-  IgnoreInherit?: boolean;
-  AllowNoSlash?: boolean;
-  AllowAnyURI?: boolean;
-  MergeBase?: boolean;
-  IgnoreContextInfo?: boolean;
   LegacyPrefixDocRoot?: boolean;
+  MergeBase?: boolean;
 }
 
 /**
  * @public
  */
 export interface RewriteCondSpec {
-  testString: string;
   conditionPattern: string;
   flags?: {
     nocase?: boolean;
     ornext?: boolean;
     novary?: boolean;
   };
+  testString: string;
 }
 
 /**
  * @public
  */
 export interface RewriteRuleCookieFlagMinimalSpec {
+  domain: string;
   name: string;
   value: string;
-  domain: string;
 }
 
 /**

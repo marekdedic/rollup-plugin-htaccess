@@ -9,10 +9,10 @@ import { readTemplate } from "./template";
  * @public
  */
 export interface Options {
-  fileName: string;
-  template: string | undefined;
-  spec: Spec;
   extractMetaCSP: ExtractMetaCSPOptions;
+  fileName: string;
+  spec: Spec;
+  template: string | undefined;
 }
 
 async function buildHtaccessFile(

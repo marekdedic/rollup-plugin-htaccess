@@ -13,8 +13,8 @@ import { escapeValue, readFile, writeFile } from "./utils";
  */
 export interface ExtractMetaCSPEnabledOptions {
   enabled: true;
-  htaccessFile?: string;
   files: Array<string>;
+  htaccessFile?: string;
 }
 
 /**
