@@ -47,7 +47,7 @@ export type PermissionsPolicyDirectives =
  */
 export type PermissionsPolicyAllowlist =
   | "*"
-  | { src?: boolean; self?: boolean; origins?: Array<string> };
+  | { origins?: Array<string>; self?: boolean; src?: boolean };
 
 /**
  * @public

@@ -38,10 +38,10 @@ export interface ContentSecurityPolicySources {
   nonces?: Array<string>;
   "report-sample"?: boolean;
   schemes?: {
-    data?: boolean;
-    mediastream?: boolean;
     blob?: boolean;
+    data?: boolean;
     filesystem?: boolean;
+    mediastream?: boolean;
   };
   self?: boolean;
   "strict-dynamic"?: boolean;
@@ -85,15 +85,15 @@ export interface ContentSecurityPolicyTrustedTypesValue {
  */
 export type ContentSecurityPolicySpec = Partial<
   {
-    sandbox: ContentSecurityPolicySandboxValue;
+    "report-to": string;
     /**
      * @deprecated The report-uri directive is deprecated and it's recommended to send CSP reports using report-to instead.
      */
     "report-uri": Array<string>;
-    "report-to": string;
     "require-trusted-types-for": "script";
-    "upgrade-insecure-requests": boolean;
+    sandbox: ContentSecurityPolicySandboxValue;
     "trusted-types": ContentSecurityPolicyTrustedTypesValue;
+    "upgrade-insecure-requests": boolean;
   } & Record<ContentSecurityPolicySourceDirective, ContentSecurityPolicySources>
 >;
 

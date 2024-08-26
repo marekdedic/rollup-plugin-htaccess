@@ -55,7 +55,6 @@ export interface HeaderValueSpecMap {
  * @public
  */
 export type HeaderSpec<T extends keyof HeaderValueSpecMap> = {
-  header: T;
   always?: boolean;
   condition?:
     | {
@@ -65,6 +64,7 @@ export type HeaderSpec<T extends keyof HeaderValueSpecMap> = {
     | {
         expression: string;
       };
+  header: T;
 } & (
   | {
       action: "add" | "append" | "merge" | "set" | "setifempty";
@@ -75,8 +75,8 @@ export type HeaderSpec<T extends keyof HeaderValueSpecMap> = {
     }
   | {
       action: "edit" | "edit*";
-      value: string;
       replacement: string;
+      value: string;
     }
 );
 

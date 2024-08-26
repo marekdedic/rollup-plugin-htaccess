@@ -22,8 +22,8 @@ export interface RewriteCondSpec {
   conditionPattern: string;
   flags?: {
     nocase?: boolean;
-    ornext?: boolean;
     novary?: boolean;
+    ornext?: boolean;
   };
   testString: string;
 }
@@ -42,17 +42,17 @@ export interface RewriteRuleCookieFlagMinimalSpec {
  */
 export type RewriteRuleCookieFlagSpec = (
   | {
+      httponly?: boolean;
       lifetime?: number;
       path?: string;
-      secure?: boolean;
-      httponly?: boolean;
       samesite?: "Lax" | "None" | "Strict";
+      secure?: boolean;
     }
   | {
+      httponly?: boolean;
       lifetime?: number;
       path?: string;
       secure?: boolean;
-      httponly?: boolean;
     }
   | {
       lifetime?: number;
@@ -103,8 +103,8 @@ export interface StandardRewriteRuleFlags {
  */
 export interface MetadataRewriteRuleFlags {
   env?: {
-    variable: string;
     value: string | null;
+    variable: string;
   };
   handler?: string;
   type?: string;
@@ -118,12 +118,12 @@ export type RewriteRuleSpec = {
   pattern: string;
 } & (
   | {
-      substitution: null;
       flags?: MetadataRewriteRuleFlags & StandardRewriteRuleFlags;
+      substitution: null;
     }
   | {
-      substitution: string;
       flags?: StandardRewriteRuleFlags;
+      substitution: string;
     }
 );
 
