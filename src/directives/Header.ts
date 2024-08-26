@@ -108,8 +108,9 @@ function buildHeaderValue<T extends keyof HeaderValueSpecMap>(
       return buildXFrameOptionsValue(value);
     case "X-Xss-Protection":
       return buildXXssProtectionValue(value);
+    default:
+      context.error('Unknown header type "' + header + '".');
   }
-  context.error('Unknown header type "' + header + '".');
 }
 
 export function buildHeader(
