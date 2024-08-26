@@ -21,8 +21,8 @@ export interface ExtractMetaCSPEnabledOptions {
  * @public
  */
 export type ExtractMetaCSPOptions =
-  | ExtractMetaCSPEnabledOptions
-  | { enabled: false };
+  | { enabled: false }
+  | ExtractMetaCSPEnabledOptions;
 
 let outputOptions: OutputOptions = {};
 
