@@ -173,18 +173,18 @@ function buildPart<T extends keyof ContentSecurityPolicySpec>(
   valueSpec: (ContentSecurityPolicySpec[T] & Record<T, any>)[T],
 ): string {
   switch (directive) {
-    case "sandbox":
-      return buildSandboxPart(valueSpec);
-    case "report-uri":
-      return ["report-uri", ...valueSpec].join(" ");
     case "report-to":
       return "report-to " + (valueSpec as string);
+    case "report-uri":
+      return ["report-uri", ...valueSpec].join(" ");
     case "require-trusted-types-for":
       return "require-trusted-types-for 'script'";
-    case "upgrade-insecure-requests":
-      return "upgrade-insecure-requests";
+    case "sandbox":
+      return buildSandboxPart(valueSpec);
     case "trusted-types":
       return buildTrustedTypesPart(valueSpec);
+    case "upgrade-insecure-requests":
+      return "upgrade-insecure-requests";
     default:
       return buildSourcePart(directive, valueSpec);
   }
