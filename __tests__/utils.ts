@@ -6,8 +6,7 @@ import {
   type RollupOptions,
   type RollupOutput,
 } from "rollup";
-import type { InlineConfig as ViteOptions } from "vite";
-import { build } from "vite";
+import { build, type InlineConfig as ViteOptions } from "vite";
 
 import htaccess, { type Options } from "../src";
 
