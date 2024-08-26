@@ -168,11 +168,11 @@ function buildSourcePart(
   return directive + " " + sources.join(" ");
 }
 
-function buildPart<
-  T extends keyof ContentSecurityPolicySpec,
+function buildPart<T extends keyof ContentSecurityPolicySpec>(
+  directive: T,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Needed to correctly infer value type
-  V extends ContentSecurityPolicySpec[T] & Record<T, any>,
->(directive: T, valueSpec: V[T]): string {
+  valueSpec: (ContentSecurityPolicySpec[T] & Record<T, any>)[T],
+): string {
   switch (directive) {
     case "sandbox":
       return buildSandboxPart(valueSpec);

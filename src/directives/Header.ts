@@ -87,11 +87,12 @@ export type HeaderSpecUnion = {
   [K in keyof HeaderValueSpecMap]: HeaderSpec<K>;
 }[keyof HeaderValueSpecMap];
 
-function buildHeaderValue<
-  T extends keyof HeaderValueSpecMap,
+function buildHeaderValue<T extends keyof HeaderValueSpecMap>(
+  context: PluginContext,
+  header: T,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Needed to correctly infer value type
-  V extends HeaderValueSpecMap[T] & Record<T, any>,
->(context: PluginContext, header: T, value: V[T]): string {
+  value: (HeaderValueSpecMap[T] & Record<T, any>)[T],
+): string {
   switch (header) {
     case "Content-Security-Policy":
       return buildContentSecurityPolicyValue(value);
