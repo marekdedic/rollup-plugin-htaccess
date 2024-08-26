@@ -40,34 +40,34 @@ export interface RewriteRuleCookieFlagMinimalSpec {
 /**
  * @public
  */
-export type RewriteRuleCookieFlagSpec = RewriteRuleCookieFlagMinimalSpec &
-  (
-    | {
-        lifetime?: number;
-        path?: string;
-        secure?: boolean;
-        httponly?: boolean;
-        samesite?: "Lax" | "None" | "Strict";
-      }
-    | {
-        lifetime?: number;
-        path?: string;
-        secure?: boolean;
-        httponly?: boolean;
-      }
-    | {
-        lifetime?: number;
-        path?: string;
-        secure?: boolean;
-      }
-    | {
-        lifetime?: number;
-        path?: string;
-      }
-    | {
-        lifetime?: number;
-      }
-  );
+export type RewriteRuleCookieFlagSpec = (
+  | {
+      lifetime?: number;
+      path?: string;
+      secure?: boolean;
+      httponly?: boolean;
+      samesite?: "Lax" | "None" | "Strict";
+    }
+  | {
+      lifetime?: number;
+      path?: string;
+      secure?: boolean;
+      httponly?: boolean;
+    }
+  | {
+      lifetime?: number;
+      path?: string;
+      secure?: boolean;
+    }
+  | {
+      lifetime?: number;
+      path?: string;
+    }
+  | {
+      lifetime?: number;
+    }
+) &
+  RewriteRuleCookieFlagMinimalSpec;
 
 /**
  * @public
