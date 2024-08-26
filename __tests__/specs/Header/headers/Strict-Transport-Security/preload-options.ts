@@ -6,7 +6,7 @@ const options: Partial<Options> = {
       {
         action: "set",
         header: "Strict-Transport-Security",
-        value: { maxAge: 31536000, includeSubDomains: true, preload: true },
+        value: { includeSubDomains: true, maxAge: 31536000, preload: true },
       },
     ],
   },

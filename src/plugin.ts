@@ -33,26 +33,26 @@ async function buildHtaccessFile(
  */
 export function htaccess(opts?: Partial<Options>): RollupPlugin & VitePlugin {
   const options: Options = {
-    fileName: ".htaccess",
-    template: undefined,
-    spec: {},
     extractMetaCSP: { enabled: false },
+    fileName: ".htaccess",
+    spec: {},
+    template: undefined,
     ...opts,
   };
   let root = "";
 
   const rollupPlugin: RollupPlugin & VitePlugin = {
-    name: "htaccess",
     configResolved: (config: { root: string }): void => {
       root = config.root;
     },
     async generateBundle(): Promise<void> {
       this.emitFile({
-        type: "asset",
         fileName: options.fileName,
         source: await buildHtaccessFile(this, options, root),
+        type: "asset",
       });
     },
+    name: "htaccess",
     ...extractMetaCSP(options),
   };
   return rollupPlugin;

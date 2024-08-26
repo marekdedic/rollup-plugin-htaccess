@@ -5,11 +5,11 @@ const options: Partial<Options> = {
     rewrite: {
       rules: [
         {
-          pattern: "foo",
-          substitution: null,
           flags: {
             handler: "application/x-httpd-php",
           },
+          pattern: "foo",
+          substitution: null,
         },
       ],
     },

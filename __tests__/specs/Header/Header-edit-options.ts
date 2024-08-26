@@ -6,8 +6,8 @@ const options: Partial<Options> = {
       {
         action: "edit",
         header: "X-Content-Type-Options",
-        value: "oldVal",
         replacement: "newVal",
+        value: "oldVal",
       },
     ],
   },

@@ -41,8 +41,8 @@ test("Vite root", async () => {
       template: "fixtures/template.txt",
     },
     {
-      fileName: ".htaccess",
       bundlerOptions: { root: "__tests__" },
+      fileName: ".htaccess",
     },
   );
 

@@ -24,23 +24,23 @@ test("Basic CSP extraction", async () => {
       },
     };
     const compileOptions: CompileOptions = {
-      write: true,
       bundlerOptions: {
         plugins: [
           htaccess(pluginOptions),
           {
-            name: "Emit index.html",
             generateBundle(): void {
               this.emitFile({
-                type: "asset",
                 fileName: "index.html",
                 source:
                   '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+                type: "asset",
               });
             },
+            name: "Emit index.html",
           },
         ],
       },
+      write: true,
     };
     return [pluginOptions, compileOptions];
   }
@@ -65,23 +65,23 @@ test("CSP extraction disabled", async () => {
     },
   };
   const compileOptions: CompileOptions = {
-    write: true,
     bundlerOptions: {
       plugins: [
         htaccess(pluginOptions),
         {
-          name: "Emit index.html",
           generateBundle(): void {
             this.emitFile({
-              type: "asset",
               fileName: "index.html",
               source:
                 '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+              type: "asset",
             });
           },
+          name: "Emit index.html",
         },
       ],
     },
+    write: true,
   };
   const output = "";
   await compileRollup(pluginOptions, compileOptions);
@@ -102,32 +102,32 @@ test("CSP extraction with custom .htaccess", async () => {
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
     const pluginOptions = {
-      fileName: "custom.txt",
       extractMetaCSP: {
         enabled: true,
-        htaccessFile: join("__tests__", distFolder, "custom.txt"),
         files: [join("__tests__", distFolder, "index.html")],
+        htaccessFile: join("__tests__", distFolder, "custom.txt"),
       },
+      fileName: "custom.txt",
     };
     const compileOptions: CompileOptions = {
-      fileName: "custom.txt",
-      write: true,
       bundlerOptions: {
         plugins: [
           htaccess(pluginOptions),
           {
-            name: "Emit index.html",
             generateBundle(): void {
               this.emitFile({
-                type: "asset",
                 fileName: "index.html",
                 source:
                   '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+                type: "asset",
               });
             },
+            name: "Emit index.html",
           },
         ],
       },
+      fileName: "custom.txt",
+      write: true,
     };
     return [pluginOptions, compileOptions];
   }
@@ -158,23 +158,23 @@ test("CSP extraction with non-existent HTML file", async () => {
       },
     };
     const compileOptions: CompileOptions = {
-      write: true,
       bundlerOptions: {
         plugins: [
           htaccess(pluginOptions),
           {
-            name: "Emit index.html",
             generateBundle(): void {
               this.emitFile({
-                type: "asset",
                 fileName: "index.html",
                 source:
                   '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+                type: "asset",
               });
             },
+            name: "Emit index.html",
           },
         ],
       },
+      write: true,
     };
     return [pluginOptions, compileOptions];
   }
@@ -203,23 +203,23 @@ test("CSP extraction with no valid meta tags", async () => {
       },
     };
     const compileOptions: CompileOptions = {
-      write: true,
       bundlerOptions: {
         plugins: [
           htaccess(pluginOptions),
           {
-            name: "Emit index.html",
             generateBundle(): void {
               this.emitFile({
-                type: "asset",
                 fileName: "index.html",
                 source:
                   '<!DOCTYPE html><html><head><meta http-equiv="incorrect-content-security-policy" content="CSP-value"></head><body></body></html>',
+                type: "asset",
               });
             },
+            name: "Emit index.html",
           },
         ],
       },
+      write: true,
     };
     return [pluginOptions, compileOptions];
   }
@@ -242,32 +242,32 @@ test("CSP extraction with non-existent .htaccess", async () => {
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
     const pluginOptions = {
-      fileName: "custom.txt",
       extractMetaCSP: {
         enabled: true,
-        htaccessFile: join("__tests__", distFolder, "other.txt"),
         files: [join("__tests__", distFolder, "index.html")],
+        htaccessFile: join("__tests__", distFolder, "other.txt"),
       },
+      fileName: "custom.txt",
     };
     const compileOptions: CompileOptions = {
-      fileName: "custom.txt",
-      write: true,
       bundlerOptions: {
         plugins: [
           htaccess(pluginOptions),
           {
-            name: "Emit index.html",
             generateBundle(): void {
               this.emitFile({
-                type: "asset",
                 fileName: "index.html",
                 source:
                   '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+                type: "asset",
               });
             },
+            name: "Emit index.html",
           },
         ],
       },
+      fileName: "custom.txt",
+      write: true,
     };
     return [pluginOptions, compileOptions];
   }
@@ -321,29 +321,29 @@ test("CSP extraction with conflicting directives", async () => {
       },
     };
     const compileOptions: CompileOptions = {
-      write: true,
       bundlerOptions: {
         plugins: [
           htaccess(pluginOptions),
           {
-            name: "Emit index.html",
             generateBundle(): void {
               this.emitFile({
-                type: "asset",
                 fileName: "index.html",
                 source:
                   '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+                type: "asset",
               });
               this.emitFile({
-                type: "asset",
                 fileName: "file2.html",
                 source:
                   '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-different-value"></head><body></body></html>',
+                type: "asset",
               });
             },
+            name: "Emit index.html",
           },
         ],
       },
+      write: true,
     };
     return [pluginOptions, compileOptions];
   }
@@ -371,23 +371,23 @@ test("CSP meta element case sensitivity", async () => {
       },
     };
     const compileOptions: CompileOptions = {
-      write: true,
       bundlerOptions: {
         plugins: [
           htaccess(pluginOptions),
           {
-            name: "Emit index.html",
             generateBundle(): void {
               this.emitFile({
-                type: "asset",
                 fileName: "index.html",
                 source:
                   '<!DOCTYPE html><html><head><meta http-equiv="Content-Security-Policy" content="CSP-value"></head><body></body></html>',
+                type: "asset",
               });
             },
+            name: "Emit index.html",
           },
         ],
       },
+      write: true,
     };
     return [pluginOptions, compileOptions];
   }
@@ -416,23 +416,23 @@ test("CSP extraction with other meta tags", async () => {
       },
     };
     const compileOptions: CompileOptions = {
-      write: true,
       bundlerOptions: {
         plugins: [
           htaccess(pluginOptions),
           {
-            name: "Emit index.html",
             generateBundle(): void {
               this.emitFile({
-                type: "asset",
                 fileName: "index.html",
                 source:
                   '<!DOCTYPE html><html><head><meta charset="utf-8" /><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+                type: "asset",
               });
             },
+            name: "Emit index.html",
           },
         ],
       },
+      write: true,
     };
     return [pluginOptions, compileOptions];
   }

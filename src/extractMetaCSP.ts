@@ -40,8 +40,8 @@ async function extractCSPValuesFromHTMLFile(
     return [];
   }
   const dom = parseDocument(fileContents, {
-    withStartIndices: true,
     withEndIndices: true,
+    withStartIndices: true,
   });
   const cspMetaElems = findAll(
     (elem) =>
@@ -96,8 +96,6 @@ function closeBundle(
   htaccessFileName: string,
 ): PluginHooks["closeBundle"] {
   return {
-    order: "post",
-    sequential: true,
     async handler(this: PluginContext): Promise<void> {
       let cspValues = (
         await Promise.all(
@@ -117,6 +115,8 @@ function closeBundle(
         htaccessFileName,
       );
     },
+    order: "post",
+    sequential: true,
   };
 }
 
@@ -125,7 +125,7 @@ export function extractMetaCSP(options: Options): Partial<PluginHooks> {
     return {};
   }
   return {
-    renderStart,
     closeBundle: closeBundle(options.extractMetaCSP, options.fileName),
+    renderStart,
   };
 }

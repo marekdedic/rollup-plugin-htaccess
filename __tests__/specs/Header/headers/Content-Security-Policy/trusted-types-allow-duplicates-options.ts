@@ -8,8 +8,8 @@ const options: Partial<Options> = {
         header: "Content-Security-Policy",
         value: {
           "trusted-types": {
-            policies: ["abc", "def"],
             "allow-duplicates": true,
+            policies: ["abc", "def"],
           },
         },
       },

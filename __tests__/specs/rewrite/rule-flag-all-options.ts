@@ -5,8 +5,6 @@ const options: Partial<Options> = {
     rewrite: {
       rules: [
         {
-          pattern: "foo",
-          substitution: null,
           flags: {
             B: true,
             backrefnoplus: true,
@@ -14,14 +12,19 @@ const options: Partial<Options> = {
             BNE: "#;",
             chain: true,
             cookie: {
+              domain: "example.test",
               name: "cookie1",
               value: "cookieval1",
-              domain: "example.test",
             },
             discardpath: true,
             END: true,
+            env: {
+              value: "val1",
+              variable: "varname",
+            },
             forbidden: true,
             gone: true,
+            handler: "application/x-httpd-php",
             last: true,
             next: true,
             nocase: true,
@@ -33,15 +36,12 @@ const options: Partial<Options> = {
             qslast: true,
             redirect: 301,
             skip: 2,
+            type: "text/plain",
             UnsafeAllow3F: true,
             UnsafePrefixStat: true,
-            env: {
-              variable: "varname",
-              value: "val1",
-            },
-            handler: "application/x-httpd-php",
-            type: "text/plain",
           },
+          pattern: "foo",
+          substitution: null,
         },
       ],
     },

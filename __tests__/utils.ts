@@ -57,16 +57,16 @@ export async function compileVite(
   compileOptions: CompileOptions = {},
 ): Promise<string> {
   const output = (await build({
-    logLevel: "warn",
     build: {
+      outDir: "__tests__/dist-vite",
       rollupOptions: {
         input: {
           app: "__tests__/fixtures/dummy.html",
         },
       },
-      outDir: "__tests__/dist-vite",
       write: compileOptions.write ?? false,
     },
+    logLevel: "warn",
     plugins: [htaccess(pluginOptions)],
     ...compileOptions.bundlerOptions,
   })) as Array<RollupOutput> | RollupOutput;

@@ -5,9 +5,9 @@ const options: Partial<Options> = {
     Header: [
       {
         action: "set",
+        always: true,
         header: "X-Content-Type-Options",
         value: { nosniff: true },
-        always: true,
       },
     ],
   },

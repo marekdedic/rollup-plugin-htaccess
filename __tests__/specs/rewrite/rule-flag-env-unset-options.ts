@@ -5,14 +5,14 @@ const options: Partial<Options> = {
     rewrite: {
       rules: [
         {
-          pattern: "foo",
-          substitution: null,
           flags: {
             env: {
-              variable: "varname",
               value: null,
+              variable: "varname",
             },
           },
+          pattern: "foo",
+          substitution: null,
         },
       ],
     },

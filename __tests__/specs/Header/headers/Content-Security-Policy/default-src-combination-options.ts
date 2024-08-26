@@ -8,17 +8,17 @@ const options: Partial<Options> = {
         header: "Content-Security-Policy",
         value: {
           "default-src": {
+            hashes: {
+              sha256: ["def", "ghi"],
+            },
             hosts: ["https://site.example"],
+            nonces: ["abc"],
             schemes: {
               data: true,
               filesystem: true,
             },
             "unsafe-eval": true,
             "unsafe-inline": true,
-            nonces: ["abc"],
-            hashes: {
-              sha256: ["def", "ghi"],
-            },
           },
         },
       },

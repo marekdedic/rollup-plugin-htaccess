@@ -9,8 +9,8 @@ const options: Partial<Options> = {
         value: {
           "default-src": {
             schemes: {
-              data: true,
               blob: true,
+              data: true,
             },
           },
         },
