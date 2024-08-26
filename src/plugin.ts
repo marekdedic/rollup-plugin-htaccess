@@ -1,4 +1,4 @@
-import type { Plugin as RollupPlugin, PluginContext } from "rollup";
+import type { PluginContext, Plugin as RollupPlugin } from "rollup";
 import type { Plugin as VitePlugin } from "vite";
 
 import { extractMetaCSP, type ExtractMetaCSPOptions } from "./extractMetaCSP";
