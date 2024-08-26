@@ -102,9 +102,8 @@ function buildSandboxPart(
 ): string {
   if (valueSpec !== null) {
     return "sandbox " + valueSpec;
-  } else {
-    return "sandbox";
   }
+  return "sandbox";
 }
 
 function buildTrustedTypesPart(
