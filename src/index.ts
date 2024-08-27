@@ -1,5 +1,3 @@
-/* eslint-disable deprecation/deprecation -- Internal deprecations */
-
 export type { AddOutputFilterByTypeSpec } from "./directives/AddOutputFilterByType";
 export type { ErrorDocumentSpec } from "./directives/ErrorDocument";
 export type {
@@ -41,5 +39,3 @@ export type {
   StandardRewriteRuleFlags,
 } from "./rewrite";
 export type { Spec } from "./spec";
-
-/* eslint-enable */
