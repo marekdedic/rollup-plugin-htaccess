@@ -36,7 +36,7 @@ function listSpecs(prefix: string | null): Array<string> {
     specs.push(...newSpecs);
   }
   return specs.map((spec) =>
-    spec.replace(/^__tests__\/specs\//, "").replace(/-options\.ts$/, ""),
+    spec.replace(/^__tests__\/specs\//u, "").replace(/-options\.ts$/u, ""),
   );
 }
 

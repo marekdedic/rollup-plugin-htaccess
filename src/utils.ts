@@ -1,7 +1,7 @@
 import { readFile as nodeReadFile, writeFile as nodeWriteFile } from "fs";
 
 export function escapeValue(value: string): string {
-  return value.replace(/"/g, '\\"');
+  return value.replace(/"/gu, '\\"');
 }
 
 export async function readFile(path: string): Promise<string> {

@@ -18,5 +18,5 @@ export async function readTemplate(
         (err as NodeJS.ErrnoException).message,
     );
   }
-  return fileContents.replace(/\r/g, "") + "\n";
+  return fileContents.replace(/\r/gu, "") + "\n";
 }
