@@ -42,7 +42,7 @@ function listSpecs(prefix: string | null): Array<string> {
 
 async function loadOptions(spec: string): Promise<Options> {
   return (
-    (await import("./specs/" + spec + "-options.ts")) as {
+    (await import(`./specs/${spec}-options.ts`)) as {
       default: Options;
     }
   ).default;
@@ -50,14 +50,14 @@ async function loadOptions(spec: string): Promise<Options> {
 
 async function loadOutput(spec: string): Promise<string | null> {
   try {
-    return (await readFile("__tests__/specs/" + spec + "-output.txt")).trim();
+    return (await readFile(`__tests__/specs/${spec}-output.txt`)).trim();
   } catch {
     return null;
   }
 }
 
 async function loadError(spec: string): Promise<string> {
-  return (await readFile("__tests__/specs/" + spec + "-error.txt")).trim();
+  return (await readFile(`__tests__/specs/${spec}-error.txt`)).trim();
 }
 
 describe("Spec tests", () => {

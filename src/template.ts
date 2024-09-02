@@ -14,9 +14,8 @@ export async function readTemplate(
     fileContents = await readFile(join(root, template));
   } catch (err: unknown) {
     context.error(
-      "Could not read rollup-plugin-htaccess template file, Error: " +
-        (err as NodeJS.ErrnoException).message,
+      `Could not read rollup-plugin-htaccess template file, Error: ${(err as NodeJS.ErrnoException).message}`,
     );
   }
-  return fileContents.replace(/\r/gu, "") + "\n";
+  return `${fileContents.replace(/\r/gu, "")}\n`;
 }

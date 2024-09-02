@@ -26,19 +26,19 @@ export interface Spec {
 export function buildSpec(context: PluginContext, spec: Spec): string {
   let output = "";
   if (spec.AddOutputFilterByType !== undefined) {
-    output += buildAddOutputFilterByType(spec.AddOutputFilterByType) + "\n";
+    output += `${buildAddOutputFilterByType(spec.AddOutputFilterByType)}\n`;
   }
   if (spec.ErrorDocument !== undefined) {
-    output += buildErrorDocument(spec.ErrorDocument) + "\n";
+    output += `${buildErrorDocument(spec.ErrorDocument)}\n`;
   }
   if (spec.Options !== undefined) {
-    output += buildOptions(spec.Options) + "\n";
+    output += `${buildOptions(spec.Options)}\n`;
   }
   for (const header of spec.Header ?? []) {
-    output += buildHeader(context, header) + "\n";
+    output += `${buildHeader(context, header)}\n`;
   }
   if (spec.rewrite !== undefined) {
-    output += buildRewrite(spec.rewrite) + "\n";
+    output += `${buildRewrite(spec.rewrite)}\n`;
   }
   return output;
 }

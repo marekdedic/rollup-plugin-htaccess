@@ -109,7 +109,7 @@ function buildHeaderValue<T extends keyof HeaderValueSpecMap>(
     case "X-Xss-Protection":
       return buildXXssProtectionValue(value);
     default:
-      context.error('Unknown header type "' + header + '".');
+      context.error(`Unknown header type "${header}".`);
   }
   return "";
 }
@@ -125,30 +125,25 @@ export function buildHeader(
   parts.push(spec.action, spec.header);
   if (["add", "append", "merge", "set", "setifempty"].includes(spec.action)) {
     parts.push(
-      '"' +
-        buildHeaderValue(
-          context,
-          spec.header,
-          (spec as { value: HeaderValueSpecMap[keyof HeaderValueSpecMap] })
-            .value,
-        ) +
-        '"',
+      `"${buildHeaderValue(
+        context,
+        spec.header,
+        (spec as { value: HeaderValueSpecMap[keyof HeaderValueSpecMap] }).value,
+      )}"`,
     );
   } else if (["edit", "edit*"].includes(spec.action)) {
-    parts.push('"' + escapeValue((spec as { value: string }).value) + '"');
+    parts.push(`"${escapeValue((spec as { value: string }).value)}"`);
     parts.push(
-      '"' + escapeValue((spec as { replacement: string }).replacement) + '"',
+      `"${escapeValue((spec as { replacement: string }).replacement)}"`,
     );
   }
   if (spec.condition !== undefined) {
     if ("envVar" in spec.condition) {
       parts.push(
-        "env=" +
-          (spec.condition.requireUnset === true ? "!" : "") +
-          spec.condition.envVar,
+        `env=${spec.condition.requireUnset === true ? "!" : ""}${spec.condition.envVar}`,
       );
     } else if ("expression" in spec.condition) {
-      parts.push('"expr=' + escapeValue(spec.condition.expression) + '"');
+      parts.push(`"expr=${escapeValue(spec.condition.expression)}"`);
     }
   }
   return parts.join(" ");

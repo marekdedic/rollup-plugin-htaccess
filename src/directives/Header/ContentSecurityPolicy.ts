@@ -101,7 +101,7 @@ function buildSandboxPart(
   valueSpec: ContentSecurityPolicySandboxValue,
 ): string {
   if (valueSpec !== null) {
-    return "sandbox " + valueSpec;
+    return `sandbox ${valueSpec}`;
   }
   return "sandbox";
 }
@@ -132,7 +132,7 @@ function buildSourcePart(
     "inline-speculation-rules",
   ] as const) {
     if (sourceSpec[source] === true) {
-      sources.push("'" + source + "'");
+      sources.push(`'${source}'`);
     }
   }
   if (sourceSpec.schemes !== undefined) {
@@ -143,18 +143,18 @@ function buildSourcePart(
       "filesystem",
     ] as const) {
       if (sourceSpec.schemes[scheme] === true) {
-        sources.push(scheme + ":");
+        sources.push(`${scheme}:`);
       }
     }
   }
   if (sourceSpec.nonces !== undefined) {
-    sources.push(...sourceSpec.nonces.map((nonce) => "'nonce-" + nonce + "'"));
+    sources.push(...sourceSpec.nonces.map((nonce) => `'nonce-${nonce}'`));
   }
   if (sourceSpec.hashes !== undefined) {
     for (const algo of ["sha256", "sha384", "sha512"] as const) {
       const hashes = sourceSpec.hashes[algo];
       if (hashes !== undefined) {
-        sources.push(...hashes.map((hash) => "'" + algo + "-" + hash + "'"));
+        sources.push(...hashes.map((hash) => `'${algo}-${hash}'`));
       }
     }
   }
@@ -164,7 +164,7 @@ function buildSourcePart(
   if (sources.length === 0) {
     sources.push("'none'");
   }
-  return directive + " " + sources.join(" ");
+  return `${directive} ${sources.join(" ")}`;
 }
 
 function buildPart<T extends keyof ContentSecurityPolicySpec>(
@@ -174,7 +174,7 @@ function buildPart<T extends keyof ContentSecurityPolicySpec>(
 ): string {
   switch (directive) {
     case "report-to":
-      return "report-to " + (valueSpec as string);
+      return `report-to ${valueSpec as string}`;
     case "report-uri":
       return ["report-uri", ...valueSpec].join(" ");
     case "require-trusted-types-for":

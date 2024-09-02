@@ -74,20 +74,15 @@ async function writeCSPValuesToHtaccessFile(
     fileContents = await readFile(path);
   } catch {
     context.warn(
-      'Could not read htaccess file at path "' +
-        path +
-        '", writing extracted CSP to new file.',
+      `Could not read htaccess file at path "${path}", writing extracted CSP to new file.`,
     );
   }
-  fileContents +=
-    cspValues
-      .map(
-        (value) =>
-          'Header always set Content-Security-Policy "' +
-          escapeValue(value) +
-          '"',
-      )
-      .join("\n") + "\n";
+  fileContents += `${cspValues
+    .map(
+      (value) =>
+        `Header always set Content-Security-Policy "${escapeValue(value)}"`,
+    )
+    .join("\n")}\n`;
   await writeFile(path, fileContents);
 }
 

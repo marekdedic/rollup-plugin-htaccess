@@ -12,10 +12,7 @@ export function buildAddOutputFilterByType(
   const output: Array<string> = [];
   for (const directive of spec) {
     output.push(
-      "AddOutputFilterByType " +
-        directive.filters.join(";") +
-        " " +
-        directive.mediaTypes.join(" "),
+      `AddOutputFilterByType ${directive.filters.join(";")} ${directive.mediaTypes.join(" ")}`,
     );
   }
   return output.join("\n");

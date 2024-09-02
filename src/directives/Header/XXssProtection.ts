@@ -23,7 +23,7 @@ export function buildXXssProtectionValue(spec: XXssProtectionSpec): string {
       return "1; mode=block";
     case "sanitize":
       if (spec.reportUri !== undefined) {
-        return "1; report=" + escapeValue(spec.reportUri);
+        return `1; report=${escapeValue(spec.reportUri)}`;
       }
       return "1";
     default:

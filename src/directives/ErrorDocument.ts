@@ -11,9 +11,9 @@ export function buildErrorDocument(spec: ErrorDocumentSpec): string {
     }
     let doc = spec[errorCode];
     if (doc.includes(" ")) {
-      doc = '"' + doc + '"';
+      doc = `"${doc}"`;
     }
-    output.push("ErrorDocument " + errorCode + " " + doc);
+    output.push(`ErrorDocument ${errorCode} ${doc}`);
   }
   return output.join("\n");
 }

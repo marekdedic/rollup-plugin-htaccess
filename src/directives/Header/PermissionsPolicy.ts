@@ -61,15 +61,14 @@ function buildAllowlist(allowlist: PermissionsPolicyAllowlist): string {
     return "*";
   }
   const list =
-    allowlist.origins?.map((origin) => '\\"' + escapeValue(origin) + '\\"') ??
-    [];
+    allowlist.origins?.map((origin) => `\\"${escapeValue(origin)}\\"`) ?? [];
   if (allowlist.src === true) {
     list.unshift("src");
   }
   if (allowlist.self === true) {
     list.unshift("self");
   }
-  return "(" + list.join(" ") + ")";
+  return `(${list.join(" ")})`;
 }
 
 export function buildPermissionsPolicyValue(
@@ -81,7 +80,7 @@ export function buildPermissionsPolicyValue(
       continue;
     }
     parts.push(
-      key + "=" + buildAllowlist(spec[key as PermissionsPolicyDirectives]!),
+      `${key}=${buildAllowlist(spec[key as PermissionsPolicyDirectives]!)}`,
     );
   }
   return parts.join(", ");

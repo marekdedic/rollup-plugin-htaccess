@@ -25,10 +25,5 @@ export function buildStrictTransportSecurityValue(
       );
     }
   }
-  return (
-    "max-age=" +
-    spec.maxAge.toString() +
-    (spec.includeSubDomains === true ? "; includeSubDomains" : "") +
-    (spec.preload === true ? "; preload" : "")
-  );
+  return `max-age=${spec.maxAge.toString()}${spec.includeSubDomains === true ? "; includeSubDomains" : ""}${spec.preload === true ? "; preload" : ""}`;
 }
