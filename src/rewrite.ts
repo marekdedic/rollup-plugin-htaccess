@@ -4,70 +4,70 @@ import { escapeValue } from "./utils";
  * @public
  */
 export interface RewriteOptionsSpec {
+  AllowAnyURI?: boolean;
+  AllowNoSlash?: boolean;
+  IgnoreContextInfo?: boolean;
+  IgnoreInherit?: boolean;
   Inherit?: boolean;
   InheritDown?: boolean;
   InheritDownBefore?: boolean;
-  IgnoreInherit?: boolean;
-  AllowNoSlash?: boolean;
-  AllowAnyURI?: boolean;
-  MergeBase?: boolean;
-  IgnoreContextInfo?: boolean;
   LegacyPrefixDocRoot?: boolean;
+  MergeBase?: boolean;
 }
 
 /**
  * @public
  */
 export interface RewriteCondSpec {
-  testString: string;
   conditionPattern: string;
   flags?: {
     nocase?: boolean;
-    ornext?: boolean;
     novary?: boolean;
+    ornext?: boolean;
   };
+  testString: string;
 }
 
 /**
  * @public
  */
 export interface RewriteRuleCookieFlagMinimalSpec {
+  domain: string;
   name: string;
   value: string;
-  domain: string;
 }
 
 /**
  * @public
  */
-export type RewriteRuleCookieFlagSpec = RewriteRuleCookieFlagMinimalSpec &
-  (
-    | {
-        lifetime?: number;
-        path?: string;
-        secure?: boolean;
-        httponly?: boolean;
-        samesite?: "Lax" | "None" | "Strict";
-      }
-    | {
-        lifetime?: number;
-        path?: string;
-        secure?: boolean;
-        httponly?: boolean;
-      }
-    | {
-        lifetime?: number;
-        path?: string;
-        secure?: boolean;
-      }
-    | {
-        lifetime?: number;
-        path?: string;
-      }
-    | {
-        lifetime?: number;
-      }
-  );
+export type RewriteRuleCookieFlagSpec = (
+  | {
+      httponly?: boolean;
+      lifetime?: number;
+      path?: string;
+      samesite?: "Lax" | "None" | "Strict";
+      secure?: boolean;
+    }
+  | {
+      httponly?: boolean;
+      lifetime?: number;
+      path?: string;
+      secure?: boolean;
+    }
+  | {
+      lifetime?: number;
+      path?: string;
+      secure?: boolean;
+    }
+  | {
+      lifetime?: number;
+      path?: string;
+    }
+  | {
+      lifetime?: number;
+    }
+) &
+  RewriteRuleCookieFlagMinimalSpec;
 
 /**
  * @public
@@ -103,8 +103,8 @@ export interface StandardRewriteRuleFlags {
  */
 export interface MetadataRewriteRuleFlags {
   env?: {
-    variable: string;
     value: string | null;
+    variable: string;
   };
   handler?: string;
   type?: string;
@@ -118,12 +118,12 @@ export type RewriteRuleSpec = {
   pattern: string;
 } & (
   | {
-      substitution: null;
       flags?: MetadataRewriteRuleFlags & StandardRewriteRuleFlags;
+      substitution: null;
     }
   | {
-      substitution: string;
       flags?: StandardRewriteRuleFlags;
+      substitution: string;
     }
 );
 
@@ -140,7 +140,7 @@ function buildRewriteOptions(spec: RewriteOptionsSpec): Array<string> {
   const output: Array<string> = [];
   for (const option in spec) {
     if (spec[option as keyof RewriteOptionsSpec] === true) {
-      output.push("RewriteOptions " + option);
+      output.push(`RewriteOptions ${option}`);
     }
   }
   return output;
@@ -157,14 +157,7 @@ function buildRewriteCondition(spec: RewriteCondSpec): string {
   if (spec.flags?.novary === true) {
     flags.push("NV");
   }
-  return (
-    'RewriteCond "' +
-    spec.testString +
-    '" "' +
-    spec.conditionPattern +
-    '"' +
-    (flags.length > 0 ? " [" + flags.join(",") + "]" : "")
-  );
+  return `RewriteCond "${spec.testString}" "${spec.conditionPattern}"${flags.length > 0 ? ` [${flags.join(",")}]` : ""}`;
 }
 
 function buildRewriteRuleCookieFlag(spec: RewriteRuleCookieFlagSpec): string {
@@ -186,9 +179,7 @@ function buildRewriteRuleCookieFlag(spec: RewriteRuleCookieFlagSpec): string {
   }
 
   const containsColon = output.some((field) => field.includes(":"));
-  return (
-    "CO=" + (containsColon ? ";" : "") + output.join(containsColon ? ";" : ":")
-  );
+  return `CO=${containsColon ? ";" : ""}${output.join(containsColon ? ";" : ":")}`;
 }
 
 function buildRewriteRuleFlags(
@@ -201,7 +192,7 @@ function buildRewriteRuleFlags(
     output.push("B");
   }
   if (typeof flags.B === "string") {
-    output.push("B=" + flags.B);
+    output.push(`B=${flags.B}`);
     if (flags.B.includes(" ")) {
       requireQuotes = true;
     }
@@ -213,7 +204,7 @@ function buildRewriteRuleFlags(
     output.push("BCTLS");
   }
   if (flags.BNE !== undefined) {
-    output.push("BNE=" + flags.BNE);
+    output.push(`BNE=${flags.BNE}`);
     if (flags.BNE.includes(" ")) {
       requireQuotes = true;
     }
@@ -230,11 +221,11 @@ function buildRewriteRuleFlags(
   if (flags.env !== undefined) {
     let envValue = flags.env.variable;
     if (flags.env.value === null) {
-      envValue = "!" + envValue;
+      envValue = `!${envValue}`;
     } else if (flags.env.value !== "") {
-      envValue += ":" + flags.env.value;
+      envValue += `:${flags.env.value}`;
     }
-    output.push("E=" + envValue);
+    output.push(`E=${envValue}`);
   }
   if (flags.END === true) {
     output.push("END");
@@ -246,7 +237,7 @@ function buildRewriteRuleFlags(
     output.push("G");
   }
   if (flags.handler !== undefined) {
-    output.push("H=" + flags.handler);
+    output.push(`H=${flags.handler}`);
   }
   if (flags.last === true) {
     output.push("L");
@@ -276,13 +267,13 @@ function buildRewriteRuleFlags(
     output.push("QSL");
   }
   if (flags.redirect !== undefined) {
-    output.push("R=" + flags.redirect.toString());
+    output.push(`R=${flags.redirect.toString()}`);
   }
   if (flags.skip !== undefined) {
-    output.push("S=" + flags.skip.toString());
+    output.push(`S=${flags.skip.toString()}`);
   }
   if (flags.type !== undefined) {
-    output.push("T=" + flags.type);
+    output.push(`T=${flags.type}`);
   }
   if (flags.UnsafeAllow3F === true) {
     output.push("UnsafeAllow3F");
@@ -295,7 +286,7 @@ function buildRewriteRuleFlags(
     return "";
   }
   const quote = requireQuotes ? '"' : "";
-  return " " + quote + "[" + output.join(",") + "]" + quote;
+  return ` ${quote}[${output.join(",")}]${quote}`;
 }
 
 function buildRewriteRules(spec: Array<RewriteRuleSpec>): Array<string> {
@@ -307,12 +298,7 @@ function buildRewriteRules(spec: Array<RewriteRuleSpec>): Array<string> {
     const flags =
       rule.flags !== undefined ? buildRewriteRuleFlags(rule.flags) : "";
     output.push(
-      'RewriteRule "' +
-        escapeValue(rule.pattern) +
-        '" "' +
-        escapeValue(rule.substitution ?? "-") +
-        '"' +
-        flags,
+      `RewriteRule "${escapeValue(rule.pattern)}" "${escapeValue(rule.substitution ?? "-")}"${flags}`,
     );
   }
   return output;
@@ -321,7 +307,7 @@ function buildRewriteRules(spec: Array<RewriteRuleSpec>): Array<string> {
 export function buildRewrite(spec: RewriteSpec): string {
   const output: Array<string> = [];
   if (spec.base !== undefined) {
-    output.push('RewriteBase "' + escapeValue(spec.base) + '"');
+    output.push(`RewriteBase "${escapeValue(spec.base)}"`);
   }
   if (spec.options !== undefined) {
     output.push(...buildRewriteOptions(spec.options));

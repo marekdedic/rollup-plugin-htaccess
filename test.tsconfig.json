@@ -4,6 +4,6 @@
     "noEmit": true
   },
   "include": [
-    "__tests__/specs/**/*.ts"
+    "__tests__/**/*.ts"
   ]
 }

@@ -16,17 +16,17 @@ export type XXssProtectionSpec =
       reportUri?: string;
     };
 
-// eslint-disable-next-line deprecation/deprecation -- Internal deprecation
+// eslint-disable-next-line @typescript-eslint/no-deprecated -- Internal deprecation
 export function buildXXssProtectionValue(spec: XXssProtectionSpec): string {
   switch (spec.mode) {
     case "block":
       return "1; mode=block";
-    case "disabled":
-      return "0";
     case "sanitize":
       if (spec.reportUri !== undefined) {
-        return "1; report=" + escapeValue(spec.reportUri);
+        return `1; report=${escapeValue(spec.reportUri)}`;
       }
       return "1";
+    default:
+      return "0";
   }
 }

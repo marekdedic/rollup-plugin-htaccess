@@ -5,15 +5,15 @@ const options: Partial<Options> = {
     rewrite: {
       rules: [
         {
-          pattern: "foo",
-          substitution: "bar",
           flags: {
             cookie: {
+              domain: "example.test",
               name: "cookie1",
               value: "val1",
-              domain: "example.test",
             },
           },
+          pattern: "foo",
+          substitution: "bar",
         },
       ],
     },

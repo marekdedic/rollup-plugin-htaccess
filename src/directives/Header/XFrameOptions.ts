@@ -4,7 +4,7 @@
  */
 export type XFrameOptionsSpec = "deny" | "sameorigin";
 
-// eslint-disable-next-line deprecation/deprecation -- Internal deprecation
+// eslint-disable-next-line @typescript-eslint/no-deprecated -- Internal deprecation
 export function buildXFrameOptionsValue(spec: XFrameOptionsSpec): string {
   return spec === "sameorigin" ? "SAMEORIGIN" : "DENY";
 }

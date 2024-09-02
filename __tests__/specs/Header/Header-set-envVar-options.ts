@@ -5,11 +5,11 @@ const options: Partial<Options> = {
     Header: [
       {
         action: "set",
-        header: "X-Content-Type-Options",
-        value: { nosniff: true },
         condition: {
           envVar: "MY_VAR",
         },
+        header: "X-Content-Type-Options",
+        value: { nosniff: true },
       },
     ],
   },

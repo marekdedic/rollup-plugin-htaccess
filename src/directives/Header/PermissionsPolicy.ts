@@ -47,7 +47,7 @@ export type PermissionsPolicyDirectives =
  */
 export type PermissionsPolicyAllowlist =
   | "*"
-  | { src?: boolean; self?: boolean; origins?: Array<string> };
+  | { origins?: Array<string>; self?: boolean; src?: boolean };
 
 /**
  * @public
@@ -61,15 +61,14 @@ function buildAllowlist(allowlist: PermissionsPolicyAllowlist): string {
     return "*";
   }
   const list =
-    allowlist.origins?.map((origin) => '\\"' + escapeValue(origin) + '\\"') ??
-    [];
+    allowlist.origins?.map((origin) => `\\"${escapeValue(origin)}\\"`) ?? [];
   if (allowlist.src === true) {
     list.unshift("src");
   }
   if (allowlist.self === true) {
     list.unshift("self");
   }
-  return "(" + list.join(" ") + ")";
+  return `(${list.join(" ")})`;
 }
 
 export function buildPermissionsPolicyValue(
@@ -77,8 +76,11 @@ export function buildPermissionsPolicyValue(
 ): string {
   const parts = [];
   for (const key in spec) {
+    if (!Object.prototype.hasOwnProperty.call(spec, key)) {
+      continue;
+    }
     parts.push(
-      key + "=" + buildAllowlist(spec[key as PermissionsPolicyDirectives]!),
+      `${key}=${buildAllowlist(spec[key as PermissionsPolicyDirectives]!)}`,
     );
   }
   return parts.join(", ");

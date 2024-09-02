@@ -1,9 +1,11 @@
+import type { OutputOptions, PluginContext, PluginHooks } from "rollup";
+
 import { findAll } from "domutils";
 import { ElementType, parseDocument } from "htmlparser2";
 import { join } from "path";
-import type { OutputOptions, PluginContext, PluginHooks } from "rollup";
 
 import type { Options } from "./index";
+
 import { escapeValue, readFile, writeFile } from "./utils";
 
 /**
@@ -11,16 +13,16 @@ import { escapeValue, readFile, writeFile } from "./utils";
  */
 export interface ExtractMetaCSPEnabledOptions {
   enabled: true;
-  htaccessFile?: string;
   files: Array<string>;
+  htaccessFile?: string;
 }
 
 /**
  * @public
  */
 export type ExtractMetaCSPOptions =
-  | ExtractMetaCSPEnabledOptions
-  | { enabled: false };
+  | { enabled: false }
+  | ExtractMetaCSPEnabledOptions;
 
 let outputOptions: OutputOptions = {};
 
@@ -38,8 +40,8 @@ async function extractCSPValuesFromHTMLFile(
     return [];
   }
   const dom = parseDocument(fileContents, {
-    withStartIndices: true,
     withEndIndices: true,
+    withStartIndices: true,
   });
   const cspMetaElems = findAll(
     (elem) =>
@@ -72,20 +74,15 @@ async function writeCSPValuesToHtaccessFile(
     fileContents = await readFile(path);
   } catch {
     context.warn(
-      'Could not read htaccess file at path "' +
-        path +
-        '", writing extracted CSP to new file.',
+      `Could not read htaccess file at path "${path}", writing extracted CSP to new file.`,
     );
   }
-  fileContents +=
-    cspValues
-      .map(
-        (value) =>
-          'Header always set Content-Security-Policy "' +
-          escapeValue(value) +
-          '"',
-      )
-      .join("\n") + "\n";
+  fileContents += `${cspValues
+    .map(
+      (value) =>
+        `Header always set Content-Security-Policy "${escapeValue(value)}"`,
+    )
+    .join("\n")}\n`;
   await writeFile(path, fileContents);
 }
 
@@ -94,8 +91,6 @@ function closeBundle(
   htaccessFileName: string,
 ): PluginHooks["closeBundle"] {
   return {
-    order: "post",
-    sequential: true,
     async handler(this: PluginContext): Promise<void> {
       let cspValues = (
         await Promise.all(
@@ -115,6 +110,8 @@ function closeBundle(
         htaccessFileName,
       );
     },
+    order: "post",
+    sequential: true,
   };
 }
 
@@ -123,7 +120,7 @@ export function extractMetaCSP(options: Options): Partial<PluginHooks> {
     return {};
   }
   return {
-    renderStart,
     closeBundle: closeBundle(options.extractMetaCSP, options.fileName),
+    renderStart,
   };
 }

@@ -5,11 +5,11 @@ const options: Partial<Options> = {
     rewrite: {
       rules: [
         {
-          pattern: "foo",
-          substitution: "bar",
           flags: {
             gone: true,
           },
+          pattern: "foo",
+          substitution: "bar",
         },
       ],
     },

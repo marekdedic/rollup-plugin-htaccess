@@ -6,8 +6,7 @@ import {
   type RollupOptions,
   type RollupOutput,
 } from "rollup";
-import type { InlineConfig as ViteOptions } from "vite";
-import { build } from "vite";
+import { build, type InlineConfig as ViteOptions } from "vite";
 
 import htaccess, { type Options } from "../src";
 
@@ -27,9 +26,9 @@ function extractFileContents(output: RollupOutput, fileName: string): string {
 }
 
 export interface CompileOptions {
+  bundlerOptions?: RollupOptions & ViteOptions;
   fileName?: string;
   write?: boolean;
-  bundlerOptions?: RollupOptions & ViteOptions;
 }
 
 export async function compileRollup(
@@ -58,16 +57,16 @@ export async function compileVite(
   compileOptions: CompileOptions = {},
 ): Promise<string> {
   const output = (await build({
-    logLevel: "warn",
     build: {
+      outDir: "__tests__/dist-vite",
       rollupOptions: {
         input: {
           app: "__tests__/fixtures/dummy.html",
         },
       },
-      outDir: "__tests__/dist-vite",
       write: compileOptions.write ?? false,
     },
+    logLevel: "warn",
     plugins: [htaccess(pluginOptions)],
     ...compileOptions.bundlerOptions,
   })) as Array<RollupOutput> | RollupOutput;

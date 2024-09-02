@@ -17,8 +17,8 @@ export type OptionName =
 export type OptionsSpec =
   | "None"
   | {
-      plus?: Array<OptionName>;
       minus?: Array<OptionName>;
+      plus?: Array<OptionName>;
     }
   | {
       set: Array<OptionName>;
@@ -33,10 +33,10 @@ export function buildOptions(spec: OptionsSpec): string {
     output.push(spec.set.join(" "));
   }
   if ("plus" in spec && spec.plus !== undefined) {
-    output.push(spec.plus.map((option) => "+" + option).join(" "));
+    output.push(spec.plus.map((option) => `+${option}`).join(" "));
   }
   if ("minus" in spec && spec.minus !== undefined) {
-    output.push(spec.minus.map((option) => "-" + option).join(" "));
+    output.push(spec.minus.map((option) => `-${option}`).join(" "));
   }
   return output.join(" ");
 }

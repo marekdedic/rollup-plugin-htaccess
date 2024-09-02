@@ -2,6 +2,7 @@ import { jest } from "@jest/globals";
 import { join } from "path";
 
 import type { Options } from "../src";
+
 import { readFile } from "../src/utils";
 import { compileRollup, compileVite, readDirSync } from "./utils";
 
@@ -35,13 +36,13 @@ function listSpecs(prefix: string | null): Array<string> {
     specs.push(...newSpecs);
   }
   return specs.map((spec) =>
-    spec.replace(/^__tests__\/specs\//, "").replace(/-options\.ts$/, ""),
+    spec.replace(/^__tests__\/specs\//u, "").replace(/-options\.ts$/u, ""),
   );
 }
 
 async function loadOptions(spec: string): Promise<Options> {
   return (
-    (await import("./specs/" + spec + "-options.ts")) as {
+    (await import(`./specs/${spec}-options.ts`)) as {
       default: Options;
     }
   ).default;
@@ -49,14 +50,14 @@ async function loadOptions(spec: string): Promise<Options> {
 
 async function loadOutput(spec: string): Promise<string | null> {
   try {
-    return (await readFile("__tests__/specs/" + spec + "-output.txt")).trim();
+    return (await readFile(`__tests__/specs/${spec}-output.txt`)).trim();
   } catch {
     return null;
   }
 }
 
 async function loadError(spec: string): Promise<string> {
-  return (await readFile("__tests__/specs/" + spec + "-error.txt")).trim();
+  return (await readFile(`__tests__/specs/${spec}-error.txt`)).trim();
 }
 
 describe("Spec tests", () => {
@@ -66,7 +67,7 @@ describe("Spec tests", () => {
     const options = await loadOptions(spec);
     const output = await loadOutput(spec);
 
-    /* eslint-disable jest/no-conditional-in-test, jest/no-conditional-expect -- Conditionals used to load errors */
+    /* eslint-disable jest/no-conditional-in-test -- Conditionals used to load errors */
     if (output !== null) {
       await expect(compileRollup(options)).resolves.toBe(output);
       await expect(compileVite(options)).resolves.toBe(output);
@@ -74,6 +75,7 @@ describe("Spec tests", () => {
       const error = await loadError(spec);
       // eslint-disable-next-line @typescript-eslint/no-empty-function -- The empty function is the point
       jest.spyOn(global.console, "error").mockImplementation(() => {});
+
       await expect(compileRollup(options)).rejects.toThrow(error);
       await expect(compileVite(options)).rejects.toThrow(error);
     }

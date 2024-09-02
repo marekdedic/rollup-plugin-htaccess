@@ -28,27 +28,27 @@ export type ContentSecurityPolicySourceDirective =
  * @public
  */
 export interface ContentSecurityPolicySources {
-  hosts?: Array<string>;
-  schemes?: {
-    data?: boolean;
-    mediastream?: boolean;
-    blob?: boolean;
-    filesystem?: boolean;
-  };
-  self?: boolean;
-  "unsafe-eval"?: boolean;
-  "wasm-unsafe-eval"?: boolean;
-  "unsafe-hashes"?: boolean;
-  "unsafe-inline"?: boolean;
-  nonces?: Array<string>;
   hashes?: {
     sha256?: Array<string>;
     sha384?: Array<string>;
     sha512?: Array<string>;
   };
-  "strict-dynamic"?: boolean;
-  "report-sample"?: boolean;
+  hosts?: Array<string>;
   "inline-speculation-rules"?: boolean;
+  nonces?: Array<string>;
+  "report-sample"?: boolean;
+  schemes?: {
+    blob?: boolean;
+    data?: boolean;
+    filesystem?: boolean;
+    mediastream?: boolean;
+  };
+  self?: boolean;
+  "strict-dynamic"?: boolean;
+  "unsafe-eval"?: boolean;
+  "unsafe-hashes"?: boolean;
+  "unsafe-inline"?: boolean;
+  "wasm-unsafe-eval"?: boolean;
 }
 
 /**
@@ -76,35 +76,34 @@ export type ContentSecurityPolicySandboxValue =
  * @public
  */
 export interface ContentSecurityPolicyTrustedTypesValue {
-  policies?: Array<string>;
   "allow-duplicates"?: boolean;
+  policies?: Array<string>;
 }
 
 /**
  * @public
  */
 export type ContentSecurityPolicySpec = Partial<
-  Record<ContentSecurityPolicySourceDirective, ContentSecurityPolicySources> & {
-    sandbox: ContentSecurityPolicySandboxValue;
+  {
+    "report-to": string;
     /**
      * @deprecated The report-uri directive is deprecated and it's recommended to send CSP reports using report-to instead.
      */
     "report-uri": Array<string>;
-    "report-to": string;
     "require-trusted-types-for": "script";
-    "upgrade-insecure-requests": boolean;
+    sandbox: ContentSecurityPolicySandboxValue;
     "trusted-types": ContentSecurityPolicyTrustedTypesValue;
-  }
+    "upgrade-insecure-requests": boolean;
+  } & Record<ContentSecurityPolicySourceDirective, ContentSecurityPolicySources>
 >;
 
 function buildSandboxPart(
   valueSpec: ContentSecurityPolicySandboxValue,
 ): string {
   if (valueSpec !== null) {
-    return "sandbox " + valueSpec;
-  } else {
-    return "sandbox";
+    return `sandbox ${valueSpec}`;
   }
+  return "sandbox";
 }
 
 function buildTrustedTypesPart(
@@ -133,7 +132,7 @@ function buildSourcePart(
     "inline-speculation-rules",
   ] as const) {
     if (sourceSpec[source] === true) {
-      sources.push("'" + source + "'");
+      sources.push(`'${source}'`);
     }
   }
   if (sourceSpec.schemes !== undefined) {
@@ -144,18 +143,18 @@ function buildSourcePart(
       "filesystem",
     ] as const) {
       if (sourceSpec.schemes[scheme] === true) {
-        sources.push(scheme + ":");
+        sources.push(`${scheme}:`);
       }
     }
   }
   if (sourceSpec.nonces !== undefined) {
-    sources.push(...sourceSpec.nonces.map((nonce) => "'nonce-" + nonce + "'"));
+    sources.push(...sourceSpec.nonces.map((nonce) => `'nonce-${nonce}'`));
   }
   if (sourceSpec.hashes !== undefined) {
     for (const algo of ["sha256", "sha384", "sha512"] as const) {
       const hashes = sourceSpec.hashes[algo];
       if (hashes !== undefined) {
-        sources.push(...hashes.map((hash) => "'" + algo + "-" + hash + "'"));
+        sources.push(...hashes.map((hash) => `'${algo}-${hash}'`));
       }
     }
   }
@@ -165,27 +164,27 @@ function buildSourcePart(
   if (sources.length === 0) {
     sources.push("'none'");
   }
-  return directive + " " + sources.join(" ");
+  return `${directive} ${sources.join(" ")}`;
 }
 
-function buildPart<
-  T extends keyof ContentSecurityPolicySpec,
+function buildPart<T extends keyof ContentSecurityPolicySpec>(
+  directive: T,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Needed to correctly infer value type
-  V extends ContentSecurityPolicySpec[T] & Record<T, any>,
->(directive: T, valueSpec: V[T]): string {
+  valueSpec: (ContentSecurityPolicySpec[T] & Record<T, any>)[T],
+): string {
   switch (directive) {
-    case "sandbox":
-      return buildSandboxPart(valueSpec);
+    case "report-to":
+      return `report-to ${valueSpec as string}`;
     case "report-uri":
       return ["report-uri", ...valueSpec].join(" ");
-    case "report-to":
-      return "report-to " + (valueSpec as string);
     case "require-trusted-types-for":
       return "require-trusted-types-for 'script'";
-    case "upgrade-insecure-requests":
-      return "upgrade-insecure-requests";
+    case "sandbox":
+      return buildSandboxPart(valueSpec);
     case "trusted-types":
       return buildTrustedTypesPart(valueSpec);
+    case "upgrade-insecure-requests":
+      return "upgrade-insecure-requests";
     default:
       return buildSourcePart(directive, valueSpec);
   }
@@ -196,6 +195,9 @@ export function buildContentSecurityPolicyValue(
 ): string {
   const parts = [];
   for (const directive in spec) {
+    if (!Object.prototype.hasOwnProperty.call(spec, directive)) {
+      continue;
+    }
     parts.push(
       buildPart(
         directive as keyof ContentSecurityPolicySpec,

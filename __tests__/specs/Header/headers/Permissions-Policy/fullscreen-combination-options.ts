@@ -8,13 +8,13 @@ const options: Partial<Options> = {
         header: "Permissions-Policy",
         value: {
           fullscreen: {
-            src: true,
-            self: true,
             origins: [
               "https://site1.example",
               "http://site2.example",
               "https://site3.example",
             ],
+            self: true,
+            src: true,
           },
         },
       },

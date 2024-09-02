@@ -42,12 +42,10 @@ export interface HeaderValueSpecMap {
   /**
    * @deprecated The Content-Security-Policy HTTP header has a frame-ancestors directive which obsoletes this header for supporting browsers.
    */
-  // eslint-disable-next-line deprecation/deprecation -- Internal deprecation
   "X-Frame-Options": XFrameOptionsSpec;
   /**
    * @deprecated This feature is non-standard and is not on a standards track. Do not use it on production sites facing the Web: it will not work for every user. There may also be large incompatibilities between implementations and the behavior may change in the future.
    */
-  // eslint-disable-next-line deprecation/deprecation -- Internal deprecation
   "X-Xss-Protection": XXssProtectionSpec;
 }
 
@@ -55,7 +53,6 @@ export interface HeaderValueSpecMap {
  * @public
  */
 export type HeaderSpec<T extends keyof HeaderValueSpecMap> = {
-  header: T;
   always?: boolean;
   condition?:
     | {
@@ -65,6 +62,7 @@ export type HeaderSpec<T extends keyof HeaderValueSpecMap> = {
     | {
         expression: string;
       };
+  header: T;
 } & (
   | {
       action: "add" | "append" | "merge" | "set" | "setifempty";
@@ -75,8 +73,8 @@ export type HeaderSpec<T extends keyof HeaderValueSpecMap> = {
     }
   | {
       action: "edit" | "edit*";
-      value: string;
       replacement: string;
+      value: string;
     }
 );
 
@@ -87,11 +85,12 @@ export type HeaderSpecUnion = {
   [K in keyof HeaderValueSpecMap]: HeaderSpec<K>;
 }[keyof HeaderValueSpecMap];
 
-function buildHeaderValue<
-  T extends keyof HeaderValueSpecMap,
+function buildHeaderValue<T extends keyof HeaderValueSpecMap>(
+  context: PluginContext,
+  header: T,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Needed to correctly infer value type
-  V extends HeaderValueSpecMap[T] & Record<T, any>,
->(context: PluginContext, header: T, value: V[T]): string {
+  value: (HeaderValueSpecMap[T] & Record<T, any>)[T],
+): string {
   switch (header) {
     case "Content-Security-Policy":
       return buildContentSecurityPolicyValue(value);
@@ -107,8 +106,10 @@ function buildHeaderValue<
       return buildXFrameOptionsValue(value);
     case "X-Xss-Protection":
       return buildXXssProtectionValue(value);
+    default:
+      context.error(`Unknown header type "${header}".`);
   }
-  context.error('Unknown header type "' + header + '".');
+  return "";
 }
 
 export function buildHeader(
@@ -122,30 +123,25 @@ export function buildHeader(
   parts.push(spec.action, spec.header);
   if (["add", "append", "merge", "set", "setifempty"].includes(spec.action)) {
     parts.push(
-      '"' +
-        buildHeaderValue(
-          context,
-          spec.header,
-          (spec as { value: HeaderValueSpecMap[keyof HeaderValueSpecMap] })
-            .value,
-        ) +
-        '"',
+      `"${buildHeaderValue(
+        context,
+        spec.header,
+        (spec as { value: HeaderValueSpecMap[keyof HeaderValueSpecMap] }).value,
+      )}"`,
     );
   } else if (["edit", "edit*"].includes(spec.action)) {
-    parts.push('"' + escapeValue((spec as { value: string }).value) + '"');
+    parts.push(`"${escapeValue((spec as { value: string }).value)}"`);
     parts.push(
-      '"' + escapeValue((spec as { replacement: string }).replacement) + '"',
+      `"${escapeValue((spec as { replacement: string }).replacement)}"`,
     );
   }
   if (spec.condition !== undefined) {
     if ("envVar" in spec.condition) {
       parts.push(
-        "env=" +
-          (spec.condition.requireUnset === true ? "!" : "") +
-          spec.condition.envVar,
+        `env=${spec.condition.requireUnset === true ? "!" : ""}${spec.condition.envVar}`,
       );
     } else if ("expression" in spec.condition) {
-      parts.push('"expr=' + escapeValue(spec.condition.expression) + '"');
+      parts.push(`"expr=${escapeValue(spec.condition.expression)}"`);
     }
   }
   return parts.join(" ");

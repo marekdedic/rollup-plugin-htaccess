@@ -7,8 +7,8 @@ const options: Partial<Options> = {
         {
           conditions: [
             {
-              testString: "%{HTTP_USER_AGENT}",
               conditionPattern: "=This Robot/1.0",
+              testString: "%{HTTP_USER_AGENT}",
             },
           ],
           pattern: "foo",

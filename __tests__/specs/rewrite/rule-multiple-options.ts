@@ -5,35 +5,35 @@ const options: Partial<Options> = {
     rewrite: {
       rules: [
         {
-          pattern: "foo",
-          substitution: "bar",
           conditions: [
             {
-              testString: "%{HTTP_USER_AGENT}",
               conditionPattern: "=This Robot/1.0",
               flags: {
                 ornext: true,
               },
+              testString: "%{HTTP_USER_AGENT}",
             },
             {
-              testString: "%{REMOTE_HOST}",
               conditionPattern: "^host1",
+              testString: "%{REMOTE_HOST}",
             },
           ],
+          pattern: "foo",
+          substitution: "bar",
         },
         {
-          pattern: "baz",
-          substitution: null,
           conditions: [
             {
-              testString: "%{REMOTE_HOST}",
               conditionPattern: "^host2",
+              testString: "%{REMOTE_HOST}",
             },
           ],
           flags: {
             B: true,
             type: "text/plain",
           },
+          pattern: "baz",
+          substitution: null,
         },
       ],
     },
