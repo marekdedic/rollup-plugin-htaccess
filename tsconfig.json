@@ -9,8 +9,6 @@
     "outDir": "dist",
     "target": "es2020",
 
-    "skipLibCheck": true,
-
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "exactOptionalPropertyTypes": true,
