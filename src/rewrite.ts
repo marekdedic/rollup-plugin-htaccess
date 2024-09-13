@@ -42,29 +42,29 @@ export interface RewriteRuleCookieFlagMinimalSpec {
  */
 export type RewriteRuleCookieFlagSpec = (
   | {
-      httponly?: boolean;
-      lifetime?: number;
-      path?: string;
-      samesite?: "Lax" | "None" | "Strict";
-      secure?: boolean;
+      httponly?: boolean | undefined;
+      lifetime?: number | undefined;
+      path?: string | undefined;
+      samesite?: "Lax" | "None" | "Strict" | undefined;
+      secure?: boolean | undefined;
     }
   | {
-      httponly?: boolean;
-      lifetime?: number;
-      path?: string;
-      secure?: boolean;
+      httponly?: boolean | undefined;
+      lifetime?: number | undefined;
+      path?: string | undefined;
+      secure?: boolean | undefined;
     }
   | {
-      lifetime?: number;
-      path?: string;
-      secure?: boolean;
+      lifetime?: number | undefined;
+      path?: string | undefined;
+      secure?: boolean | undefined;
     }
   | {
-      lifetime?: number;
-      path?: string;
+      lifetime?: number | undefined;
+      path?: string | undefined;
     }
   | {
-      lifetime?: number;
+      lifetime?: number | undefined;
     }
 ) &
   RewriteRuleCookieFlagMinimalSpec;
