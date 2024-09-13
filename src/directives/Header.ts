@@ -85,6 +85,7 @@ export type HeaderSpecUnion = {
   [K in keyof HeaderValueSpecMap]: HeaderSpec<K>;
 }[keyof HeaderValueSpecMap];
 
+// eslint-disable-next-line consistent-return -- Clashes with typescript unreachable code check
 function buildHeaderValue<T extends keyof HeaderValueSpecMap>(
   context: PluginContext,
   header: T,
@@ -109,7 +110,6 @@ function buildHeaderValue<T extends keyof HeaderValueSpecMap>(
     default:
       context.error(`Unknown header type "${header}".`);
   }
-  return "";
 }
 
 export function buildHeader(

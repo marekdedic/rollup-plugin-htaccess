@@ -1,4 +1,8 @@
-import type { OutputOptions, PluginContext, PluginHooks } from "rollup";
+import type {
+  NormalizedOutputOptions,
+  PluginContext,
+  PluginHooks,
+} from "rollup";
 
 import { findAll } from "domutils";
 import { ElementType, parseDocument } from "htmlparser2";
@@ -24,9 +28,9 @@ export type ExtractMetaCSPOptions =
   | { enabled: false }
   | ExtractMetaCSPEnabledOptions;
 
-let outputOptions: OutputOptions = {};
+let outputOptions: NormalizedOutputOptions | undefined = undefined;
 
-function renderStart(outputOptionsValue: OutputOptions): void {
+function renderStart(outputOptionsValue: NormalizedOutputOptions): void {
   outputOptions = outputOptionsValue;
 }
 
@@ -51,7 +55,7 @@ async function extractCSPValuesFromHTMLFile(
       elem.attribs["http-equiv"].toLowerCase() === "content-security-policy",
     dom.children,
   );
-  const cspValues = cspMetaElems.map((elem) => elem.attribs.content);
+  const cspValues = cspMetaElems.map((elem) => elem.attribs["content"]);
   for (const cspMetaElem of cspMetaElems) {
     fileContents =
       fileContents.substring(0, cspMetaElem.startIndex!) +
@@ -68,7 +72,7 @@ async function writeCSPValuesToHtaccessFile(
   htaccessFileName: string,
 ): Promise<void> {
   const path =
-    options.htaccessFile ?? join(outputOptions.dir ?? "", htaccessFileName);
+    options.htaccessFile ?? join(outputOptions?.dir ?? "", htaccessFileName);
   let fileContents = "";
   try {
     fileContents = await readFile(path);

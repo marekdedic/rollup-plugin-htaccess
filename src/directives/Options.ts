@@ -17,8 +17,8 @@ export type OptionName =
 export type OptionsSpec =
   | "None"
   | {
-      minus?: Array<OptionName>;
-      plus?: Array<OptionName>;
+      minus?: Array<OptionName> | undefined;
+      plus?: Array<OptionName> | undefined;
     }
   | {
       set: Array<OptionName>;
