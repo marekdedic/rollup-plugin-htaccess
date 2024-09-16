@@ -57,9 +57,11 @@ async function extractCSPValuesFromHTMLFile(
   );
   const cspValues = cspMetaElems.map((elem) => elem.attribs["content"]);
   for (const cspMetaElem of cspMetaElems) {
-    fileContents =
-      fileContents.substring(0, cspMetaElem.startIndex!) +
-      fileContents.substring(cspMetaElem.endIndex! + 1);
+    if (cspMetaElem.startIndex !== null && cspMetaElem.endIndex !== null) {
+      fileContents =
+        fileContents.substring(0, cspMetaElem.startIndex) +
+        fileContents.substring(cspMetaElem.endIndex + 1);
+    }
   }
   await writeFile(fileName, fileContents);
   return cspValues;

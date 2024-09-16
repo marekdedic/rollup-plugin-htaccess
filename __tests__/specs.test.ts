@@ -30,7 +30,10 @@ function listDir(path: string): [Array<string>, Array<string>] {
 function listSpecs(prefix: string | null): Array<string> {
   const [dirs, specs] = listDir(prefix ?? "__tests__/specs");
   while (dirs.length > 0) {
-    const dir = dirs.pop()!;
+    const dir = dirs.pop();
+    if (dir === undefined) {
+      continue;
+    }
     const [newDirs, newSpecs] = listDir(dir);
     dirs.push(...newDirs);
     specs.push(...newSpecs);
