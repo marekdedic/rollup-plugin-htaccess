@@ -79,9 +79,11 @@ export function buildPermissionsPolicyValue(
     if (!Object.prototype.hasOwnProperty.call(spec, key)) {
       continue;
     }
-    parts.push(
-      `${key}=${buildAllowlist(spec[key as PermissionsPolicyDirectives]!)}`,
-    );
+    const allowlistSpec = spec[key as PermissionsPolicyDirectives];
+    if (allowlistSpec === undefined) {
+      continue;
+    }
+    parts.push(`${key}=${buildAllowlist(allowlistSpec)}`);
   }
   return parts.join(", ");
 }
