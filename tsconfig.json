@@ -5,11 +5,9 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "module": "es2020",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "outDir": "dist",
     "target": "es2020",
-
-    "skipLibCheck": true,
 
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
