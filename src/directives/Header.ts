@@ -30,6 +30,8 @@ import {
   type XXssProtectionSpec,
 } from "./Header/XXssProtection";
 
+/* eslint-disable @typescript-eslint/no-deprecated -- Internal deprecation */
+
 /**
  * @public
  */
@@ -48,6 +50,8 @@ export interface HeaderValueSpecMap {
    */
   "X-Xss-Protection": XXssProtectionSpec;
 }
+
+/* eslint-enable */
 
 /**
  * @public
