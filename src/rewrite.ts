@@ -56,15 +56,15 @@ export type RewriteRuleCookieFlagSpec = (
     }
   | {
       lifetime?: number | undefined;
+    }
+  | {
+      lifetime?: number | undefined;
+      path?: string | undefined;
+    }
+  | {
+      lifetime?: number | undefined;
       path?: string | undefined;
       secure?: boolean | undefined;
-    }
-  | {
-      lifetime?: number | undefined;
-      path?: string | undefined;
-    }
-  | {
-      lifetime?: number | undefined;
     }
 ) &
   RewriteRuleCookieFlagMinimalSpec;
