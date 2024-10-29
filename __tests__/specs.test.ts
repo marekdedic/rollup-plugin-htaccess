@@ -70,7 +70,7 @@ describe("Spec tests", () => {
     const options = await loadOptions(spec);
     const output = await loadOutput(spec);
 
-    /* eslint-disable jest/no-conditional-in-test -- Conditionals used to load errors */
+    /* eslint-disable jest/no-conditional-in-test, jest/no-conditional-expect -- Conditionals used to load errors */
     if (output !== null) {
       await expect(compileRollup(options)).resolves.toBe(output);
       await expect(compileVite(options)).resolves.toBe(output);
