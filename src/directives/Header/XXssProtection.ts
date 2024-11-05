@@ -26,6 +26,7 @@ export function buildXXssProtectionValue(spec: XXssProtectionSpec): string {
         return `1; report=${escapeValue(spec.reportUri)}`;
       }
       return "1";
+    case "disabled":
     default:
       return "0";
   }
