@@ -172,6 +172,7 @@ function buildPart<T extends keyof ContentSecurityPolicySpec>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Needed to correctly infer value type
   valueSpec: (ContentSecurityPolicySpec[T] & Record<T, any>)[T],
 ): string {
+  // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check -- Default is correct here
   switch (directive) {
     case "report-to":
       return `report-to ${valueSpec as string}`;
