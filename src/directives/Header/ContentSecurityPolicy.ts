@@ -3,6 +3,27 @@ import { escapeValue } from "../../utils";
 /**
  * @public
  */
+export type ContentSecurityPolicySandboxValue =
+  | "allow-downloads-without-user-activation Experimental"
+  | "allow-downloads"
+  | "allow-forms"
+  | "allow-modals"
+  | "allow-orientation-lock"
+  | "allow-pointer-lock"
+  | "allow-popups-to-escape-sandbox"
+  | "allow-popups"
+  | "allow-presentation"
+  | "allow-same-origin"
+  | "allow-scripts"
+  | "allow-storage-access-by-user-activation Experimental"
+  | "allow-top-navigation-by-user-activation"
+  | "allow-top-navigation-to-custom-protocols"
+  | "allow-top-navigation"
+  | null;
+
+/**
+ * @public
+ */
 export type ContentSecurityPolicySourceDirective =
   | "base-uri"
   | "connect-src"
@@ -54,37 +75,8 @@ export interface ContentSecurityPolicySources {
 /**
  * @public
  */
-export type ContentSecurityPolicySandboxValue =
-  | "allow-downloads-without-user-activation Experimental"
-  | "allow-downloads"
-  | "allow-forms"
-  | "allow-modals"
-  | "allow-orientation-lock"
-  | "allow-pointer-lock"
-  | "allow-popups-to-escape-sandbox"
-  | "allow-popups"
-  | "allow-presentation"
-  | "allow-same-origin"
-  | "allow-scripts"
-  | "allow-storage-access-by-user-activation Experimental"
-  | "allow-top-navigation-by-user-activation"
-  | "allow-top-navigation-to-custom-protocols"
-  | "allow-top-navigation"
-  | null;
-
-/**
- * @public
- */
-export interface ContentSecurityPolicyTrustedTypesValue {
-  "allow-duplicates"?: boolean;
-  policies?: Array<string>;
-}
-
-/**
- * @public
- */
 export type ContentSecurityPolicySpec = Partial<
-  {
+  Record<ContentSecurityPolicySourceDirective, ContentSecurityPolicySources> & {
     "report-to": string;
     /**
      * @deprecated The report-uri directive is deprecated and it's recommended to send CSP reports using report-to instead.
@@ -94,8 +86,58 @@ export type ContentSecurityPolicySpec = Partial<
     sandbox: ContentSecurityPolicySandboxValue;
     "trusted-types": ContentSecurityPolicyTrustedTypesValue;
     "upgrade-insecure-requests": boolean;
-  } & Record<ContentSecurityPolicySourceDirective, ContentSecurityPolicySources>
+  }
 >;
+
+/**
+ * @public
+ */
+export interface ContentSecurityPolicyTrustedTypesValue {
+  "allow-duplicates"?: boolean;
+  policies?: Array<string>;
+}
+
+export function buildContentSecurityPolicyValue(
+  spec: ContentSecurityPolicySpec,
+): string {
+  const parts = [];
+  for (const directive in spec) {
+    if (!Object.prototype.hasOwnProperty.call(spec, directive)) {
+      continue;
+    }
+    parts.push(
+      buildPart(
+        directive as keyof ContentSecurityPolicySpec,
+        spec[directive as keyof ContentSecurityPolicySpec],
+      ),
+    );
+  }
+  return parts.join("; ");
+}
+
+function buildPart<T extends keyof ContentSecurityPolicySpec>(
+  directive: T,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Needed to correctly infer value type
+  valueSpec: (ContentSecurityPolicySpec[T] & Record<T, any>)[T],
+): string {
+  // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check -- Default is correct here
+  switch (directive) {
+    case "report-to":
+      return `report-to ${valueSpec as string}`;
+    case "report-uri":
+      return ["report-uri", ...valueSpec].join(" ");
+    case "require-trusted-types-for":
+      return "require-trusted-types-for 'script'";
+    case "sandbox":
+      return buildSandboxPart(valueSpec);
+    case "trusted-types":
+      return buildTrustedTypesPart(valueSpec);
+    case "upgrade-insecure-requests":
+      return "upgrade-insecure-requests";
+    default:
+      return buildSourcePart(directive, valueSpec);
+  }
+}
 
 function buildSandboxPart(
   valueSpec: ContentSecurityPolicySandboxValue,
@@ -104,16 +146,6 @@ function buildSandboxPart(
     return `sandbox ${valueSpec}`;
   }
   return "sandbox";
-}
-
-function buildTrustedTypesPart(
-  valueSpec: ContentSecurityPolicyTrustedTypesValue,
-): string {
-  const parts = ["trusted-types", ...(valueSpec.policies ?? [])];
-  if (valueSpec["allow-duplicates"] === true) {
-    parts.push("'allow-duplicates'");
-  }
-  return parts.join(" ");
 }
 
 function buildSourcePart(
@@ -167,44 +199,12 @@ function buildSourcePart(
   return `${directive} ${sources.join(" ")}`;
 }
 
-function buildPart<T extends keyof ContentSecurityPolicySpec>(
-  directive: T,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Needed to correctly infer value type
-  valueSpec: (ContentSecurityPolicySpec[T] & Record<T, any>)[T],
+function buildTrustedTypesPart(
+  valueSpec: ContentSecurityPolicyTrustedTypesValue,
 ): string {
-  // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check -- Default is correct here
-  switch (directive) {
-    case "report-to":
-      return `report-to ${valueSpec as string}`;
-    case "report-uri":
-      return ["report-uri", ...valueSpec].join(" ");
-    case "require-trusted-types-for":
-      return "require-trusted-types-for 'script'";
-    case "sandbox":
-      return buildSandboxPart(valueSpec);
-    case "trusted-types":
-      return buildTrustedTypesPart(valueSpec);
-    case "upgrade-insecure-requests":
-      return "upgrade-insecure-requests";
-    default:
-      return buildSourcePart(directive, valueSpec);
+  const parts = ["trusted-types", ...(valueSpec.policies ?? [])];
+  if (valueSpec["allow-duplicates"] === true) {
+    parts.push("'allow-duplicates'");
   }
-}
-
-export function buildContentSecurityPolicyValue(
-  spec: ContentSecurityPolicySpec,
-): string {
-  const parts = [];
-  for (const directive in spec) {
-    if (!Object.prototype.hasOwnProperty.call(spec, directive)) {
-      continue;
-    }
-    parts.push(
-      buildPart(
-        directive as keyof ContentSecurityPolicySpec,
-        spec[directive as keyof ContentSecurityPolicySpec],
-      ),
-    );
-  }
-  return parts.join("; ");
+  return parts.join(" ");
 }

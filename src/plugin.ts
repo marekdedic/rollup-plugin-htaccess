@@ -15,19 +15,6 @@ export interface Options {
   template: string | undefined;
 }
 
-async function buildHtaccessFile(
-  context: PluginContext,
-  options: Options,
-  root: string,
-): Promise<string> {
-  let output = "";
-  if (options.template !== undefined) {
-    output += await readTemplate(context, root, options.template);
-  }
-  output += buildSpec(context, options.spec);
-  return output;
-}
-
 /**
  * @public
  */
@@ -56,4 +43,17 @@ export function htaccess(opts?: Partial<Options>): RollupPlugin & VitePlugin {
     ...extractMetaCSP(options),
   };
   return rollupPlugin;
+}
+
+async function buildHtaccessFile(
+  context: PluginContext,
+  options: Options,
+  root: string,
+): Promise<string> {
+  let output = "";
+  if (options.template !== undefined) {
+    output += await readTemplate(context, root, options.template);
+  }
+  output += buildSpec(context, options.spec);
+  return output;
 }

@@ -3,16 +3,13 @@ import { escapeValue } from "./utils";
 /**
  * @public
  */
-export interface RewriteOptionsSpec {
-  AllowAnyURI?: boolean;
-  AllowNoSlash?: boolean;
-  IgnoreContextInfo?: boolean;
-  IgnoreInherit?: boolean;
-  Inherit?: boolean;
-  InheritDown?: boolean;
-  InheritDownBefore?: boolean;
-  LegacyPrefixDocRoot?: boolean;
-  MergeBase?: boolean;
+export interface MetadataRewriteRuleFlags {
+  env?: {
+    value: string | null;
+    variable: string;
+  };
+  handler?: string;
+  type?: string;
 }
 
 /**
@@ -31,6 +28,21 @@ export interface RewriteCondSpec {
 /**
  * @public
  */
+export interface RewriteOptionsSpec {
+  AllowAnyURI?: boolean;
+  AllowNoSlash?: boolean;
+  IgnoreContextInfo?: boolean;
+  IgnoreInherit?: boolean;
+  Inherit?: boolean;
+  InheritDown?: boolean;
+  InheritDownBefore?: boolean;
+  LegacyPrefixDocRoot?: boolean;
+  MergeBase?: boolean;
+}
+
+/**
+ * @public
+ */
 export interface RewriteRuleCookieFlagMinimalSpec {
   domain: string;
   name: string;
@@ -40,34 +52,60 @@ export interface RewriteRuleCookieFlagMinimalSpec {
 /**
  * @public
  */
-export type RewriteRuleCookieFlagSpec = (
+export type RewriteRuleCookieFlagSpec = RewriteRuleCookieFlagMinimalSpec &
+  (
+    | {
+        httponly?: boolean | undefined;
+        lifetime?: number | undefined;
+        path?: string | undefined;
+        samesite?: "Lax" | "None" | "Strict" | undefined;
+        secure?: boolean | undefined;
+      }
+    | {
+        httponly?: boolean | undefined;
+        lifetime?: number | undefined;
+        path?: string | undefined;
+        secure?: boolean | undefined;
+      }
+    | {
+        lifetime?: number | undefined;
+      }
+    | {
+        lifetime?: number | undefined;
+        path?: string | undefined;
+      }
+    | {
+        lifetime?: number | undefined;
+        path?: string | undefined;
+        secure?: boolean | undefined;
+      }
+  );
+
+/**
+ * @public
+ */
+export type RewriteRuleSpec = {
+  conditions?: Array<RewriteCondSpec>;
+  pattern: string;
+} & (
   | {
-      httponly?: boolean | undefined;
-      lifetime?: number | undefined;
-      path?: string | undefined;
-      samesite?: "Lax" | "None" | "Strict" | undefined;
-      secure?: boolean | undefined;
+      flags?: MetadataRewriteRuleFlags & StandardRewriteRuleFlags;
+      substitution: null;
     }
   | {
-      httponly?: boolean | undefined;
-      lifetime?: number | undefined;
-      path?: string | undefined;
-      secure?: boolean | undefined;
+      flags?: StandardRewriteRuleFlags;
+      substitution: string;
     }
-  | {
-      lifetime?: number | undefined;
-    }
-  | {
-      lifetime?: number | undefined;
-      path?: string | undefined;
-    }
-  | {
-      lifetime?: number | undefined;
-      path?: string | undefined;
-      secure?: boolean | undefined;
-    }
-) &
-  RewriteRuleCookieFlagMinimalSpec;
+);
+
+/**
+ * @public
+ */
+export interface RewriteSpec {
+  base?: string;
+  options?: RewriteOptionsSpec;
+  rules?: Array<RewriteRuleSpec>;
+}
 
 /**
  * @public
@@ -98,52 +136,21 @@ export interface StandardRewriteRuleFlags {
   UnsafePrefixStat?: boolean;
 }
 
-/**
- * @public
- */
-export interface MetadataRewriteRuleFlags {
-  env?: {
-    value: string | null;
-    variable: string;
-  };
-  handler?: string;
-  type?: string;
-}
-
-/**
- * @public
- */
-export type RewriteRuleSpec = {
-  conditions?: Array<RewriteCondSpec>;
-  pattern: string;
-} & (
-  | {
-      flags?: MetadataRewriteRuleFlags & StandardRewriteRuleFlags;
-      substitution: null;
-    }
-  | {
-      flags?: StandardRewriteRuleFlags;
-      substitution: string;
-    }
-);
-
-/**
- * @public
- */
-export interface RewriteSpec {
-  base?: string;
-  options?: RewriteOptionsSpec;
-  rules?: Array<RewriteRuleSpec>;
-}
-
-function buildRewriteOptions(spec: RewriteOptionsSpec): Array<string> {
+export function buildRewrite(spec: RewriteSpec): string {
   const output: Array<string> = [];
-  for (const option in spec) {
-    if (spec[option as keyof RewriteOptionsSpec] === true) {
-      output.push(`RewriteOptions ${option}`);
-    }
+  if (spec.base !== undefined) {
+    output.push(`RewriteBase "${escapeValue(spec.base)}"`);
   }
-  return output;
+  if (spec.options !== undefined) {
+    output.push(...buildRewriteOptions(spec.options));
+  }
+  if (spec.rules !== undefined) {
+    output.push(...buildRewriteRules(spec.rules));
+  }
+  if (output.length > 0) {
+    output.unshift("RewriteEngine on");
+  }
+  return output.join("\n");
 }
 
 function buildRewriteCondition(spec: RewriteCondSpec): string {
@@ -158,6 +165,16 @@ function buildRewriteCondition(spec: RewriteCondSpec): string {
     flags.push("NV");
   }
   return `RewriteCond "${spec.testString}" "${spec.conditionPattern}"${flags.length > 0 ? ` [${flags.join(",")}]` : ""}`;
+}
+
+function buildRewriteOptions(spec: RewriteOptionsSpec): Array<string> {
+  const output: Array<string> = [];
+  for (const option in spec) {
+    if (spec[option as keyof RewriteOptionsSpec] === true) {
+      output.push(`RewriteOptions ${option}`);
+    }
+  }
+  return output;
 }
 
 function buildRewriteRuleCookieFlag(spec: RewriteRuleCookieFlagSpec): string {
@@ -302,21 +319,4 @@ function buildRewriteRules(spec: Array<RewriteRuleSpec>): Array<string> {
     );
   }
   return output;
-}
-
-export function buildRewrite(spec: RewriteSpec): string {
-  const output: Array<string> = [];
-  if (spec.base !== undefined) {
-    output.push(`RewriteBase "${escapeValue(spec.base)}"`);
-  }
-  if (spec.options !== undefined) {
-    output.push(...buildRewriteOptions(spec.options));
-  }
-  if (spec.rules !== undefined) {
-    output.push(...buildRewriteRules(spec.rules));
-  }
-  if (output.length > 0) {
-    output.unshift("RewriteEngine on");
-  }
-  return output.join("\n");
 }

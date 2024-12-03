@@ -10,26 +10,13 @@ import { build, type InlineConfig as ViteOptions } from "vite";
 
 import htaccess, { type Options } from "../src";
 
-type Directory = Pick<Dirent, "isDirectory" | "isFile" | "name">;
-
-export function readDirSync(path: string): Array<Directory> {
-  return nodeReaddir(path, { withFileTypes: true });
-}
-
-function extractFileContents(output: RollupOutput, fileName: string): string {
-  const htaccessFiles = output.output.filter(
-    (file): file is OutputAsset =>
-      file.type === "asset" && file.fileName === fileName,
-  );
-  assert(htaccessFiles.length === 1);
-  return htaccessFiles[0].source.toString().trim();
-}
-
 export interface CompileOptions {
   bundlerOptions?: RollupOptions & ViteOptions;
   fileName?: string;
   write?: boolean;
 }
+
+type Directory = Pick<Dirent, "isDirectory" | "isFile" | "name">;
 
 export async function compileRollup(
   pluginOptions: Partial<Options>,
@@ -74,4 +61,17 @@ export async function compileVite(
     Array.isArray(output) ? output[0] : output,
     compileOptions.fileName ?? ".htaccess",
   );
+}
+
+export function readDirSync(path: string): Array<Directory> {
+  return nodeReaddir(path, { withFileTypes: true });
+}
+
+function extractFileContents(output: RollupOutput, fileName: string): string {
+  const htaccessFiles = output.output.filter(
+    (file): file is OutputAsset =>
+      file.type === "asset" && file.fileName === fileName,
+  );
+  assert(htaccessFiles.length === 1);
+  return htaccessFiles[0].source.toString().trim();
 }
