@@ -3,6 +3,13 @@ import { escapeValue } from "../../utils";
 /**
  * @public
  */
+export type PermissionsPolicyAllowlist =
+  | "*"
+  | { origins?: Array<string>; self?: boolean; src?: boolean };
+
+/**
+ * @public
+ */
 export type PermissionsPolicyDirectives =
   | "accelerometer"
   | "ambient-light-sensor"
@@ -45,31 +52,9 @@ export type PermissionsPolicyDirectives =
 /**
  * @public
  */
-export type PermissionsPolicyAllowlist =
-  | "*"
-  | { origins?: Array<string>; self?: boolean; src?: boolean };
-
-/**
- * @public
- */
 export type PermissionsPolicySpec = Partial<
   Record<PermissionsPolicyDirectives, PermissionsPolicyAllowlist>
 >;
-
-function buildAllowlist(allowlist: PermissionsPolicyAllowlist): string {
-  if (allowlist === "*") {
-    return "*";
-  }
-  const list =
-    allowlist.origins?.map((origin) => `\\"${escapeValue(origin)}\\"`) ?? [];
-  if (allowlist.src === true) {
-    list.unshift("src");
-  }
-  if (allowlist.self === true) {
-    list.unshift("self");
-  }
-  return `(${list.join(" ")})`;
-}
 
 export function buildPermissionsPolicyValue(
   spec: PermissionsPolicySpec,
@@ -86,4 +71,19 @@ export function buildPermissionsPolicyValue(
     parts.push(`${key}=${buildAllowlist(allowlistSpec)}`);
   }
   return parts.join(", ");
+}
+
+function buildAllowlist(allowlist: PermissionsPolicyAllowlist): string {
+  if (allowlist === "*") {
+    return "*";
+  }
+  const list =
+    allowlist.origins?.map((origin) => `\\"${escapeValue(origin)}\\"`) ?? [];
+  if (allowlist.src === true) {
+    list.unshift("src");
+  }
+  if (allowlist.self === true) {
+    list.unshift("self");
+  }
+  return `(${list.join(" ")})`;
 }

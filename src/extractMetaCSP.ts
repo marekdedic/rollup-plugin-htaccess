@@ -30,8 +30,43 @@ export type ExtractMetaCSPOptions =
 
 let outputOptions: NormalizedOutputOptions | undefined = undefined;
 
-function renderStart(outputOptionsValue: NormalizedOutputOptions): void {
-  outputOptions = outputOptionsValue;
+export function extractMetaCSP(options: Options): Partial<PluginHooks> {
+  if (!options.extractMetaCSP.enabled) {
+    return {};
+  }
+  return {
+    closeBundle: closeBundle(options.extractMetaCSP, options.fileName),
+    renderStart,
+  };
+}
+
+function closeBundle(
+  options: ExtractMetaCSPEnabledOptions,
+  htaccessFileName: string,
+): PluginHooks["closeBundle"] {
+  return {
+    async handler(this: PluginContext): Promise<void> {
+      let cspValues = (
+        await Promise.all(
+          options.files.map(async (file) => extractCSPValuesFromHTMLFile(file)),
+        )
+      ).flat();
+      cspValues = [...new Set(cspValues)];
+      if (cspValues.length > 1) {
+        this.error(
+          "Found multiple conflicting CSP directives when extracting from meta tags.",
+        );
+      }
+      await writeCSPValuesToHtaccessFile(
+        this,
+        cspValues,
+        options,
+        htaccessFileName,
+      );
+    },
+    order: "post",
+    sequential: true,
+  };
 }
 
 async function extractCSPValuesFromHTMLFile(
@@ -67,6 +102,10 @@ async function extractCSPValuesFromHTMLFile(
   return cspValues;
 }
 
+function renderStart(outputOptionsValue: NormalizedOutputOptions): void {
+  outputOptions = outputOptionsValue;
+}
+
 async function writeCSPValuesToHtaccessFile(
   context: PluginContext,
   cspValues: Array<string>,
@@ -90,43 +129,4 @@ async function writeCSPValuesToHtaccessFile(
     )
     .join("\n")}\n`;
   await writeFile(path, fileContents);
-}
-
-function closeBundle(
-  options: ExtractMetaCSPEnabledOptions,
-  htaccessFileName: string,
-): PluginHooks["closeBundle"] {
-  return {
-    async handler(this: PluginContext): Promise<void> {
-      let cspValues = (
-        await Promise.all(
-          options.files.map(async (file) => extractCSPValuesFromHTMLFile(file)),
-        )
-      ).flat();
-      cspValues = [...new Set(cspValues)];
-      if (cspValues.length > 1) {
-        this.error(
-          "Found multiple conflicting CSP directives when extracting from meta tags.",
-        );
-      }
-      await writeCSPValuesToHtaccessFile(
-        this,
-        cspValues,
-        options,
-        htaccessFileName,
-      );
-    },
-    order: "post",
-    sequential: true,
-  };
-}
-
-export function extractMetaCSP(options: Options): Partial<PluginHooks> {
-  if (!options.extractMetaCSP.enabled) {
-    return {};
-  }
-  return {
-    closeBundle: closeBundle(options.extractMetaCSP, options.fileName),
-    renderStart,
-  };
 }
