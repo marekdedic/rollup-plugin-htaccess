@@ -7,8 +7,6 @@ import preferArrowFunctions from "eslint-plugin-prefer-arrow-functions";
 import prettierRecommended from "eslint-plugin-prettier/recommended";
 import tseslint from "typescript-eslint";
 
-/* eslint-disable @typescript-eslint/naming-convention -- Not applicable to this file */
-
 export default tseslint.config(
   js.configs.recommended,
   prettierRecommended,
@@ -41,46 +39,6 @@ export default tseslint.config(
       "@typescript-eslint/explicit-module-boundary-types": "error",
       "@typescript-eslint/init-declarations": "error",
       "@typescript-eslint/method-signature-style": ["error", "method"],
-      "@typescript-eslint/naming-convention": [
-        "error",
-        {
-          format: ["camelCase"],
-          leadingUnderscore: "allow",
-          selector: "default",
-          trailingUnderscore: "allow",
-        },
-        {
-          format: ["camelCase", "PascalCase"],
-          selector: "import",
-        },
-        {
-          format: ["camelCase", "UPPER_CASE"],
-          leadingUnderscore: "allow",
-          selector: "variable",
-          trailingUnderscore: "allow",
-        },
-        {
-          format: ["PascalCase"],
-          selector: "typeLike",
-        },
-        {
-          custom: {
-            match: true,
-            regex: "^[a-zA-Z0-9]*$|^[a-z0-9-]*$",
-          },
-          format: null,
-          selector: "objectLiteralProperty",
-        },
-        {
-          custom: {
-            match: true,
-            regex:
-              "^[a-zA-Z0-9]*$|^[a-z0-9-]*$|^[A-Z][a-zA-Z0-9]*(?:-[A-Z][a-zA-Z0-9]*)*$",
-          },
-          format: null,
-          selector: "typeProperty",
-        },
-      ],
       "@typescript-eslint/no-import-type-side-effects": "error",
       "@typescript-eslint/no-shadow": "error",
       "@typescript-eslint/no-unnecessary-parameter-property-assignment":
@@ -237,5 +195,3 @@ export default tseslint.config(
     },
   },
 );
-
-/* eslint-enable @typescript-eslint/naming-convention */
