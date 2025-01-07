@@ -24,6 +24,7 @@ export type { StrictTransportSecuritySpec } from "./directives/Header/StrictTran
 export type { XContentTypeOptionsSpec } from "./directives/Header/XContentTypeOptions";
 export type { XFrameOptionsSpec } from "./directives/Header/XFrameOptions";
 export type { XXssProtectionSpec } from "./directives/Header/XXssProtection";
+export type { IfSpec } from "./directives/If";
 export type { OptionName, OptionsSpec } from "./directives/Options";
 export type {
   ExtractMetaCSPEnabledOptions,

@@ -18,8 +18,8 @@
 | :x:    | ContentDigest | |
 | :x:    | DefaultType | |
 | :x:    | Define | |
-| :x:    | \<Else\> | |
-| :x:    | \<ElseIf\> | |
+| :white_check_mark: | \<Else\> | |
+| :white_check_mark: | \<ElseIf\> | |
 | :x:    | EnableMMAP | |
 | :x:    | EnableSendfile | |
 | :x:    | Error | |
@@ -29,7 +29,7 @@
 | :white_check_mark: | \<FilesMatch\> | |
 | :x:    | ForceType | |
 | :x:    | HostnameLookups | |
-| :x:    | \<If\> | |
+| :white_check_mark: | \<If\> | |
 | :x:    | \<IfDefine\> | |
 | :x:    | \<IfDirective\> | |
 | :x:    | \<IfFile\> | |
