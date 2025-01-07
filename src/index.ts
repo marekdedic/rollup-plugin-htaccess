@@ -1,6 +1,7 @@
 export type { AddOutputFilterByTypeSpec } from "./directives/AddOutputFilterByType";
 export type { ErrorDocumentSpec } from "./directives/ErrorDocument";
 export type { FilesSpec } from "./directives/Files";
+export type { FilesMatchSpec } from "./directives/FilesMatch";
 export type {
   HeaderSpec,
   HeaderSpecUnion,

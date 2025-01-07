@@ -26,7 +26,7 @@
 | :white_check_mark: | ErrorDocument | |
 | :x:    | FileETag | |
 | :white_check_mark: | \<Files\> | |
-| :x:    | \<FilesMatch\> | |
+| :white_check_mark: | \<FilesMatch\> | |
 | :x:    | ForceType | |
 | :x:    | HostnameLookups | |
 | :x:    | \<If\> | |

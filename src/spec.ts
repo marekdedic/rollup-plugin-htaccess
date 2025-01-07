@@ -9,6 +9,7 @@ import {
   type ErrorDocumentSpec,
 } from "./directives/ErrorDocument";
 import { buildFiles, type FilesSpec } from "./directives/Files";
+import { buildFilesMatch, type FilesMatchSpec } from "./directives/FilesMatch";
 import { buildHeader, type HeaderSpecUnion } from "./directives/Header";
 import { buildOptions, type OptionsSpec } from "./directives/Options";
 import { buildRewrite, type RewriteSpec } from "./rewrite";
@@ -20,6 +21,7 @@ export interface Spec {
   AddOutputFilterByType?: AddOutputFilterByTypeSpec;
   ErrorDocument?: ErrorDocumentSpec;
   Files?: Array<FilesSpec>;
+  FilesMatch?: Array<FilesMatchSpec>;
   Header?: Array<HeaderSpecUnion>;
   Options?: OptionsSpec;
   rewrite?: RewriteSpec;
@@ -44,6 +46,9 @@ export function buildSpec(context: PluginContext, spec: Spec): string {
   }
   for (const files of spec.Files ?? []) {
     output += `${buildFiles(context, files)}\n`;
+  }
+  for (const files of spec.FilesMatch ?? []) {
+    output += `${buildFilesMatch(context, files)}\n`;
   }
   return output;
 }
