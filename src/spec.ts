@@ -8,6 +8,7 @@ import {
   buildErrorDocument,
   type ErrorDocumentSpec,
 } from "./directives/ErrorDocument";
+import { buildFiles, type FilesSpec } from "./directives/Files";
 import { buildHeader, type HeaderSpecUnion } from "./directives/Header";
 import { buildOptions, type OptionsSpec } from "./directives/Options";
 import { buildRewrite, type RewriteSpec } from "./rewrite";
@@ -18,6 +19,7 @@ import { buildRewrite, type RewriteSpec } from "./rewrite";
 export interface Spec {
   AddOutputFilterByType?: AddOutputFilterByTypeSpec;
   ErrorDocument?: ErrorDocumentSpec;
+  Files?: Array<FilesSpec>;
   Header?: Array<HeaderSpecUnion>;
   Options?: OptionsSpec;
   rewrite?: RewriteSpec;
@@ -39,6 +41,9 @@ export function buildSpec(context: PluginContext, spec: Spec): string {
   }
   if (spec.rewrite !== undefined) {
     output += `${buildRewrite(spec.rewrite)}\n`;
+  }
+  for (const files of spec.Files ?? []) {
+    output += `${buildFiles(context, files)}\n`;
   }
   return output;
 }
