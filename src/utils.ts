@@ -1,4 +1,15 @@
+import type { PluginContext } from "rollup";
+
 import { readFile as nodeReadFile, writeFile as nodeWriteFile } from "fs";
+
+import { buildSpec, type Spec } from "./spec";
+
+export function buildInnerSpec(
+  context: PluginContext,
+  innerSpec: Spec,
+): string {
+  return buildSpec(context, innerSpec).trim().replace(/^/gmu, "\t");
+}
 
 export function escapeValue(value: string): string {
   return value.replace(/"/gu, '\\"');
