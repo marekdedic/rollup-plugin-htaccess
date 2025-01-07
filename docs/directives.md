@@ -30,7 +30,7 @@
 | :x:    | ForceType | |
 | :x:    | HostnameLookups | |
 | :white_check_mark: | \<If\> | |
-| :x:    | \<IfDefine\> | |
+| :white_check_mark: | \<IfDefine\> | |
 | :x:    | \<IfDirective\> | |
 | :x:    | \<IfFile\> | |
 | :x:    | \<IfModule\> | |
