@@ -1,5 +1,5 @@
-import { jest } from "@jest/globals";
 import { join } from "path";
+import { describe, expect, test, vi } from "vitest";
 
 import type { Options } from "../src";
 
@@ -28,7 +28,7 @@ function listDir(path: string): [Array<string>, Array<string>] {
 }
 
 function listSpecs(prefix: string | null): Array<string> {
-  const [dirs, specs] = listDir(prefix ?? "__tests__/specs");
+  const [dirs, specs] = listDir(prefix ?? "tests/specs");
   while (dirs.length > 0) {
     const dir = dirs.pop();
     if (dir === undefined) {
@@ -39,17 +39,17 @@ function listSpecs(prefix: string | null): Array<string> {
     specs.push(...newSpecs);
   }
   return specs.map((spec) =>
-    spec.replace(/^__tests__\/specs\//u, "").replace(/-options\.ts$/u, ""),
+    spec.replace(/^tests\/specs\//u, "").replace(/-options\.ts$/u, ""),
   );
 }
 
 async function loadError(spec: string): Promise<string> {
-  return (await readFile(`__tests__/specs/${spec}-error.txt`)).trim();
+  return (await readFile(`tests/specs/${spec}-error.txt`)).trim();
 }
 
 async function loadOptions(spec: string): Promise<Options> {
   return (
-    (await import(`./specs/${spec}-options.ts`)) as {
+    (await import(`tests/specs/${spec}-options.ts`)) as {
       default: Options;
     }
   ).default;
@@ -57,7 +57,7 @@ async function loadOptions(spec: string): Promise<Options> {
 
 async function loadOutput(spec: string): Promise<string | null> {
   try {
-    return (await readFile(`__tests__/specs/${spec}-output.txt`)).trim();
+    return (await readFile(`tests/specs/${spec}-output.txt`)).trim();
   } catch {
     return null;
   }
@@ -70,14 +70,14 @@ describe("Spec tests", () => {
     const options = await loadOptions(spec);
     const output = await loadOutput(spec);
 
-    /* eslint-disable jest/no-conditional-in-test, jest/no-conditional-expect -- Conditionals used to load errors */
+    /* eslint-disable vitest/no-conditional-in-test, vitest/no-conditional-expect -- Conditionals used to load errors */
     if (output !== null) {
       await expect(compileRollup(options)).resolves.toBe(output);
       await expect(compileVite(options)).resolves.toBe(output);
     } else {
       const error = await loadError(spec);
       // eslint-disable-next-line @typescript-eslint/no-empty-function -- The empty function is the point
-      jest.spyOn(global.console, "error").mockImplementation(() => {});
+      vi.spyOn(global.console, "error").mockImplementation(() => {});
 
       await expect(compileRollup(options)).rejects.toThrow(error);
       await expect(compileVite(options)).rejects.toThrow(error);
