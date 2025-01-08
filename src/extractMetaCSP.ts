@@ -5,6 +5,7 @@ import type {
 } from "rollup";
 
 import { findAll } from "domutils";
+import { glob } from "glob";
 import { ElementType, parseDocument } from "htmlparser2";
 import { join } from "path";
 
@@ -51,10 +52,11 @@ function closeBundle(
         options.defaultPolicyFile !== undefined
           ? await extractCSPValueFromHTMLFile(this, options.defaultPolicyFile)
           : null;
+      const perFilePolicyFiles = await glob(options.perFilePolicyFiles ?? []);
       const perFilePolicies = Object.fromEntries(
         (
           await Promise.all(
-            (options.perFilePolicyFiles ?? []).map(async (fileName) => [
+            perFilePolicyFiles.map(async (fileName) => [
               fileName,
               await extractCSPValueFromHTMLFile(this, fileName),
             ]),
