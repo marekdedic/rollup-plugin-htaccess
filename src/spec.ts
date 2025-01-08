@@ -13,6 +13,10 @@ import { buildFilesMatch, type FilesMatchSpec } from "./directives/FilesMatch";
 import { buildHeader, type HeaderSpecUnion } from "./directives/Header";
 import { buildIf, type IfSpec } from "./directives/If";
 import { buildIfDefine, type IfDefineSpec } from "./directives/IfDefine";
+import {
+  buildIfDirective,
+  type IfDirectiveSpec,
+} from "./directives/IfDirective";
 import { buildOptions, type OptionsSpec } from "./directives/Options";
 import { buildRewrite, type RewriteSpec } from "./rewrite";
 
@@ -27,6 +31,7 @@ export interface Spec {
   Header?: Array<HeaderSpecUnion>;
   If?: Array<IfSpec>;
   IfDefine?: Array<IfDefineSpec>;
+  IfDirective?: Array<IfDirectiveSpec>;
   Options?: OptionsSpec;
   rewrite?: RewriteSpec;
 }
@@ -59,6 +64,9 @@ export function buildSpec(context: PluginContext, spec: Spec): string {
   }
   for (const ifDefineSpec of spec.IfDefine ?? []) {
     output += `${buildIfDefine(context, ifDefineSpec)}\n`;
+  }
+  for (const ifDirectiveSpec of spec.IfDirective ?? []) {
+    output += `${buildIfDirective(context, ifDirectiveSpec)}\n`;
   }
   return output;
 }

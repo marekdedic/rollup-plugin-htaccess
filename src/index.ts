@@ -26,6 +26,7 @@ export type { XFrameOptionsSpec } from "./directives/Header/XFrameOptions";
 export type { XXssProtectionSpec } from "./directives/Header/XXssProtection";
 export type { IfSpec } from "./directives/If";
 export type { IfDefineSpec } from "./directives/IfDefine";
+export type { IfDirectiveSpec } from "./directives/IfDirective";
 export type { OptionName, OptionsSpec } from "./directives/Options";
 export type {
   ExtractMetaCSPEnabledOptions,
