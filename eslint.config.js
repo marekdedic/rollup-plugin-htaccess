@@ -146,6 +146,15 @@ export default tseslint.config(
     },
   },
   {
+    files: ["tests/**/*.ts"],
+    languageOptions: {
+      parserOptions: {
+        project: "test.tsconfig.json",
+        projectService: false,
+      },
+    },
+  },
+  {
     ...jest.configs["flat/recommended"],
     ...jest.configs["flat/style"],
     files: ["__tests__/**/*.ts"],

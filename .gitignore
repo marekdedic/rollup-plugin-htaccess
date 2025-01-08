@@ -166,3 +166,5 @@ tags
 
 __tests__/dist-rollup/
 __tests__/dist-vite/
+tests/dist-rollup/
+tests/dist-vite/
