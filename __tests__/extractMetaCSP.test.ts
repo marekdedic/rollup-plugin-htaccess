@@ -17,10 +17,10 @@ test("Basic CSP extraction", async () => {
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
-    const pluginOptions = {
+    const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
+        defaultPolicyFile: join("__tests__", distFolder, "index.html"),
         enabled: true,
-        files: [join("__tests__", distFolder, "index.html")],
       },
     };
     const compileOptions: CompileOptions = {
@@ -101,10 +101,10 @@ test("CSP extraction with custom .htaccess", async () => {
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
-    const pluginOptions = {
+    const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
+        defaultPolicyFile: join("__tests__", distFolder, "index.html"),
         enabled: true,
-        files: [join("__tests__", distFolder, "index.html")],
         htaccessFile: join("__tests__", distFolder, "custom.txt"),
       },
       fileName: "custom.txt",
@@ -151,10 +151,10 @@ test("CSP extraction with non-existent HTML file", async () => {
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
-    const pluginOptions = {
+    const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
+        defaultPolicyFile: join("__tests__", distFolder, "incorrect.html"),
         enabled: true,
-        files: [join("__tests__", distFolder, "incorrect.html")],
       },
     };
     const compileOptions: CompileOptions = {
@@ -196,10 +196,10 @@ test("CSP extraction with no valid meta tags", async () => {
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
-    const pluginOptions = {
+    const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
+        defaultPolicyFile: join("__tests__", distFolder, "index.html"),
         enabled: true,
-        files: [join("__tests__", distFolder, "index.html")],
       },
     };
     const compileOptions: CompileOptions = {
@@ -241,10 +241,10 @@ test("CSP extraction with non-existent .htaccess", async () => {
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
-    const pluginOptions = {
+    const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
+        defaultPolicyFile: join("__tests__", distFolder, "index.html"),
         enabled: true,
-        files: [join("__tests__", distFolder, "index.html")],
         htaccessFile: join("__tests__", distFolder, "other.txt"),
       },
       fileName: "custom.txt",
@@ -311,13 +311,10 @@ test("CSP extraction with conflicting directives", async () => {
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
-    const pluginOptions = {
+    const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
+        defaultPolicyFile: join("__tests__", distFolder, "index.html"),
         enabled: true,
-        files: [
-          join("__tests__", distFolder, "index.html"),
-          join("__tests__", distFolder, "file2.html"),
-        ],
       },
     };
     const compileOptions: CompileOptions = {
@@ -329,13 +326,7 @@ test("CSP extraction with conflicting directives", async () => {
               this.emitFile({
                 fileName: "index.html",
                 source:
-                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
-                type: "asset",
-              });
-              this.emitFile({
-                fileName: "file2.html",
-                source:
-                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-different-value"></head><body></body></html>',
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"><meta http-equiv="content-security-policy" content="CSP-different-value"></head><body></body></html>',
                 type: "asset",
               });
             },
@@ -364,10 +355,10 @@ test("CSP meta element case sensitivity", async () => {
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
-    const pluginOptions = {
+    const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
+        defaultPolicyFile: join("__tests__", distFolder, "index.html"),
         enabled: true,
-        files: [join("__tests__", distFolder, "index.html")],
       },
     };
     const compileOptions: CompileOptions = {
@@ -409,10 +400,10 @@ test("CSP extraction with other meta tags", async () => {
   function configGenerator(
     distFolder: string,
   ): [Partial<Options>, CompileOptions] {
-    const pluginOptions = {
+    const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
+        defaultPolicyFile: join("__tests__", distFolder, "index.html"),
         enabled: true,
-        files: [join("__tests__", distFolder, "index.html")],
       },
     };
     const compileOptions: CompileOptions = {
@@ -446,4 +437,68 @@ test("CSP extraction with other meta tags", async () => {
   await compileVite(...configGenerator("dist-vite"));
 
   expect((await readFile("__tests__/dist-vite/.htaccess")).trim()).toBe(output);
+});
+
+test("CSP extraction with per-file policies", async () => {
+  expect.assertions(2);
+
+  function configGenerator(
+    distFolder: string,
+  ): [Partial<Options>, CompileOptions] {
+    const pluginOptions: Partial<Options> = {
+      extractMetaCSP: {
+        defaultPolicyFile: join("__tests__", distFolder, "index.html"),
+        enabled: true,
+        perFilePolicyFiles: [
+          join("__tests__", distFolder, "file1.html"),
+          join("__tests__", distFolder, "file2.html"),
+        ],
+      },
+    };
+    const compileOptions: CompileOptions = {
+      bundlerOptions: {
+        plugins: [
+          htaccess(pluginOptions),
+          {
+            generateBundle(): void {
+              this.emitFile({
+                fileName: "index.html",
+                source:
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+                type: "asset",
+              });
+              this.emitFile({
+                fileName: "file1.html",
+                source:
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-1"></head><body></body></html>',
+                type: "asset",
+              });
+              this.emitFile({
+                fileName: "file2.html",
+                source:
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-2"></head><body></body></html>',
+                type: "asset",
+              });
+            },
+            name: "Emit index.html",
+          },
+        ],
+      },
+      write: true,
+    };
+    return [pluginOptions, compileOptions];
+  }
+  const output = (distFolder: string): string =>
+    `Header always set Content-Security-Policy "CSP-value"\n<Files "${join("__tests__", distFolder, "file1.html")}">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>\n<Files "${join("__tests__", distFolder, "file2.html")}">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</Files>`;
+  await compileRollup(...configGenerator("dist-rollup"));
+
+  expect((await readFile("__tests__/dist-rollup/.htaccess")).trim()).toBe(
+    output("dist-rollup"),
+  );
+
+  await compileVite(...configGenerator("dist-vite"));
+
+  expect((await readFile("__tests__/dist-vite/.htaccess")).trim()).toBe(
+    output("dist-vite"),
+  );
 });

@@ -16,9 +16,10 @@ import { escapeValue, readFile, writeFile } from "./utils";
  * @public
  */
 export interface ExtractMetaCSPEnabledOptions {
+  defaultPolicyFile?: string;
   enabled: true;
-  files: Array<string>;
   htaccessFile?: string;
+  perFilePolicyFiles?: Array<string>;
 }
 
 /**
@@ -46,20 +47,24 @@ function closeBundle(
 ): PluginHooks["closeBundle"] {
   return {
     async handler(this: PluginContext): Promise<void> {
-      let cspValues = (
-        await Promise.all(
-          options.files.map(async (file) => extractCSPValuesFromHTMLFile(file)),
-        )
-      ).flat();
-      cspValues = [...new Set(cspValues)];
-      if (cspValues.length > 1) {
-        this.error(
-          "Found multiple conflicting CSP directives when extracting from meta tags.",
-        );
-      }
+      const defaultPolicy =
+        options.defaultPolicyFile !== undefined
+          ? await extractCSPValueFromHTMLFile(this, options.defaultPolicyFile)
+          : null;
+      const perFilePolicies = Object.fromEntries(
+        (
+          await Promise.all(
+            (options.perFilePolicyFiles ?? []).map(async (fileName) => [
+              fileName,
+              await extractCSPValueFromHTMLFile(this, fileName),
+            ]),
+          )
+        ).filter(([_, policy]) => policy !== null) as Array<[string, string]>,
+      );
       await writeCSPValuesToHtaccessFile(
         this,
-        cspValues,
+        defaultPolicy,
+        perFilePolicies,
         options,
         htaccessFileName,
       );
@@ -69,14 +74,15 @@ function closeBundle(
   };
 }
 
-async function extractCSPValuesFromHTMLFile(
+async function extractCSPValueFromHTMLFile(
+  context: PluginContext,
   fileName: string,
-): Promise<Array<string>> {
+): Promise<string | null> {
   let fileContents = "";
   try {
     fileContents = await readFile(fileName);
   } catch {
-    return [];
+    return null;
   }
   const dom = parseDocument(fileContents, {
     withEndIndices: true,
@@ -90,7 +96,17 @@ async function extractCSPValuesFromHTMLFile(
       elem.attribs["http-equiv"].toLowerCase() === "content-security-policy",
     dom.children,
   );
-  const cspValues = cspMetaElems.map((elem) => elem.attribs["content"]);
+  const cspValues = [
+    ...new Set(cspMetaElems.map((elem) => elem.attribs["content"])),
+  ];
+  if (cspValues.length < 1) {
+    return null;
+  }
+  if (cspValues.length > 1) {
+    context.error(
+      "Found multiple conflicting CSP directives when extracting from meta tags.",
+    );
+  }
   for (const cspMetaElem of cspMetaElems) {
     if (cspMetaElem.startIndex !== null && cspMetaElem.endIndex !== null) {
       fileContents =
@@ -99,7 +115,7 @@ async function extractCSPValuesFromHTMLFile(
     }
   }
   await writeFile(fileName, fileContents);
-  return cspValues;
+  return cspValues[0];
 }
 
 function renderStart(outputOptionsValue: NormalizedOutputOptions): void {
@@ -108,7 +124,8 @@ function renderStart(outputOptionsValue: NormalizedOutputOptions): void {
 
 async function writeCSPValuesToHtaccessFile(
   context: PluginContext,
-  cspValues: Array<string>,
+  defaultPolicy: string | null,
+  perFilePolicies: Record<string, string>,
   options: ExtractMetaCSPEnabledOptions,
   htaccessFileName: string,
 ): Promise<void> {
@@ -122,11 +139,14 @@ async function writeCSPValuesToHtaccessFile(
       `Could not read htaccess file at path "${path}", writing extracted CSP to new file.`,
     );
   }
-  fileContents += `${cspValues
+  if (defaultPolicy !== null) {
+    fileContents += `Header always set Content-Security-Policy "${escapeValue(defaultPolicy)}"\n`;
+  }
+  fileContents += Object.entries(perFilePolicies)
     .map(
-      (value) =>
-        `Header always set Content-Security-Policy "${escapeValue(value)}"`,
+      ([fileName, policy]) =>
+        `<Files "${escapeValue(fileName)}">\n\tHeader always set Content-Security-Policy "${escapeValue(policy)}"\n</Files>\n`,
     )
-    .join("\n")}\n`;
+    .join("");
   await writeFile(path, fileContents);
 }
