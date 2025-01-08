@@ -1,0 +1,10 @@
+Header always set Permissions-Policy "camera=(), display-capture=(), fullscreen=(), geolocation=(), microphone=(), web-share=()"
+<If "%{QUERY_STRING} =~ /(delete|commit)=.*?elem/">
+	Header always set Permissions-Policy "camera=(), display-capture=(), fullscreen=(self), geolocation=(), microphone=(), web-share=()"
+</If>
+<ElseIf "%{QUERY_STRING} =~ /(change)=.*?elem/">
+	Header always set Permissions-Policy "camera=(), display-capture=(), fullscreen=(self), geolocation=(self), microphone=(), web-share=()"
+</ElseIf>
+<ElseIf "%{QUERY_STRING} =~ /(create)=.*?elem/">
+	Header always set Permissions-Policy "camera=(self), display-capture=(), fullscreen=(self), geolocation=(), microphone=(), web-share=()"
+</ElseIf>

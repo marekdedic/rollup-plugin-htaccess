@@ -1,7 +1,8 @@
 import type { PluginContext } from "rollup";
 
-import { buildSpec, type Spec } from "../spec";
-import { escapeValue } from "../utils";
+import type { Spec } from "../spec";
+
+import { buildInnerSpec, escapeValue } from "../utils";
 
 /**
  * @public
@@ -12,5 +13,5 @@ export interface FilesSpec {
 }
 
 export function buildFiles(context: PluginContext, spec: FilesSpec): string {
-  return `<Files "${escapeValue(spec.fileName)}">\n${buildSpec(context, spec.innerSpec).trim().replace(/^/gmu, "\t")}\n</Files>`;
+  return `<Files "${escapeValue(spec.fileName)}">\n${buildInnerSpec(context, spec.innerSpec)}\n</Files>`;
 }

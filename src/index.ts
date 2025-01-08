@@ -1,6 +1,7 @@
 export type { AddOutputFilterByTypeSpec } from "./directives/AddOutputFilterByType";
 export type { ErrorDocumentSpec } from "./directives/ErrorDocument";
 export type { FilesSpec } from "./directives/Files";
+export type { FilesMatchSpec } from "./directives/FilesMatch";
 export type {
   HeaderSpec,
   HeaderSpecUnion,
@@ -23,6 +24,12 @@ export type { StrictTransportSecuritySpec } from "./directives/Header/StrictTran
 export type { XContentTypeOptionsSpec } from "./directives/Header/XContentTypeOptions";
 export type { XFrameOptionsSpec } from "./directives/Header/XFrameOptions";
 export type { XXssProtectionSpec } from "./directives/Header/XXssProtection";
+export type { IfSpec } from "./directives/If";
+export type { IfDefineSpec } from "./directives/IfDefine";
+export type { IfDirectiveSpec } from "./directives/IfDirective";
+export type { IfFileSpec } from "./directives/IfFile";
+export type { IfModuleSpec } from "./directives/IfModule";
+export type { IfSectionSpec } from "./directives/IfSection";
 export type { OptionName, OptionsSpec } from "./directives/Options";
 export type {
   ExtractMetaCSPEnabledOptions,

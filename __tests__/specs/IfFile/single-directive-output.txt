@@ -1,0 +1,7 @@
+Header always set Permissions-Policy "camera=(), display-capture=(), fullscreen=(), geolocation=(), microphone=(), web-share=()"
+<IfFile UseCache>
+	Header always set Permissions-Policy "camera=(), display-capture=(), fullscreen=(self), geolocation=(), microphone=(), web-share=()"
+</IfFile>
+<IfFile !UseCache>
+	Header always set Permissions-Policy "camera=(self), display-capture=(), fullscreen=(), geolocation=(), microphone=(), web-share=()"
+</IfFile>

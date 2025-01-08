@@ -1,0 +1,7 @@
+Header always set Permissions-Policy "camera=(), display-capture=(), fullscreen=(), geolocation=(), microphone=(), web-share=()"
+<IfSection VirtualHost>
+	Header always set Permissions-Policy "camera=(), display-capture=(), fullscreen=(self), geolocation=(), microphone=(), web-share=()"
+</IfSection>
+<IfSection !VirtualHost>
+	Header always set Permissions-Policy "camera=(self), display-capture=(), fullscreen=(), geolocation=(), microphone=(), web-share=()"
+</IfSection>

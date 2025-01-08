@@ -1,0 +1,7 @@
+Header always set Permissions-Policy "camera=(), display-capture=(), fullscreen=(), geolocation=(), microphone=(), web-share=()"
+<IfModule rewrite_module>
+	Header always set Permissions-Policy "camera=(), display-capture=(), fullscreen=(self), geolocation=(), microphone=(), web-share=()"
+</IfModule>
+<IfModule !rewrite_module>
+	Header always set Permissions-Policy "camera=(self), display-capture=(), fullscreen=(), geolocation=(), microphone=(), web-share=()"
+</IfModule>
