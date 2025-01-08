@@ -34,7 +34,7 @@
 | :x:                | \<IfDirective\>          |       |
 | :x:                | \<IfFile\>               |       |
 | :x:                | \<IfModule\>             |       |
-| :x:                | \<IfSection\>            |       |
+| :white_check_mark: | \<IfSection\>            |       |
 | :x:                | Include                  |       |
 | :x:                | IncludeOptional          |       |
 | :x:                | \<Limit\>                |       |
