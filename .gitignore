@@ -164,7 +164,5 @@ tags
 
 # End of https://www.toptal.com/developers/gitignore/api/vim,node
 
-__tests__/dist-rollup/
-__tests__/dist-vite/
 tests/dist-rollup/
 tests/dist-vite/
