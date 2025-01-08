@@ -17,6 +17,7 @@ import {
   buildIfDirective,
   type IfDirectiveSpec,
 } from "./directives/IfDirective";
+import { buildIfFile, type IfFileSpec } from "./directives/IfFile";
 import { buildOptions, type OptionsSpec } from "./directives/Options";
 import { buildRewrite, type RewriteSpec } from "./rewrite";
 
@@ -32,6 +33,7 @@ export interface Spec {
   If?: Array<IfSpec>;
   IfDefine?: Array<IfDefineSpec>;
   IfDirective?: Array<IfDirectiveSpec>;
+  IfFile?: Array<IfFileSpec>;
   Options?: OptionsSpec;
   rewrite?: RewriteSpec;
 }
@@ -67,6 +69,9 @@ export function buildSpec(context: PluginContext, spec: Spec): string {
   }
   for (const ifDirectiveSpec of spec.IfDirective ?? []) {
     output += `${buildIfDirective(context, ifDirectiveSpec)}\n`;
+  }
+  for (const ifFileSpec of spec.IfFile ?? []) {
+    output += `${buildIfFile(context, ifFileSpec)}\n`;
   }
   return output;
 }

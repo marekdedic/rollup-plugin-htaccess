@@ -27,6 +27,7 @@ export type { XXssProtectionSpec } from "./directives/Header/XXssProtection";
 export type { IfSpec } from "./directives/If";
 export type { IfDefineSpec } from "./directives/IfDefine";
 export type { IfDirectiveSpec } from "./directives/IfDirective";
+export type { IfFileSpec } from "./directives/IfFile";
 export type { OptionName, OptionsSpec } from "./directives/Options";
 export type {
   ExtractMetaCSPEnabledOptions,
