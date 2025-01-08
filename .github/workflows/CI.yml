@@ -38,7 +38,6 @@ jobs:
     strategy:
       matrix:
         versions: [
-          {node: "14", rollup: "3", vite: "4"},
           {node: "16", rollup: "3", vite: "4"},
           {node: "18", rollup: "4", vite: "5"},
           {node: "20", rollup: "4", vite: "5"},
