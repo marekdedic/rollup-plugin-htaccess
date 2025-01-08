@@ -53,6 +53,7 @@ function closeBundle(
           ? await extractCSPValueFromHTMLFile(this, options.defaultPolicyFile)
           : null;
       const perFilePolicyFiles = await glob(options.perFilePolicyFiles ?? []);
+      perFilePolicyFiles.sort();
       const perFilePolicies = Object.fromEntries(
         (
           await Promise.all(

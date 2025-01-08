@@ -533,7 +533,7 @@ test("CSP extraction with glob per-file policies", async () => {
     return [pluginOptions, compileOptions];
   }
   const output = (distFolder: string): string =>
-    `Header always set Content-Security-Policy "CSP-value"\n<Files "${join("tests", distFolder, "file2.html")}">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</Files>\n<Files "${join("tests", distFolder, "file1.html")}">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>`;
+    `Header always set Content-Security-Policy "CSP-value"\n<Files "${join("tests", distFolder, "file1.html")}">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>\n<Files "${join("tests", distFolder, "file2.html")}">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</Files>`;
   await compileRollup(...configGenerator("dist-rollup"));
 
   expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(
