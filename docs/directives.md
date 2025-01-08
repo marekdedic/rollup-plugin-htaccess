@@ -31,7 +31,7 @@
 | :x:                | HostnameLookups          |       |
 | :white_check_mark: | \<If\>                   |       |
 | :white_check_mark: | \<IfDefine\>             |       |
-| :x:                | \<IfDirective\>          |       |
+| :white_check_mark: | \<IfDirective\>          |       |
 | :x:                | \<IfFile\>               |       |
 | :x:                | \<IfModule\>             |       |
 | :white_check_mark: | \<IfSection\>            |       |
