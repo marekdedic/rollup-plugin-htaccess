@@ -46,6 +46,7 @@
     "start": "rollup -cw",
     "pretest": "tsc --project test.tsconfig.json",
     "test": "vitest",
+    "test-coverage": "vitest run --coverage",
     "lint": "eslint --color 'src/**/*.ts' 'tests/**/*.ts' '*.config.{js,ts}'"
   },
   "peerDependencies": {
@@ -71,6 +72,7 @@
     "@microsoft/api-extractor": "^7.47.2",
     "@rollup/plugin-typescript": "^12.1.0",
     "@types/node": "^22.0.2",
+    "@vitest/coverage-v8": "^2.1.8",
     "@vitest/eslint-plugin": "^1.1.24",
     "eslint": "^9.9.0",
     "eslint-config-prettier": "^9.1.0",
