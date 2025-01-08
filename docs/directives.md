@@ -32,7 +32,7 @@
 | :white_check_mark: | \<If\>                   |       |
 | :white_check_mark: | \<IfDefine\>             |       |
 | :white_check_mark: | \<IfDirective\>          |       |
-| :x:                | \<IfFile\>               |       |
+| :white_check_mark: | \<IfFile\>               |       |
 | :x:                | \<IfModule\>             |       |
 | :white_check_mark: | \<IfSection\>            |       |
 | :x:                | Include                  |       |
