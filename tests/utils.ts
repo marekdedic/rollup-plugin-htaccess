@@ -23,7 +23,7 @@ export async function compileRollup(
   compileOptions: CompileOptions = {},
 ): Promise<string> {
   const bundle = await rollup({
-    input: "__tests__/fixtures/dummy.js",
+    input: "tests/fixtures/dummy.js",
     plugins: [htaccess(pluginOptions)],
     ...compileOptions.bundlerOptions,
   });
@@ -33,7 +33,7 @@ export async function compileRollup(
     compileOptions.fileName ?? ".htaccess",
   );
   if (compileOptions.write === true) {
-    await bundle.write({ dir: "__tests__/dist-rollup" });
+    await bundle.write({ dir: "tests/dist-rollup" });
   }
   await bundle.close();
   return fileContents;
@@ -45,10 +45,10 @@ export async function compileVite(
 ): Promise<string> {
   const output = (await build({
     build: {
-      outDir: "__tests__/dist-vite",
+      outDir: "tests/dist-vite",
       rollupOptions: {
         input: {
-          app: "__tests__/fixtures/dummy.html",
+          app: "tests/fixtures/dummy.html",
         },
       },
       write: compileOptions.write ?? false,

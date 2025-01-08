@@ -1,3 +1,5 @@
+import { expect, test } from "vitest";
+
 import { compileRollup, compileVite } from "./utils";
 
 test("Basic run test", async () => {
@@ -24,7 +26,7 @@ test("Template", async () => {
   expect.assertions(2);
 
   const options = {
-    template: "__tests__/fixtures/template.txt",
+    template: "tests/fixtures/template.txt",
   };
   const output =
     "HTACCESS template\nThese isn't even valid .htacccess file\n# Comment";
@@ -41,7 +43,7 @@ test("Vite root", async () => {
       template: "fixtures/template.txt",
     },
     {
-      bundlerOptions: { root: "__tests__" },
+      bundlerOptions: { root: "tests" },
       fileName: ".htaccess",
     },
   );

@@ -38,7 +38,6 @@ jobs:
     strategy:
       matrix:
         versions: [
-          {node: "14", rollup: "3", vite: "4"},
           {node: "16", rollup: "3", vite: "4"},
           {node: "18", rollup: "4", vite: "5"},
           {node: "20", rollup: "4", vite: "5"},
@@ -63,7 +62,7 @@ jobs:
 
       - name: "Run tests"
         run: |
-          npm run test
+          npm run test-coverage
 
       - name: "Upload coverage results"
         uses: coverallsapp/github-action@v2.3.4
