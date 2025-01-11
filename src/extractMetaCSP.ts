@@ -7,7 +7,7 @@ import type {
 import { findAll } from "domutils";
 import { glob } from "glob";
 import { ElementType, parseDocument } from "htmlparser2";
-import { join, relative } from "path";
+import { join } from "path";
 
 import type { Options } from "./index";
 
@@ -19,7 +19,6 @@ import { escapeValue, readFile, writeFile } from "./utils";
 export interface ExtractMetaCSPEnabledOptions {
   defaultPolicyFile?: string;
   enabled: true;
-  htaccessFile?: string;
   outputDir?: string;
   perFilePolicyFiles?: Array<string>;
 }
@@ -49,7 +48,8 @@ function closeBundle(
 ): PluginHooks["closeBundle"] {
   return {
     async handler(this: PluginContext): Promise<void> {
-      const outputDir = options.outputDir ?? process.cwd();
+      const outputDir =
+        options.outputDir ?? outputOptions?.dir ?? process.cwd();
       const defaultPolicy =
         options.defaultPolicyFile !== undefined
           ? await extractCSPValueFromHTMLFile(
@@ -75,7 +75,6 @@ function closeBundle(
         ).filter(([_, policy]) => policy !== null) as Array<[string, string]>,
       );
       await writeCSPValuesToHtaccessFile(
-        this,
         defaultPolicy,
         perFilePolicies,
         options,
@@ -136,24 +135,16 @@ function renderStart(outputOptionsValue: NormalizedOutputOptions): void {
 }
 
 async function writeCSPValuesToHtaccessFile(
-  context: PluginContext,
   defaultPolicy: string | null,
   perFilePolicies: Record<string, string>,
   options: ExtractMetaCSPEnabledOptions,
   htaccessFileName: string,
 ): Promise<void> {
-  const path =
-    options.htaccessFile !== undefined
-      ? join(options.outputDir ?? process.cwd(), options.htaccessFile)
-      : join(outputOptions?.dir ?? "", htaccessFileName);
-  let fileContents = "";
-  try {
-    fileContents = await readFile(path);
-  } catch {
-    context.warn(
-      `Could not read htaccess file at path "${relative(process.cwd(), path)}", writing extracted CSP to new file.`,
-    );
-  }
+  const path = join(
+    options.outputDir ?? outputOptions?.dir ?? process.cwd(),
+    htaccessFileName,
+  );
+  let fileContents = await readFile(path);
   if (defaultPolicy !== null) {
     fileContents += `Header always set Content-Security-Policy "${escapeValue(defaultPolicy)}"\n`;
   }

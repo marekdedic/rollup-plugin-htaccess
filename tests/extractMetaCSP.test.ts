@@ -1,6 +1,6 @@
 import { join } from "path";
 import { rimraf } from "rimraf";
-import { beforeEach, expect, test, vi } from "vitest";
+import { beforeEach, expect, test } from "vitest";
 
 import htaccess, { type Options } from "../src";
 import { readFile } from "../src/utils";
@@ -12,49 +12,6 @@ beforeEach(async () => {
 });
 
 test("Basic CSP extraction", async () => {
-  expect.assertions(2);
-
-  function configGenerator(
-    distFolder: string,
-  ): [Partial<Options>, CompileOptions] {
-    const pluginOptions: Partial<Options> = {
-      extractMetaCSP: {
-        defaultPolicyFile: join("tests", distFolder, "index.html"),
-        enabled: true,
-      },
-    };
-    const compileOptions: CompileOptions = {
-      bundlerOptions: {
-        plugins: [
-          htaccess(pluginOptions),
-          {
-            generateBundle(): void {
-              this.emitFile({
-                fileName: "index.html",
-                source:
-                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
-                type: "asset",
-              });
-            },
-            name: "Emit index.html",
-          },
-        ],
-      },
-      write: true,
-    };
-    return [pluginOptions, compileOptions];
-  }
-  const output = 'Header always set Content-Security-Policy "CSP-value"';
-  await compileRollup(...configGenerator("dist-rollup"));
-
-  expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
-
-  await compileVite(...configGenerator("dist-vite"));
-
-  expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
-});
-
-test("CSP extraction with output dir", async () => {
   expect.assertions(2);
 
   function configGenerator(
@@ -143,9 +100,9 @@ test("CSP extraction with custom .htaccess", async () => {
   ): [Partial<Options>, CompileOptions] {
     const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
-        defaultPolicyFile: join("tests", distFolder, "index.html"),
+        defaultPolicyFile: "index.html",
         enabled: true,
-        htaccessFile: join("tests", distFolder, "custom.txt"),
+        outputDir: join("tests", distFolder),
       },
       fileName: "custom.txt",
     };
@@ -189,8 +146,9 @@ test("CSP extraction with non-existent HTML file", async () => {
   ): [Partial<Options>, CompileOptions] {
     const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
-        defaultPolicyFile: join("tests", distFolder, "incorrect.html"),
+        defaultPolicyFile: "incorrect.html",
         enabled: true,
+        outputDir: join("tests", distFolder),
       },
     };
     const compileOptions: CompileOptions = {
@@ -232,8 +190,9 @@ test("CSP extraction with no valid meta tags", async () => {
   ): [Partial<Options>, CompileOptions] {
     const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
-        defaultPolicyFile: join("tests", distFolder, "index.html"),
+        defaultPolicyFile: "index.html",
         enabled: true,
+        outputDir: join("tests", distFolder),
       },
     };
     const compileOptions: CompileOptions = {
@@ -267,72 +226,6 @@ test("CSP extraction with no valid meta tags", async () => {
   expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
-test("CSP extraction with non-existent .htaccess", async () => {
-  expect.assertions(8);
-
-  function configGenerator(
-    distFolder: string,
-  ): [Partial<Options>, CompileOptions] {
-    const pluginOptions: Partial<Options> = {
-      extractMetaCSP: {
-        defaultPolicyFile: join("tests", distFolder, "index.html"),
-        enabled: true,
-        htaccessFile: join("tests", distFolder, "other.txt"),
-      },
-      fileName: "custom.txt",
-    };
-    const compileOptions: CompileOptions = {
-      bundlerOptions: {
-        plugins: [
-          htaccess(pluginOptions),
-          {
-            generateBundle(): void {
-              this.emitFile({
-                fileName: "index.html",
-                source:
-                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
-                type: "asset",
-              });
-            },
-            name: "Emit index.html",
-          },
-        ],
-      },
-      fileName: "custom.txt",
-      write: true,
-    };
-    return [pluginOptions, compileOptions];
-  }
-  const output = "";
-  const otherOutput = 'Header always set Content-Security-Policy "CSP-value"';
-
-  const consoleWarn = vi
-    .spyOn(global.console, "warn")
-    // eslint-disable-next-line @typescript-eslint/no-empty-function -- The empty function is the point
-    .mockImplementation(() => {});
-  await compileRollup(...configGenerator("dist-rollup"));
-
-  expect(consoleWarn).toHaveBeenCalledTimes(1);
-  expect(consoleWarn.mock.calls[0][0]).toContain(
-    'Could not read htaccess file at path "tests/dist-rollup/other.txt", writing extracted CSP to new file.',
-  );
-  expect((await readFile("tests/dist-rollup/custom.txt")).trim()).toBe(output);
-  expect((await readFile("tests/dist-rollup/other.txt")).trim()).toBe(
-    otherOutput,
-  );
-
-  await compileVite(...configGenerator("dist-vite"));
-
-  expect(consoleWarn).toHaveBeenCalledTimes(2);
-  expect(consoleWarn.mock.calls[1][0]).toContain(
-    'Could not read htaccess file at path "tests/dist-vite/other.txt", writing extracted CSP to new file.',
-  );
-  expect((await readFile("tests/dist-vite/custom.txt")).trim()).toBe(output);
-  expect((await readFile("tests/dist-vite/other.txt")).trim()).toBe(
-    otherOutput,
-  );
-});
-
 test("CSP extraction with conflicting directives", async () => {
   expect.assertions(2);
 
@@ -341,8 +234,9 @@ test("CSP extraction with conflicting directives", async () => {
   ): [Partial<Options>, CompileOptions] {
     const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
-        defaultPolicyFile: join("tests", distFolder, "index.html"),
+        defaultPolicyFile: "index.html",
         enabled: true,
+        outputDir: join("tests", distFolder),
       },
     };
     const compileOptions: CompileOptions = {
@@ -385,8 +279,9 @@ test("CSP meta element case sensitivity", async () => {
   ): [Partial<Options>, CompileOptions] {
     const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
-        defaultPolicyFile: join("tests", distFolder, "index.html"),
+        defaultPolicyFile: "index.html",
         enabled: true,
+        outputDir: join("tests", distFolder),
       },
     };
     const compileOptions: CompileOptions = {
@@ -428,8 +323,9 @@ test("CSP extraction with other meta tags", async () => {
   ): [Partial<Options>, CompileOptions] {
     const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
-        defaultPolicyFile: join("tests", distFolder, "index.html"),
+        defaultPolicyFile: "index.html",
         enabled: true,
+        outputDir: join("tests", distFolder),
       },
     };
     const compileOptions: CompileOptions = {
@@ -471,12 +367,10 @@ test("CSP extraction with per-file policies", async () => {
   ): [Partial<Options>, CompileOptions] {
     const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
-        defaultPolicyFile: join("tests", distFolder, "index.html"),
+        defaultPolicyFile: "index.html",
         enabled: true,
-        perFilePolicyFiles: [
-          join("tests", distFolder, "file1.html"),
-          join("tests", distFolder, "file2.html"),
-        ],
+        outputDir: join("tests", distFolder),
+        perFilePolicyFiles: ["file1.html", "file2.html"],
       },
     };
     const compileOptions: CompileOptions = {
@@ -512,19 +406,15 @@ test("CSP extraction with per-file policies", async () => {
     };
     return [pluginOptions, compileOptions];
   }
-  const output = (distFolder: string): string =>
-    `Header always set Content-Security-Policy "CSP-value"\n<Files "${join("tests", distFolder, "file1.html")}">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>\n<Files "${join("tests", distFolder, "file2.html")}">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</Files>`;
+  const output =
+    'Header always set Content-Security-Policy "CSP-value"\n<Files "file1.html">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>\n<Files "file2.html">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</Files>';
   await compileRollup(...configGenerator("dist-rollup"));
 
-  expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(
-    output("dist-rollup"),
-  );
+  expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
 
   await compileVite(...configGenerator("dist-vite"));
 
-  expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(
-    output("dist-vite"),
-  );
+  expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
 test("CSP extraction with only per-file policies", async () => {
@@ -536,10 +426,8 @@ test("CSP extraction with only per-file policies", async () => {
     const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
         enabled: true,
-        perFilePolicyFiles: [
-          join("tests", distFolder, "file1.html"),
-          join("tests", distFolder, "file2.html"),
-        ],
+        outputDir: join("tests", distFolder),
+        perFilePolicyFiles: ["file1.html", "file2.html"],
       },
     };
     const compileOptions: CompileOptions = {
@@ -575,19 +463,15 @@ test("CSP extraction with only per-file policies", async () => {
     };
     return [pluginOptions, compileOptions];
   }
-  const output = (distFolder: string): string =>
-    `<Files "${join("tests", distFolder, "file1.html")}">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>\n<Files "${join("tests", distFolder, "file2.html")}">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</Files>`;
+  const output =
+    '<Files "file1.html">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>\n<Files "file2.html">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</Files>';
   await compileRollup(...configGenerator("dist-rollup"));
 
-  expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(
-    output("dist-rollup"),
-  );
+  expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
 
   await compileVite(...configGenerator("dist-vite"));
 
-  expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(
-    output("dist-vite"),
-  );
+  expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
 test("CSP extraction with glob per-file policies", async () => {
@@ -598,12 +482,10 @@ test("CSP extraction with glob per-file policies", async () => {
   ): [Partial<Options>, CompileOptions] {
     const pluginOptions: Partial<Options> = {
       extractMetaCSP: {
-        defaultPolicyFile: join("tests", distFolder, "index.html"),
+        defaultPolicyFile: "index.html",
         enabled: true,
-        perFilePolicyFiles: [
-          join("tests", distFolder, "*.html"),
-          `!${join("tests", distFolder, "index.html")}`,
-        ],
+        outputDir: join("tests", distFolder),
+        perFilePolicyFiles: ["*.html", "!index.html"],
       },
     };
     const compileOptions: CompileOptions = {
@@ -639,17 +521,13 @@ test("CSP extraction with glob per-file policies", async () => {
     };
     return [pluginOptions, compileOptions];
   }
-  const output = (distFolder: string): string =>
-    `Header always set Content-Security-Policy "CSP-value"\n<Files "${join("tests", distFolder, "file1.html")}">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>\n<Files "${join("tests", distFolder, "file2.html")}">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</Files>`;
+  const output =
+    'Header always set Content-Security-Policy "CSP-value"\n<Files "file1.html">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>\n<Files "file2.html">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</Files>';
   await compileRollup(...configGenerator("dist-rollup"));
 
-  expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(
-    output("dist-rollup"),
-  );
+  expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
 
   await compileVite(...configGenerator("dist-vite"));
 
-  expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(
-    output("dist-vite"),
-  );
+  expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
 });
