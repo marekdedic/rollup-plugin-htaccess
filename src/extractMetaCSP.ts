@@ -144,7 +144,7 @@ async function writeCSPValuesToHtaccessFile(
     options.outputDir ?? outputOptions?.dir ?? process.cwd(),
     htaccessFileName,
   );
-  let fileContents = await readFile(path);
+  let fileContents = await readFile(path).catch(() => "");
   if (defaultPolicy !== null) {
     fileContents += `Header always set Content-Security-Policy "${escapeValue(defaultPolicy)}"\n`;
   }
