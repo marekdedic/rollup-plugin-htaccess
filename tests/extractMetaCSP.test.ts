@@ -54,6 +54,50 @@ test("Basic CSP extraction", async () => {
   expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
+test("CSP extraction with output dir", async () => {
+  expect.assertions(2);
+
+  function configGenerator(
+    distFolder: string,
+  ): [Partial<Options>, CompileOptions] {
+    const pluginOptions: Partial<Options> = {
+      extractMetaCSP: {
+        defaultPolicyFile: "index.html",
+        enabled: true,
+        outputDir: join("tests", distFolder),
+      },
+    };
+    const compileOptions: CompileOptions = {
+      bundlerOptions: {
+        plugins: [
+          htaccess(pluginOptions),
+          {
+            generateBundle(): void {
+              this.emitFile({
+                fileName: "index.html",
+                source:
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+                type: "asset",
+              });
+            },
+            name: "Emit index.html",
+          },
+        ],
+      },
+      write: true,
+    };
+    return [pluginOptions, compileOptions];
+  }
+  const output = 'Header always set Content-Security-Policy "CSP-value"';
+  await compileRollup(...configGenerator("dist-rollup"));
+
+  expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
+
+  await compileVite(...configGenerator("dist-vite"));
+
+  expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
+});
+
 test("CSP extraction disabled", async () => {
   expect.assertions(2);
 
