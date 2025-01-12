@@ -118,7 +118,7 @@
 | :x:                | DirectoryCheckHandler         |       |
 | :x:                | DirectoryIndex                |       |
 | :x:                | DirectoryIndexRedirect        |       |
-| :x:                | DirectorySlash                |       |
+| :white_check_mark: | DirectorySlash                |       |
 | :x:                | FallbackResource              |       |
 | :x:                | FilterChain                   |       |
 | :x:                | FilterDeclare                 |       |

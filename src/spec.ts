@@ -5,6 +5,10 @@ import {
   buildAddOutputFilterByType,
 } from "./directives/AddOutputFilterByType";
 import {
+  buildDirectorySlash,
+  type DirectorySlashSpec,
+} from "./directives/DirectorySlash";
+import {
   buildErrorDocument,
   type ErrorDocumentSpec,
 } from "./directives/ErrorDocument";
@@ -28,6 +32,7 @@ import { buildRewrite, type RewriteSpec } from "./rewrite";
  */
 export interface Spec {
   AddOutputFilterByType?: AddOutputFilterByTypeSpec;
+  DirectorySlash?: DirectorySlashSpec;
   ErrorDocument?: ErrorDocumentSpec;
   Files?: Array<FilesSpec>;
   FilesMatch?: Array<FilesMatchSpec>;
@@ -46,6 +51,9 @@ export function buildSpec(context: PluginContext, spec: Spec): string {
   let output = "";
   if (spec.AddOutputFilterByType !== undefined) {
     output += `${buildAddOutputFilterByType(spec.AddOutputFilterByType)}\n`;
+  }
+  if (spec.DirectorySlash !== undefined) {
+    output += `${buildDirectorySlash(spec.DirectorySlash)}\n`;
   }
   if (spec.ErrorDocument !== undefined) {
     output += `${buildErrorDocument(spec.ErrorDocument)}\n`;
