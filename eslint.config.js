@@ -174,7 +174,14 @@ export default tseslint.config(
       "vitest/prefer-comparison-matcher": "error",
       "vitest/prefer-each": "error",
       "vitest/prefer-equality-matcher": "error",
-      "vitest/prefer-expect-assertions": "error",
+      "vitest/prefer-expect-assertions": [
+        "error",
+        {
+          onlyFunctionsWithAsyncKeyword: true,
+          onlyFunctionsWithExpectInCallback: true,
+          onlyFunctionsWithExpectInLoop: true,
+        },
+      ],
       "vitest/prefer-expect-resolves": "error",
       "vitest/prefer-hooks-in-order": "error",
       "vitest/prefer-hooks-on-top": "error",
