@@ -38,9 +38,8 @@ jobs:
     strategy:
       matrix:
         versions: [
-          {node: "16", rollup: "3", vite: "4"},
-          {node: "18", rollup: "4", vite: "5"},
-          {node: "20", rollup: "4", vite: "6"},
+          {node: "18", rollup: "3", vite: "4"},
+          {node: "20", rollup: "4", vite: "5"},
           {node: "22", rollup: "4", vite: "6"}
         ]
     steps:

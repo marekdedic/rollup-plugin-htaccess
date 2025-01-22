@@ -33,7 +33,7 @@
     "url": "git+https://github.com/marekdedic/rollup-plugin-htaccess.git"
   },
   "engines": {
-    "node": "^16.20.2 || ^18.0.0 || ^20.0.0 || ^22.0.0",
+    "node": "^18.0.0 || ^20.0.0 || ^22.0.0",
     "npm": ">=8.0.0"
   },
   "scripts": {
