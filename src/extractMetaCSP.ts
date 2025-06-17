@@ -11,7 +11,7 @@ import { join } from "path";
 
 import type { Options } from "./index";
 
-import { escapeValue, readFile, writeFile } from "./utils";
+import { escapeRegexString, escapeValue, readFile, writeFile } from "./utils";
 
 /**
  * @public
@@ -148,11 +148,18 @@ async function writeCSPValuesToHtaccessFile(
   if (defaultPolicy !== null) {
     fileContents += `Header always set Content-Security-Policy "${escapeValue(defaultPolicy)}"\n`;
   }
+  function constructPerFileDirective([fileName, policy]: [
+    string,
+    string,
+  ]): string {
+    const innerDirective = `\n\tHeader always set Content-Security-Policy "${escapeValue(policy)}"\n`;
+    if (!fileName.includes("/")) {
+      return `<Files "${escapeValue(fileName)}">${innerDirective}</Files>\n`;
+    }
+    return `<If "%{REQUEST_FILENAME} =~ /${escapeRegexString(fileName)}$/">${innerDirective}</If>\n`;
+  }
   fileContents += Object.entries(perFilePolicies)
-    .map(
-      ([fileName, policy]) =>
-        `<Files "${escapeValue(fileName)}">\n\tHeader always set Content-Security-Policy "${escapeValue(policy)}"\n</Files>\n`,
-    )
+    .map(constructPerFileDirective)
     .join("");
   await writeFile(path, fileContents);
 }

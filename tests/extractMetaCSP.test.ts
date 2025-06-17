@@ -531,3 +531,60 @@ test("CSP extraction with glob per-file policies", async () => {
 
   expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
 });
+
+test("CSP extraction with files in subdirectories", async () => {
+  expect.assertions(2);
+
+  function configGenerator(
+    distFolder: string,
+  ): [Partial<Options>, CompileOptions] {
+    const pluginOptions: Partial<Options> = {
+      extractMetaCSP: {
+        enabled: true,
+        outputDir: join("tests", distFolder),
+        perFilePolicyFiles: ["file1.html", "subdir/file2.html"],
+      },
+    };
+    const compileOptions: CompileOptions = {
+      bundlerOptions: {
+        plugins: [
+          htaccess(pluginOptions),
+          {
+            generateBundle(): void {
+              this.emitFile({
+                fileName: "index.html",
+                source:
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+                type: "asset",
+              });
+              this.emitFile({
+                fileName: "file1.html",
+                source:
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-1"></head><body></body></html>',
+                type: "asset",
+              });
+              this.emitFile({
+                fileName: "subdir/file2.html",
+                source:
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-2"></head><body></body></html>',
+                type: "asset",
+              });
+            },
+            name: "Emit index.html",
+          },
+        ],
+      },
+      write: true,
+    };
+    return [pluginOptions, compileOptions];
+  }
+  const output =
+    '<Files "file1.html">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>\n<If "%{REQUEST_FILENAME} =~ /subdir\\x{2f}file2\\.html$/">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</If>';
+  await compileRollup(...configGenerator("dist-rollup"));
+
+  expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
+
+  await compileVite(...configGenerator("dist-vite"));
+
+  expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
+});
