@@ -1,0 +1,1 @@
+The <Files> directive cannot contain files in subfolders. Use a separate .htaccess file or the <If> directive.
