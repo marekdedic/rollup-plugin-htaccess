@@ -11,6 +11,12 @@ export function buildInnerSpec(
   return buildSpec(context, innerSpec).trim().replace(/^/gmu, "\t");
 }
 
+export function escapeRegexString(input: string): string {
+  return input
+    .replace(/([\\^.$|()[*+?{#])/gu, "\\$1")
+    .replace(/\//gu, "\\x{2f}");
+}
+
 export function escapeValue(value: string): string {
   return value.replace(/"/gu, '\\"');
 }
