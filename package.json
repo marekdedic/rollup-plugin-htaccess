@@ -47,7 +47,7 @@
     "pretest": "tsc --project test.tsconfig.json",
     "test": "vitest",
     "test-coverage": "vitest run --coverage",
-    "lint": "eslint --color 'src/**/*.ts' 'tests/**/*.ts' '*.config.{js,ts}'"
+    "lint": "eslint"
   },
   "peerDependencies": {
     "rollup": "^3.29.4 || ^4.0.0",
