@@ -11,55 +11,39 @@
   "bugs": {
     "url": "https://github.com/marekdedic/rollup-plugin-htaccess/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marekdedic/rollup-plugin-htaccess.git"
+  },
   "license": "MIT",
   "author": "Marek Dědič",
   "type": "module",
-  "main": "dist/rollup-plugin-htaccess.cjs",
-  "module": "dist/rollup-plugin-htaccess.js",
-  "types": "dist/rollup-plugin-htaccess.d.ts",
   "exports": {
     ".": {
       "import": "./dist/rollup-plugin-htaccess.js",
       "require": "./dist/rollup-plugin-htaccess.cjs"
     }
   },
+  "main": "dist/rollup-plugin-htaccess.cjs",
+  "module": "dist/rollup-plugin-htaccess.js",
+  "types": "dist/rollup-plugin-htaccess.d.ts",
   "files": [
     "dist",
     "LICENSE",
     "README.md"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/marekdedic/rollup-plugin-htaccess.git"
-  },
-  "engines": {
-    "node": "^18.0.0 || ^20.0.0 || ^22.0.0",
-    "npm": ">=8.0.0"
-  },
   "scripts": {
-    "clean": "rimraf dist/*",
     "prebuild": "npm run clean",
-    "build:rollup": "rollup -c",
-    "build:api-extractor": "api-extractor run",
     "build": "npm run build:rollup && npm run build:api-extractor",
     "postbuild": "rimraf dist/types",
+    "build:api-extractor": "api-extractor run",
+    "build:rollup": "rollup -c",
+    "clean": "rimraf dist/*",
+    "lint": "eslint",
     "start": "rollup -cw",
     "pretest": "tsc --project test.tsconfig.json",
     "test": "vitest",
-    "test-coverage": "vitest run --coverage",
-    "lint": "eslint"
-  },
-  "peerDependencies": {
-    "rollup": "^3.29.4 || ^4.0.0",
-    "vite": "^4.5.3 || ^5.4.11 || ^6.0.0"
-  },
-  "peerDependenciesMeta": {
-    "rollup": {
-      "optional": true
-    },
-    "vite": {
-      "optional": true
-    }
+    "test-coverage": "vitest run --coverage"
   },
   "dependencies": {
     "domutils": "^3.1.0",
@@ -90,5 +74,21 @@
     "typescript-eslint": "^8.2.0",
     "vite": "^6.0.2",
     "vitest": "^3.0.3"
+  },
+  "peerDependencies": {
+    "rollup": "^3.29.4 || ^4.0.0",
+    "vite": "^4.5.3 || ^5.4.11 || ^6.0.0"
+  },
+  "peerDependenciesMeta": {
+    "rollup": {
+      "optional": true
+    },
+    "vite": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": "^18.0.0 || ^20.0.0 || ^22.0.0",
+    "npm": ">=8.0.0"
   }
 }
