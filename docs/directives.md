@@ -1,10 +1,12 @@
+# Supported htaccess directives
+
 | Symbol             | Meaning         |
 | ------------------ | --------------- |
 | :white_check_mark: | Supported       |
 | :construction:     | Partial support |
 | :x:                | Unsupported     |
 
-# Core
+## Core
 
 | Status             | Directive name           | Notes |
 | ------------------ | ------------------------ | ----- |
@@ -59,7 +61,7 @@
 | :x:                | UseCanonicalName         |       |
 | :x:                | UseCanonicalPhysicalPort |       |
 
-# Base
+## Base
 
 | Status             | Directive name                | Notes |
 | ------------------ | ----------------------------- | ----- |
@@ -197,7 +199,7 @@
 | :x:                | xml2StartParse                |       |
 
 
-# Extension
+## Extension
 
 | Status             | Extension          | Directive name                 | Notes |
 | ------------------ | ------------------ | ------------------------------ | ----- |
@@ -381,7 +383,7 @@
 | :x:                | mod_usertrack      | CookieTracking                 |       |
 | :x:                | mod_version        | \<IfVersion\>                  |       |
 
-# Experimental
+## Experimental
 
 | Status             | Directive name              | Notes |
 | ------------------ | --------------------------- | ----- |

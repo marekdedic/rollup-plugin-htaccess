@@ -1,12 +1,14 @@
+# Supported response headers
+
 | Symbol             | Meaning         |
 | ------------------ | --------------- |
 | :white_check_mark: | Supported       |
 | :construction:     | Partial support |
 | :x:                | Unsupported     |
 
-# Standard
+## Standard
 
-## Used
+### Used
 
 | Status             | Header                           | Notes |
 | ------------------ | -------------------------------- | ----- |
@@ -55,22 +57,22 @@
 | :x:                | Via                              |       |
 | :x:                | WWW-Authenticate                 |       |
 
-## Experimental
+### Experimental
 
 | Status             | Header    | Notes |
 | ------------------ | --------- | ----- |
 | :x:                | Accept-CH |       |
 
-## Obsolete
+### Obsolete
 
 | Status             | Header      | Notes |
 | ------------------ | ----------- | ----- |
 | :x:                | Content-MD5 |       |
 | :x:                | Warning     |       |
 
-# Non-standard
+## Non-standard
 
-## Used
+### Used
 
 | Status             | Header                  | Notes |
 | ------------------ | ----------------------- | ----- |
@@ -91,7 +93,7 @@
 | :x:                | X-Correlation-ID        |       |
 | :x:                | X-UA-Compatible         |       |
 
-## Obsolete
+### Obsolete
 
 | Status             | Header           | Notes |
 | ------------------ | ---------------- | ----- |
