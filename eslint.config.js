@@ -8,58 +8,19 @@ import prettierRecommended from "eslint-plugin-prettier/recommended";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  js.configs.recommended,
-  prettierRecommended,
-  commentsConfig.recommended,
-  ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
-  perfectionist.configs["recommended-natural"],
   {
-    languageOptions: {
-      parserOptions: {
-        projectService: {
-          allowDefaultProject: ["*.js", "*.config.ts"],
-          defaultProject: "tsconfig.json",
-        },
-      },
-    },
+    extends: [
+      js.configs.recommended,
+      prettierRecommended,
+      commentsConfig.recommended,
+      perfectionist.configs["recommended-natural"],
+    ],
+    files: ["**/*.js", "**/*.ts"],
     plugins: {
       "eslint-comments": eslintComments,
       "prefer-arrow-functions": preferArrowFunctions,
     },
     rules: {
-      "@typescript-eslint/array-type": ["error", { default: "generic" }],
-      "@typescript-eslint/class-methods-use-this": "error",
-      "@typescript-eslint/consistent-type-exports": "error",
-      "@typescript-eslint/consistent-type-imports": "error",
-      "@typescript-eslint/default-param-last": "error",
-      "@typescript-eslint/explicit-function-return-type": "error",
-      "@typescript-eslint/explicit-member-accessibility": "error",
-      "@typescript-eslint/explicit-module-boundary-types": "error",
-      "@typescript-eslint/init-declarations": "error",
-      "@typescript-eslint/method-signature-style": ["error", "method"],
-      "@typescript-eslint/no-import-type-side-effects": "error",
-      "@typescript-eslint/no-shadow": "error",
-      "@typescript-eslint/no-unnecessary-parameter-property-assignment":
-        "error",
-      "@typescript-eslint/no-unnecessary-qualifier": "error",
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        { argsIgnorePattern: "^_" },
-      ],
-      "@typescript-eslint/no-use-before-define": [
-        "error",
-        { functions: false },
-      ],
-      "@typescript-eslint/no-useless-empty-export": "error",
-      "@typescript-eslint/parameter-properties": "error",
-      "@typescript-eslint/prefer-enum-initializers": "error",
-      "@typescript-eslint/prefer-readonly": "error",
-      "@typescript-eslint/promise-function-async": "error",
-      "@typescript-eslint/require-array-sort-compare": "error",
-      "@typescript-eslint/strict-boolean-expressions": "error",
-      "@typescript-eslint/switch-exhaustiveness-check": "error",
-      "@typescript-eslint/typedef": "error",
       "array-callback-return": "error",
       "arrow-body-style": ["error", "as-needed"],
       "block-scoped-var": "error",
@@ -145,6 +106,56 @@ export default tseslint.config(
     },
   },
   {
+    extends: [
+      tseslint.configs.strictTypeChecked,
+      tseslint.configs.stylisticTypeChecked,
+    ],
+    files: ["**/*.ts"],
+    languageOptions: {
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: ["*.js", "*.config.ts"],
+          defaultProject: "tsconfig.json",
+        },
+      },
+    },
+    rules: {
+      "@typescript-eslint/array-type": ["error", { default: "generic" }],
+      "@typescript-eslint/class-methods-use-this": "error",
+      "@typescript-eslint/consistent-type-exports": "error",
+      "@typescript-eslint/consistent-type-imports": "error",
+      "@typescript-eslint/default-param-last": "error",
+      "@typescript-eslint/explicit-function-return-type": "error",
+      "@typescript-eslint/explicit-member-accessibility": "error",
+      "@typescript-eslint/explicit-module-boundary-types": "error",
+      "@typescript-eslint/init-declarations": "error",
+      "@typescript-eslint/method-signature-style": ["error", "method"],
+      "@typescript-eslint/no-import-type-side-effects": "error",
+      "@typescript-eslint/no-shadow": "error",
+      "@typescript-eslint/no-unnecessary-parameter-property-assignment":
+        "error",
+      "@typescript-eslint/no-unnecessary-qualifier": "error",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_" },
+      ],
+      "@typescript-eslint/no-use-before-define": [
+        "error",
+        { functions: false },
+      ],
+      "@typescript-eslint/no-useless-empty-export": "error",
+      "@typescript-eslint/parameter-properties": "error",
+      "@typescript-eslint/prefer-enum-initializers": "error",
+      "@typescript-eslint/prefer-readonly": "error",
+      "@typescript-eslint/promise-function-async": "error",
+      "@typescript-eslint/require-array-sort-compare": "error",
+      "@typescript-eslint/strict-boolean-expressions": "error",
+      "@typescript-eslint/switch-exhaustiveness-check": "error",
+      "@typescript-eslint/typedef": "error",
+    },
+  },
+  {
+    extends: [vitest.configs.recommended],
     files: ["tests/**/*.ts"],
     languageOptions: {
       parserOptions: {
@@ -152,9 +163,7 @@ export default tseslint.config(
         projectService: false,
       },
     },
-    ...vitest.configs.recommended,
     rules: {
-      ...vitest.configs.recommended.rules,
       "vitest/consistent-test-it": ["error", { withinDescribe: "test" }],
       "vitest/no-alias-methods": "error",
       "vitest/no-conditional-expect": "error",
@@ -198,14 +207,6 @@ export default tseslint.config(
       "vitest/require-hook": "error",
       "vitest/require-to-throw-message": "error",
       "vitest/valid-expect-in-promise": "error",
-    },
-  },
-  {
-    files: ["**/*.js"],
-    rules: {
-      "@typescript-eslint/no-unsafe-argument": "off",
-      "@typescript-eslint/no-unsafe-assignment": "off",
-      "@typescript-eslint/no-unsafe-member-access": "off",
     },
   },
 );
