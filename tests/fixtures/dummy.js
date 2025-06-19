@@ -1,1 +1,1 @@
-console.log("dummy");
+export const a = "Hello World!";
