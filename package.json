@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-htaccess",
-  "version": "0.11.2",
+  "version": "0.11.3",
   "description": "A rollup/vite plugin to generate .htaccess files",
   "keywords": [
     "rollup-plugin",
@@ -62,7 +62,7 @@
     "@vitest/eslint-plugin": "^1.1.25",
     "eslint": "^9.9.0",
     "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-package-json": "^0.48.0",
+    "eslint-plugin-package-json": "^0.50.0",
     "eslint-plugin-perfectionist": "^4.1.2",
     "eslint-plugin-prefer-arrow-functions": "^3.4.0 <3.7",
     "eslint-plugin-prettier": "^5.1.3",
