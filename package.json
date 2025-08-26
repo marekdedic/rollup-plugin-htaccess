@@ -28,9 +28,7 @@
   "module": "dist/rollup-plugin-htaccess.js",
   "types": "dist/rollup-plugin-htaccess.d.ts",
   "files": [
-    "dist",
-    "LICENSE",
-    "README.md"
+    "dist"
   ],
   "scripts": {
     "prebuild": "npm run clean",
