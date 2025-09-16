@@ -23,7 +23,9 @@ export type {
 export type { ReferrerPolicySpec } from "./directives/Header/ReferrerPolicy";
 export type { StrictTransportSecuritySpec } from "./directives/Header/StrictTransportSecurity";
 export type { XContentTypeOptionsSpec } from "./directives/Header/XContentTypeOptions";
+// eslint-disable-next-line @typescript-eslint/no-deprecated -- Internal deprecation
 export type { XFrameOptionsSpec } from "./directives/Header/XFrameOptions";
+// eslint-disable-next-line @typescript-eslint/no-deprecated -- Internal deprecation
 export type { XXssProtectionSpec } from "./directives/Header/XXssProtection";
 export type { IfSpec } from "./directives/If";
 export type { IfDefineSpec } from "./directives/IfDefine";
