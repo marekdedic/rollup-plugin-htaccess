@@ -13,7 +13,7 @@ A plugin for Rollup and Vite that enables you to create htaccess files as part o
 
 ## Requirements
 
-- Node 18 or newer
+- Node 20 or newer
 
 ## How to install
 
