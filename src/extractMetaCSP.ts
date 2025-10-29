@@ -2,7 +2,9 @@ import type {
   NormalizedOutputOptions,
   PluginContext,
   PluginHooks,
+  Plugin as RollupPlugin,
 } from "rollup";
+import type { Plugin as VitePlugin } from "vite";
 
 import { findAll } from "domutils";
 import { glob } from "glob";
@@ -32,7 +34,9 @@ export type ExtractMetaCSPOptions =
 
 let outputOptions: NormalizedOutputOptions | undefined = undefined;
 
-export function extractMetaCSP(options: Options): Partial<PluginHooks> {
+export function extractMetaCSP(
+  options: Options,
+): Partial<RollupPlugin & VitePlugin> {
   if (!options.extractMetaCSP.enabled) {
     return {};
   }
