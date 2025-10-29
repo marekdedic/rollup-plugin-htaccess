@@ -1,4 +1,4 @@
-import { join } from "path";
+import { join, resolve } from "path";
 import { describe, expect, test, vi } from "vitest";
 
 import type { Options } from "../src";
@@ -49,7 +49,7 @@ async function loadError(spec: string): Promise<string> {
 
 async function loadOptions(spec: string): Promise<Options> {
   return (
-    (await import(`tests/specs/${spec}-options.ts`)) as {
+    (await import(resolve(`./tests/specs/${spec}-options.ts`))) as {
       default: Options;
     }
   ).default;
