@@ -35,7 +35,10 @@
     "build:api-extractor": "api-extractor run",
     "build:rollup": "rollup -c",
     "clean": "rimraf dist/*",
-    "lint": "eslint",
+    "lint": "run-p -c --aggregate-output lint:*",
+    "lint:attw": "attw --pack",
+    "lint:eslint": "eslint",
+    "prepack": "npm run build",
     "start": "rollup -cw",
     "pretest": "tsc --project test.tsconfig.json",
     "test": "vitest",
@@ -47,6 +50,7 @@
     "htmlparser2": "^10.0.0"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.2",
     "@eslint-community/eslint-plugin-eslint-comments": "^4.4.0",
     "@eslint/js": "^9.9.1",
     "@eslint/json": "^0.14.0",
@@ -62,6 +66,7 @@
     "eslint-plugin-perfectionist": "^4.1.2",
     "eslint-plugin-prefer-arrow-functions": "^3.4.0 <3.10",
     "eslint-plugin-prettier": "^5.1.3",
+    "npm-run-all": "^4.1.5",
     "prettier": "^3.3.0",
     "rimraf": "^6.0.1",
     "rollup": "^4.18.0",
