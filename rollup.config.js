@@ -7,6 +7,7 @@ export default {
     compact: true,
     file: "dist/rollup-plugin-htaccess.js",
     format: "es",
+    sourcemap: true,
   },
   plugins: [typescript()],
 };
