@@ -20,11 +20,9 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/rollup-plugin-htaccess.js",
-      "require": "./dist/rollup-plugin-htaccess.cjs"
+      "import": "./dist/rollup-plugin-htaccess.js"
     }
   },
-  "main": "dist/rollup-plugin-htaccess.cjs",
   "module": "dist/rollup-plugin-htaccess.js",
   "types": "dist/rollup-plugin-htaccess.d.ts",
   "files": [
