@@ -24,6 +24,6 @@ test("Nonexistent template", async () => {
   const errorMessage =
     "Could not read rollup-plugin-htaccess template file, Error: ";
 
-  await expect(compileRollup(options)).rejects.toThrow(errorMessage);
-  await expect(compileVite(options)).rejects.toThrow(errorMessage);
+  await expect(compileRollup(options)).rejects.toThrowError(errorMessage);
+  await expect(compileVite(options)).rejects.toThrowError(errorMessage);
 });
