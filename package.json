@@ -25,6 +25,7 @@
   },
   "module": "dist/rollup-plugin-htaccess.js",
   "types": "dist/rollup-plugin-htaccess.d.ts",
+  "sideEffects": false,
   "files": [
     "dist"
   ],
