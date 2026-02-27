@@ -33,18 +33,7 @@ import {
 /**
  * @public
  */
-export type HeaderSpec<T extends keyof HeaderValueSpecMap> = {
-  always?: boolean;
-  condition?:
-    | {
-        envVar: string;
-        requireUnset?: boolean;
-      }
-    | {
-        expression: string;
-      };
-  header: T;
-} & (
+export type HeaderSpec<T extends keyof HeaderValueSpecMap> = (
   | {
       action: "add" | "append" | "merge" | "set" | "setifempty";
       value: HeaderValueSpecMap[T];
@@ -57,7 +46,18 @@ export type HeaderSpec<T extends keyof HeaderValueSpecMap> = {
       replacement: string;
       value: string;
     }
-);
+) & {
+  always?: boolean;
+  condition?:
+    | {
+        envVar: string;
+        requireUnset?: boolean;
+      }
+    | {
+        expression: string;
+      };
+  header: T;
+};
 
 /**
  * @public
