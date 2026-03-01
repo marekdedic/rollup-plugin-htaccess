@@ -25,6 +25,7 @@
   },
   "module": "dist/rollup-plugin-htaccess.js",
   "types": "dist/rollup-plugin-htaccess.d.ts",
+  "sideEffects": false,
   "files": [
     "dist"
   ],
@@ -62,7 +63,7 @@
     "@vitest/eslint-plugin": "^1.6.7",
     "eslint": "^9.9.0",
     "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-package-json": "^0.88.0",
+    "eslint-plugin-package-json": "^0.89.1",
     "eslint-plugin-perfectionist": "^5.0.0",
     "eslint-plugin-prefer-arrow-functions": "^3.4.0 <3.10",
     "eslint-plugin-prettier": "^5.1.3",
