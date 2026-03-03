@@ -55,12 +55,12 @@ function closeBundle(
       const outputDir =
         options.outputDir ?? outputOptions?.dir ?? process.cwd();
       const defaultPolicy =
-        options.defaultPolicyFile !== undefined
-          ? await extractCSPValueFromHTMLFile(
+        options.defaultPolicyFile === undefined
+          ? null
+          : await extractCSPValueFromHTMLFile(
               this,
               join(outputDir, options.defaultPolicyFile),
-            )
-          : null;
+            );
       const perFilePolicyFiles = await glob(options.perFilePolicyFiles ?? [], {
         cwd: outputDir,
       });
@@ -94,6 +94,7 @@ async function extractCSPValueFromHTMLFile(
   context: PluginContext,
   fileName: string,
 ): Promise<string | null> {
+  // eslint-disable-next-line no-useless-assignment -- no way to assign this in the try block and have it available afterwards
   let fileContents = "";
   try {
     fileContents = await readFile(fileName);

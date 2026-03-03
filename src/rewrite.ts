@@ -313,7 +313,7 @@ function buildRewriteRules(spec: Array<RewriteRuleSpec>): Array<string> {
       output.push(buildRewriteCondition(condition));
     }
     const flags =
-      rule.flags !== undefined ? buildRewriteRuleFlags(rule.flags) : "";
+      rule.flags === undefined ? "" : buildRewriteRuleFlags(rule.flags);
     output.push(
       `RewriteRule "${escapeValue(rule.pattern)}" "${escapeValue(rule.substitution ?? "-")}"${flags}`,
     );
