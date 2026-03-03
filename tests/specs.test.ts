@@ -71,16 +71,16 @@ describe("Spec tests", () => {
     const output = await loadOutput(spec);
 
     /* eslint-disable vitest/no-conditional-in-test, vitest/no-conditional-expect -- Conditionals used to load errors */
-    if (output !== null) {
-      await expect(compileRollup(options)).resolves.toBe(output);
-      await expect(compileVite(options)).resolves.toBe(output);
-    } else {
+    if (output === null) {
       const error = await loadError(spec);
       // eslint-disable-next-line @typescript-eslint/no-empty-function -- The empty function is the point
       vi.spyOn(global.console, "error").mockImplementation(() => {});
 
       await expect(compileRollup(options)).rejects.toThrowError(error);
       await expect(compileVite(options)).rejects.toThrowError(error);
+    } else {
+      await expect(compileRollup(options)).resolves.toBe(output);
+      await expect(compileVite(options)).resolves.toBe(output);
     }
     /* eslint-enable */
   });

@@ -55,12 +55,12 @@ function closeBundle(
       const outputDir =
         options.outputDir ?? outputOptions?.dir ?? process.cwd();
       const defaultPolicy =
-        options.defaultPolicyFile !== undefined
-          ? await extractCSPValueFromHTMLFile(
+        options.defaultPolicyFile === undefined
+          ? null
+          : await extractCSPValueFromHTMLFile(
               this,
               join(outputDir, options.defaultPolicyFile),
-            )
-          : null;
+            );
       const perFilePolicyFiles = await glob(options.perFilePolicyFiles ?? [], {
         cwd: outputDir,
       });
