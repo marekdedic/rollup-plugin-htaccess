@@ -94,6 +94,7 @@ async function extractCSPValueFromHTMLFile(
   context: PluginContext,
   fileName: string,
 ): Promise<string | null> {
+  // eslint-disable-next-line no-useless-assignment -- no way to assign this in the try block and have it available afterwards
   let fileContents = "";
   try {
     fileContents = await readFile(fileName);
