@@ -1,7 +1,15 @@
-import type { PluginContext, Plugin as RollupPlugin } from "rollup";
+import type {
+  NormalizedOutputOptions,
+  PluginContext,
+  Plugin as RollupPlugin,
+} from "rollup";
 import type { Plugin as VitePlugin } from "vite";
 
-import { extractMetaCSP, type ExtractMetaCSPOptions } from "./extractMetaCSP";
+import {
+  extractMetaCSP,
+  type ExtractMetaCSPEnabledOptions,
+  type ExtractMetaCSPOptions,
+} from "./extractMetaCSP";
 import { buildSpec, type Spec } from "./spec";
 import { readTemplate } from "./template";
 
@@ -26,9 +34,24 @@ export function htaccess(opts?: Partial<Options>): RollupPlugin & VitePlugin {
     template: undefined,
     ...opts,
   };
+  let rollupOutputOptions: NormalizedOutputOptions | undefined = undefined;
   let root = "";
 
   const rollupPlugin: RollupPlugin & VitePlugin = {
+    ...(options.extractMetaCSP.enabled && {
+      closeBundle: {
+        async handler(): Promise<void> {
+          await extractMetaCSP(
+            this,
+            options.extractMetaCSP as ExtractMetaCSPEnabledOptions,
+            rollupOutputOptions,
+            options.fileName,
+          );
+        },
+        order: "post",
+        sequential: true,
+      },
+    }),
     configResolved: (config: { root: string }): void => {
       root = config.root;
     },
@@ -40,7 +63,9 @@ export function htaccess(opts?: Partial<Options>): RollupPlugin & VitePlugin {
       });
     },
     name: "htaccess",
-    ...extractMetaCSP(options),
+    renderStart: (outputOptions: NormalizedOutputOptions): void => {
+      rollupOutputOptions = outputOptions;
+    },
   };
   return rollupPlugin;
 }

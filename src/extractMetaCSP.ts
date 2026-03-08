@@ -1,17 +1,9 @@
-import type {
-  NormalizedOutputOptions,
-  PluginContext,
-  PluginHooks,
-  Plugin as RollupPlugin,
-} from "rollup";
-import type { Plugin as VitePlugin } from "vite";
+import type { NormalizedOutputOptions, PluginContext } from "rollup";
 
 import { findAll } from "domutils";
 import { glob } from "glob";
 import { ElementType, parseDocument } from "htmlparser2";
 import { join } from "path";
-
-import type { Options } from "./index";
 
 import { escapeRegexString, escapeValue, readFile, writeFile } from "./utils";
 
@@ -32,62 +24,41 @@ export type ExtractMetaCSPOptions =
   | { enabled: false }
   | ExtractMetaCSPEnabledOptions;
 
-let outputOptions: NormalizedOutputOptions | undefined = undefined;
-
-export function extractMetaCSP(
-  options: Options,
-): Partial<RollupPlugin & VitePlugin> {
-  if (!options.extractMetaCSP.enabled) {
-    return {};
-  }
-  return {
-    closeBundle: closeBundle(options.extractMetaCSP, options.fileName),
-    renderStart,
-  };
-}
-
-function closeBundle(
+export async function extractMetaCSP(
+  context: PluginContext,
   options: ExtractMetaCSPEnabledOptions,
+  rollupOutputOptions: NormalizedOutputOptions | undefined,
   htaccessFileName: string,
-): PluginHooks["closeBundle"] {
-  return {
-    async handler(this: PluginContext): Promise<void> {
-      const outputDir =
-        options.outputDir ?? outputOptions?.dir ?? process.cwd();
-      const defaultPolicy =
-        options.defaultPolicyFile === undefined
-          ? null
-          : await extractCSPValueFromHTMLFile(
-              this,
-              join(outputDir, options.defaultPolicyFile),
-            );
-      const perFilePolicyFiles = await glob(options.perFilePolicyFiles ?? [], {
-        cwd: outputDir,
-      });
-      perFilePolicyFiles.sort();
-      const perFilePolicies = Object.fromEntries(
-        (
-          await Promise.all(
-            perFilePolicyFiles.map(async (fileName) => [
-              fileName,
-              await extractCSPValueFromHTMLFile(
-                this,
-                join(outputDir, fileName),
-              ),
-            ]),
-          )
-        ).filter(([_, policy]) => policy !== null) as Array<[string, string]>,
-      );
-      await writeCSPValuesToHtaccessFile(
-        defaultPolicy,
-        perFilePolicies,
-        options,
-        htaccessFileName,
-      );
-    },
-    order: "post",
-    sequential: true,
-  };
+): Promise<void> {
+  const outputDir =
+    options.outputDir ?? rollupOutputOptions?.dir ?? process.cwd();
+  const defaultPolicy =
+    options.defaultPolicyFile === undefined
+      ? null
+      : await extractCSPValueFromHTMLFile(
+          context,
+          join(outputDir, options.defaultPolicyFile),
+        );
+  const perFilePolicyFiles = await glob(options.perFilePolicyFiles ?? [], {
+    cwd: outputDir,
+  });
+  perFilePolicyFiles.sort();
+  const perFilePolicies = Object.fromEntries(
+    (
+      await Promise.all(
+        perFilePolicyFiles.map(async (fileName) => [
+          fileName,
+          await extractCSPValueFromHTMLFile(context, join(outputDir, fileName)),
+        ]),
+      )
+    ).filter(([_, policy]) => policy !== null) as Array<[string, string]>,
+  );
+  await writeCSPValuesToHtaccessFile(
+    defaultPolicy,
+    perFilePolicies,
+    outputDir,
+    htaccessFileName,
+  );
 }
 
 async function extractCSPValueFromHTMLFile(
@@ -135,20 +106,13 @@ async function extractCSPValueFromHTMLFile(
   return cspValues[0];
 }
 
-function renderStart(outputOptionsValue: NormalizedOutputOptions): void {
-  outputOptions = outputOptionsValue;
-}
-
 async function writeCSPValuesToHtaccessFile(
   defaultPolicy: string | null,
   perFilePolicies: Record<string, string>,
-  options: ExtractMetaCSPEnabledOptions,
+  outputDir: string,
   htaccessFileName: string,
 ): Promise<void> {
-  const path = join(
-    options.outputDir ?? outputOptions?.dir ?? process.cwd(),
-    htaccessFileName,
-  );
+  const path = join(outputDir, htaccessFileName);
   let fileContents = await readFile(path).catch(() => "");
   if (defaultPolicy !== null) {
     fileContents += `Header always set Content-Security-Policy "${escapeValue(defaultPolicy)}"\n`;
