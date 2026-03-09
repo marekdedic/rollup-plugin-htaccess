@@ -15,6 +15,7 @@ export default tseslint.config(
   globalIgnores([
     "dist/",
     "package-lock.json",
+    "tests/dist-rolldown/",
     "tests/dist-rollup/",
     "tests/dist-vite/",
   ]),
