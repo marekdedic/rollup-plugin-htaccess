@@ -78,7 +78,7 @@ export async function compileVite(
       },
       write: compileOptions.write ?? false,
     },
-    logLevel: "warn",
+    logLevel: "silent",
     plugins: [htaccess(pluginOptions)],
     ...compileOptions.bundlerOptions,
   })) as Array<RollupOutput> | RollupOutput;
