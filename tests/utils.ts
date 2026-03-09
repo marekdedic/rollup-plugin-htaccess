@@ -13,7 +13,7 @@ import htaccess, { type Options } from "../src";
 
 export interface CompileOptions {
   bundlerOptions?: {
-    plugins?: Array<RollupPlugin & VitePlugin>;
+    plugins?: Array<Omit<VitePlugin, keyof RollupPlugin> & RollupPlugin>;
     root?: string;
   };
   fileName?: string;
@@ -81,11 +81,8 @@ export async function compileVite(
     logLevel: "silent",
     plugins: [htaccess(pluginOptions)],
     ...compileOptions.bundlerOptions,
-  })) as Array<RollupOutput> | RollupOutput;
-  return extractFileContents(
-    Array.isArray(output) ? output[0] : output,
-    compileOptions.fileName ?? ".htaccess",
-  );
+  })) as RolldownOutput;
+  return extractFileContents(output, compileOptions.fileName ?? ".htaccess");
 }
 
 export function readDirSync(path: string): Array<Directory> {
