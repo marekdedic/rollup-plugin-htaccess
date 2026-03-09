@@ -40,7 +40,7 @@ export function htaccess(
   let rollupOutputOptions: NormalizedOutputOptions | undefined = undefined;
   let root = "";
 
-  const rollupPlugin: RollupPlugin & VitePlugin = {
+  const rollupPlugin: Omit<VitePlugin, keyof RollupPlugin> & RollupPlugin = {
     ...(options.extractMetaCSP.enabled && {
       closeBundle: {
         async handler(): Promise<void> {
