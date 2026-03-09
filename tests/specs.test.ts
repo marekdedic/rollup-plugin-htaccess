@@ -4,7 +4,12 @@ import { describe, expect, test, vi } from "vitest";
 import type { Options } from "../src";
 
 import { readFile } from "../src/utils";
-import { compileRollup, compileVite, readDirSync } from "./utils";
+import {
+  compileRolldown,
+  compileRollup,
+  compileVite,
+  readDirSync,
+} from "./utils";
 
 function getSpecPrefix(): string | null {
   const ind = process.argv.findIndex((value) =>
@@ -65,7 +70,7 @@ async function loadOutput(spec: string): Promise<string | null> {
 
 describe("Spec tests", () => {
   test.each(listSpecs(getSpecPrefix()))("Spec %s", async (spec) => {
-    expect.assertions(2);
+    expect.assertions(3);
 
     const options = await loadOptions(spec);
     const output = await loadOutput(spec);
@@ -76,9 +81,11 @@ describe("Spec tests", () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function -- The empty function is the point
       vi.spyOn(global.console, "error").mockImplementation(() => {});
 
+      await expect(compileRolldown(options)).rejects.toThrowError(error);
       await expect(compileRollup(options)).rejects.toThrowError(error);
       await expect(compileVite(options)).rejects.toThrowError(error);
     } else {
+      await expect(compileRolldown(options)).resolves.toBe(output);
       await expect(compileRollup(options)).resolves.toBe(output);
       await expect(compileVite(options)).resolves.toBe(output);
     }

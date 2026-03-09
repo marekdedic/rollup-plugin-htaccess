@@ -4,15 +4,21 @@ import { beforeEach, expect, test } from "vitest";
 
 import htaccess, { type Options } from "../src";
 import { readFile } from "../src/utils";
-import { type CompileOptions, compileRollup, compileVite } from "./utils";
+import {
+  type CompileOptions,
+  compileRolldown,
+  compileRollup,
+  compileVite,
+} from "./utils";
 
 beforeEach(async () => {
+  await rimraf("tests/dist-rolldown");
   await rimraf("tests/dist-rollup");
   await rimraf("tests/dist-vite");
 });
 
 test("Basic CSP extraction", async () => {
-  expect.assertions(2);
+  expect.assertions(3);
 
   function configGenerator(
     distFolder: string,
@@ -46,6 +52,11 @@ test("Basic CSP extraction", async () => {
     return [pluginOptions, compileOptions];
   }
   const output = 'Header always set Content-Security-Policy "CSP-value"';
+
+  await compileRolldown(...configGenerator("dist-rolldown"));
+
+  expect((await readFile("tests/dist-rolldown/.htaccess")).trim()).toBe(output);
+
   await compileRollup(...configGenerator("dist-rollup"));
 
   expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
@@ -56,7 +67,7 @@ test("Basic CSP extraction", async () => {
 });
 
 test("CSP extraction disabled", async () => {
-  expect.assertions(2);
+  expect.assertions(3);
 
   const pluginOptions = {
     extractMetaCSP: {
@@ -83,6 +94,11 @@ test("CSP extraction disabled", async () => {
     write: true,
   };
   const output = "";
+
+  await compileRolldown(pluginOptions, compileOptions);
+
+  expect((await readFile("tests/dist-rolldown/.htaccess")).trim()).toBe(output);
+
   await compileRollup(pluginOptions, compileOptions);
 
   expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
@@ -93,7 +109,7 @@ test("CSP extraction disabled", async () => {
 });
 
 test("CSP extraction with custom .htaccess", async () => {
-  expect.assertions(2);
+  expect.assertions(3);
 
   function configGenerator(
     distFolder: string,
@@ -129,6 +145,13 @@ test("CSP extraction with custom .htaccess", async () => {
     return [pluginOptions, compileOptions];
   }
   const output = 'Header always set Content-Security-Policy "CSP-value"';
+
+  await compileRolldown(...configGenerator("dist-rolldown"));
+
+  expect((await readFile("tests/dist-rolldown/custom.txt")).trim()).toBe(
+    output,
+  );
+
   await compileRollup(...configGenerator("dist-rollup"));
 
   expect((await readFile("tests/dist-rollup/custom.txt")).trim()).toBe(output);
@@ -139,7 +162,7 @@ test("CSP extraction with custom .htaccess", async () => {
 });
 
 test("CSP extraction with non-existent HTML file", async () => {
-  expect.assertions(2);
+  expect.assertions(3);
 
   function configGenerator(
     distFolder: string,
@@ -173,6 +196,11 @@ test("CSP extraction with non-existent HTML file", async () => {
     return [pluginOptions, compileOptions];
   }
   const output = "";
+
+  await compileRolldown(...configGenerator("dist-rolldown"));
+
+  expect((await readFile("tests/dist-rolldown/.htaccess")).trim()).toBe(output);
+
   await compileRollup(...configGenerator("dist-rollup"));
 
   expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
@@ -183,7 +211,7 @@ test("CSP extraction with non-existent HTML file", async () => {
 });
 
 test("CSP extraction with no valid meta tags", async () => {
-  expect.assertions(2);
+  expect.assertions(3);
 
   function configGenerator(
     distFolder: string,
@@ -217,6 +245,11 @@ test("CSP extraction with no valid meta tags", async () => {
     return [pluginOptions, compileOptions];
   }
   const output = "";
+
+  await compileRolldown(...configGenerator("dist-rolldown"));
+
+  expect((await readFile("tests/dist-rolldown/.htaccess")).trim()).toBe(output);
+
   await compileRollup(...configGenerator("dist-rollup"));
 
   expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
@@ -227,7 +260,7 @@ test("CSP extraction with no valid meta tags", async () => {
 });
 
 test("CSP extraction with conflicting directives", async () => {
-  expect.assertions(2);
+  expect.assertions(3);
 
   function configGenerator(
     distFolder: string,
@@ -262,6 +295,11 @@ test("CSP extraction with conflicting directives", async () => {
   }
 
   await expect(
+    compileRolldown(...configGenerator("dist-rolldown")),
+  ).rejects.toThrowError(
+    "Found multiple conflicting CSP directives when extracting from meta tags.",
+  );
+  await expect(
     compileRollup(...configGenerator("dist-rollup")),
   ).rejects.toThrowError(
     "Found multiple conflicting CSP directives when extracting from meta tags.",
@@ -274,7 +312,7 @@ test("CSP extraction with conflicting directives", async () => {
 });
 
 test("CSP meta element case sensitivity", async () => {
-  expect.assertions(2);
+  expect.assertions(3);
 
   function configGenerator(
     distFolder: string,
@@ -308,6 +346,11 @@ test("CSP meta element case sensitivity", async () => {
     return [pluginOptions, compileOptions];
   }
   const output = 'Header always set Content-Security-Policy "CSP-value"';
+
+  await compileRolldown(...configGenerator("dist-rolldown"));
+
+  expect((await readFile("tests/dist-rolldown/.htaccess")).trim()).toBe(output);
+
   await compileRollup(...configGenerator("dist-rollup"));
 
   expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
@@ -318,7 +361,7 @@ test("CSP meta element case sensitivity", async () => {
 });
 
 test("CSP extraction with other meta tags", async () => {
-  expect.assertions(2);
+  expect.assertions(3);
 
   function configGenerator(
     distFolder: string,
@@ -352,6 +395,11 @@ test("CSP extraction with other meta tags", async () => {
     return [pluginOptions, compileOptions];
   }
   const output = 'Header always set Content-Security-Policy "CSP-value"';
+
+  await compileRolldown(...configGenerator("dist-rolldown"));
+
+  expect((await readFile("tests/dist-rolldown/.htaccess")).trim()).toBe(output);
+
   await compileRollup(...configGenerator("dist-rollup"));
 
   expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
@@ -362,7 +410,7 @@ test("CSP extraction with other meta tags", async () => {
 });
 
 test("CSP extraction with per-file policies", async () => {
-  expect.assertions(2);
+  expect.assertions(3);
 
   function configGenerator(
     distFolder: string,
@@ -410,6 +458,11 @@ test("CSP extraction with per-file policies", async () => {
   }
   const output =
     'Header always set Content-Security-Policy "CSP-value"\n<Files "file1.html">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>\n<Files "file2.html">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</Files>';
+
+  await compileRolldown(...configGenerator("dist-rolldown"));
+
+  expect((await readFile("tests/dist-rolldown/.htaccess")).trim()).toBe(output);
+
   await compileRollup(...configGenerator("dist-rollup"));
 
   expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
@@ -420,7 +473,7 @@ test("CSP extraction with per-file policies", async () => {
 });
 
 test("CSP extraction with only per-file policies", async () => {
-  expect.assertions(2);
+  expect.assertions(3);
 
   function configGenerator(
     distFolder: string,
@@ -467,6 +520,11 @@ test("CSP extraction with only per-file policies", async () => {
   }
   const output =
     '<Files "file1.html">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>\n<Files "file2.html">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</Files>';
+
+  await compileRolldown(...configGenerator("dist-rolldown"));
+
+  expect((await readFile("tests/dist-rolldown/.htaccess")).trim()).toBe(output);
+
   await compileRollup(...configGenerator("dist-rollup"));
 
   expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
@@ -477,7 +535,7 @@ test("CSP extraction with only per-file policies", async () => {
 });
 
 test("CSP extraction with glob per-file policies", async () => {
-  expect.assertions(2);
+  expect.assertions(3);
 
   function configGenerator(
     distFolder: string,
@@ -525,6 +583,11 @@ test("CSP extraction with glob per-file policies", async () => {
   }
   const output =
     'Header always set Content-Security-Policy "CSP-value"\n<Files "file1.html">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>\n<Files "file2.html">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</Files>';
+
+  await compileRolldown(...configGenerator("dist-rolldown"));
+
+  expect((await readFile("tests/dist-rolldown/.htaccess")).trim()).toBe(output);
+
   await compileRollup(...configGenerator("dist-rollup"));
 
   expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
@@ -535,7 +598,7 @@ test("CSP extraction with glob per-file policies", async () => {
 });
 
 test("CSP extraction with files in subdirectories", async () => {
-  expect.assertions(2);
+  expect.assertions(3);
 
   function configGenerator(
     distFolder: string,
@@ -582,6 +645,11 @@ test("CSP extraction with files in subdirectories", async () => {
   }
   const output =
     '<Files "file1.html">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>\n<If "%{REQUEST_FILENAME} =~ /subdir\\x{2f}file2\\.html$/">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</If>';
+
+  await compileRolldown(...configGenerator("dist-rolldown"));
+
+  expect((await readFile("tests/dist-rolldown/.htaccess")).trim()).toBe(output);
+
   await compileRollup(...configGenerator("dist-rollup"));
 
   expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
