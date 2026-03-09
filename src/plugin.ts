@@ -1,3 +1,4 @@
+import type { Plugin as RolldownPlugin } from "rolldown";
 import type {
   NormalizedOutputOptions,
   PluginContext,
@@ -26,7 +27,9 @@ export interface Options {
 /**
  * @public
  */
-export function htaccess(opts?: Partial<Options>): RollupPlugin & VitePlugin {
+export function htaccess(
+  opts?: Partial<Options>,
+): RolldownPlugin & RollupPlugin & VitePlugin {
   const options: Options = {
     extractMetaCSP: { enabled: false },
     fileName: ".htaccess",
@@ -67,7 +70,7 @@ export function htaccess(opts?: Partial<Options>): RollupPlugin & VitePlugin {
       rollupOutputOptions = outputOptions;
     },
   };
-  return rollupPlugin;
+  return rollupPlugin as RolldownPlugin & RollupPlugin & VitePlugin;
 }
 
 async function buildHtaccessFile(
