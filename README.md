@@ -6,10 +6,11 @@
 [![NPM Downloads](https://img.shields.io/npm/dm/rollup-plugin-htaccess?logo=npm)](https://www.npmjs.com/package/rollup-plugin-htaccess)
 [![NPM License](https://img.shields.io/npm/l/rollup-plugin-htaccess)](https://github.com/marekdedic/rollup-plugin-htaccess/blob/master/LICENSE)
 
+![GitHub package.json dev/peer/optional dependency version (branch)](https://img.shields.io/github/package-json/dependency-version/marekdedic/rollup-plugin-htaccess/peer/rolldown/master?logo=rolldown)
 ![GitHub package.json dev/peer/optional dependency version (branch)](https://img.shields.io/github/package-json/dependency-version/marekdedic/rollup-plugin-htaccess/peer/rollup/master?logo=rollup.js)
 ![GitHub package.json dev/peer/optional dependency version (branch)](https://img.shields.io/github/package-json/dependency-version/marekdedic/rollup-plugin-htaccess/peer/vite/master?logo=vite)
 
-A plugin for Rollup and Vite that enables you to create htaccess files as part of the build process.
+A plugin for Rollup, Rolldown and Vite that enables you to create htaccess files as part of the build process.
 
 ## Requirements
 
