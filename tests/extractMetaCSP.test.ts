@@ -296,17 +296,15 @@ test("CSP extraction with conflicting directives", async () => {
 
   await expect(
     compileRolldown(...configGenerator("dist-rolldown")),
-  ).rejects.toThrowError(
+  ).rejects.toThrow(
     "Found multiple conflicting CSP directives when extracting from meta tags.",
   );
   await expect(
     compileRollup(...configGenerator("dist-rollup")),
-  ).rejects.toThrowError(
+  ).rejects.toThrow(
     "Found multiple conflicting CSP directives when extracting from meta tags.",
   );
-  await expect(
-    compileVite(...configGenerator("dist-vite")),
-  ).rejects.toThrowError(
+  await expect(compileVite(...configGenerator("dist-vite"))).rejects.toThrow(
     "Found multiple conflicting CSP directives when extracting from meta tags.",
   );
 });

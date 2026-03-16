@@ -81,9 +81,9 @@ describe("Spec tests", () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function -- The empty function is the point
       vi.spyOn(global.console, "error").mockImplementation(() => {});
 
-      await expect(compileRolldown(options)).rejects.toThrowError(error);
-      await expect(compileRollup(options)).rejects.toThrowError(error);
-      await expect(compileVite(options)).rejects.toThrowError(error);
+      await expect(compileRolldown(options)).rejects.toThrow(error);
+      await expect(compileRollup(options)).rejects.toThrow(error);
+      await expect(compileVite(options)).rejects.toThrow(error);
     } else {
       await expect(compileRolldown(options)).resolves.toBe(output);
       await expect(compileRollup(options)).resolves.toBe(output);
