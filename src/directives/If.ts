@@ -1,5 +1,4 @@
-import type { PluginContext } from "rollup";
-
+import type { PluginContext } from "../plugin-types";
 import type { Spec } from "../spec";
 
 import { buildInnerSpec, escapeValue } from "../utils";

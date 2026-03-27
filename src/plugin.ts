@@ -1,10 +1,4 @@
-import type { Plugin as RolldownPlugin } from "rolldown";
-import type {
-  NormalizedOutputOptions,
-  PluginContext,
-  Plugin as RollupPlugin,
-} from "rollup";
-import type { Plugin as VitePlugin } from "vite";
+import type { OutputOptions, PluginContext, PluginHook } from "./plugin-types";
 
 import {
   extractMetaCSP,
@@ -13,6 +7,17 @@ import {
 } from "./extractMetaCSP";
 import { buildSpec, type Spec } from "./spec";
 import { readTemplate } from "./template";
+
+/**
+ * @public
+ */
+export interface HtaccessPlugin {
+  closeBundle?: PluginHook<(this: PluginContext) => Promise<void>>;
+  configResolved?: PluginHook<(config: { root: string }) => void>;
+  generateBundle?: PluginHook<(this: PluginContext) => Promise<void>>;
+  name: string;
+  renderStart?: PluginHook<(outputOptions: OutputOptions) => void>;
+}
 
 /**
  * @public
@@ -27,9 +32,7 @@ export interface Options {
 /**
  * @public
  */
-export function htaccess(
-  opts?: Partial<Options>,
-): RolldownPlugin & RollupPlugin & VitePlugin {
+export function htaccess(opts?: Partial<Options>): HtaccessPlugin {
   const options: Options = {
     extractMetaCSP: { enabled: false },
     fileName: ".htaccess",
@@ -37,10 +40,10 @@ export function htaccess(
     template: undefined,
     ...opts,
   };
-  let rollupOutputOptions: NormalizedOutputOptions | undefined = undefined;
+  let rollupOutputOptions: OutputOptions | undefined = undefined;
   let root = "";
 
-  const rollupPlugin: Omit<VitePlugin, keyof RollupPlugin> & RollupPlugin = {
+  return {
     ...(options.extractMetaCSP.enabled && {
       closeBundle: {
         async handler(): Promise<void> {
@@ -66,11 +69,10 @@ export function htaccess(
       });
     },
     name: "htaccess",
-    renderStart: (outputOptions: NormalizedOutputOptions): void => {
+    renderStart: (outputOptions: OutputOptions): void => {
       rollupOutputOptions = outputOptions;
     },
   };
-  return rollupPlugin as RolldownPlugin & RollupPlugin & VitePlugin;
 }
 
 async function buildHtaccessFile(
