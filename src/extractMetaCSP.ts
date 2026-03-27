@@ -1,9 +1,9 @@
-import type { NormalizedOutputOptions, PluginContext } from "rollup";
-
 import { findAll } from "domutils";
 import { glob } from "glob";
 import { ElementType, parseDocument } from "htmlparser2";
 import { join } from "path";
+
+import type { OutputOptions, PluginContext } from "./plugin-types";
 
 import { escapeRegexString, escapeValue, readFile, writeFile } from "./utils";
 
@@ -27,7 +27,7 @@ export type ExtractMetaCSPOptions =
 export async function extractMetaCSP(
   context: PluginContext,
   options: ExtractMetaCSPEnabledOptions,
-  rollupOutputOptions: NormalizedOutputOptions | undefined,
+  rollupOutputOptions: OutputOptions | undefined,
   htaccessFileName: string,
 ): Promise<void> {
   const outputDir =

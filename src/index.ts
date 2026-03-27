@@ -38,7 +38,12 @@ export type {
   ExtractMetaCSPEnabledOptions,
   ExtractMetaCSPOptions,
 } from "./extractMetaCSP";
-export { htaccess as default, type Options } from "./plugin";
+export {
+  htaccess as default,
+  type HtaccessPlugin,
+  type Options,
+} from "./plugin";
+export type { OutputOptions, PluginContext, PluginHook } from "./plugin-types";
 export type {
   MetadataRewriteRuleFlags,
   RewriteCondSpec,

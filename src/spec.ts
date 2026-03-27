@@ -1,4 +1,4 @@
-import type { PluginContext } from "rollup";
+import type { PluginContext } from "./plugin-types";
 
 import {
   type AddOutputFilterByTypeSpec,

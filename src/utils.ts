@@ -1,6 +1,6 @@
-import type { PluginContext } from "rollup";
-
 import { readFile as nodeReadFile, writeFile as nodeWriteFile } from "fs";
+
+import type { PluginContext } from "./plugin-types";
 
 import { buildSpec, type Spec } from "./spec";
 
