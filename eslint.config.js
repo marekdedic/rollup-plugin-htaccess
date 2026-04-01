@@ -13,6 +13,7 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   globalIgnores([
+    "coverage/",
     "dist/",
     "package-lock.json",
     "tests/dist-rolldown/",
