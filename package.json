@@ -39,9 +39,10 @@
     "lint": "run-p -c --aggregate-output lint:*",
     "lint:attw": "attw --pack",
     "lint:eslint": "eslint",
+    "lint:tsc": "run-p -c --aggregate-output lint:tsc:*",
+    "lint:tsc:test": "tsc --project test.tsconfig.json",
     "prepack": "npm run build",
     "start": "rollup -cw",
-    "pretest": "tsc --project test.tsconfig.json",
     "test": "vitest",
     "test-coverage": "vitest run --coverage"
   },
