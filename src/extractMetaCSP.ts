@@ -21,8 +21,7 @@ export interface ExtractMetaCSPEnabledOptions {
  * @public
  */
 export type ExtractMetaCSPOptions =
-  | { enabled: false }
-  | ExtractMetaCSPEnabledOptions;
+  { enabled: false } | ExtractMetaCSPEnabledOptions;
 
 export async function extractMetaCSP(
   context: PluginContext,
