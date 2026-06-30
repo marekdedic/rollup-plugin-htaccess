@@ -4,8 +4,7 @@ import { escapeValue } from "../../utils";
  * @public
  */
 export type PermissionsPolicyAllowlist =
-  | "*"
-  | { origins?: Array<string>; self?: boolean; src?: boolean };
+  "*" | { origins?: Array<string>; self?: boolean; src?: boolean };
 
 /**
  * @public
