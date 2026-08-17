@@ -2,7 +2,7 @@
 
 [![NPM Version](https://img.shields.io/npm/v/rollup-plugin-htaccess?logo=npm)](https://www.npmjs.com/package/rollup-plugin-htaccess)
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/marekdedic/rollup-plugin-htaccess/CI.yml?branch=master&logo=github)](https://github.com/marekdedic/rollup-plugin-htaccess/actions)
-[![Coveralls](https://img.shields.io/coverallsCoverage/github/marekdedic/rollup-plugin-htaccess?branch=master&logo=coveralls)](https://coveralls.io/github/marekdedic/rollup-plugin-htaccess)
+[![Codecov (with branch)](https://img.shields.io/codecov/c/github/marekdedic/rollup-plugin-htaccess/master?logo=codecov)](https://app.codecov.io/gh/marekdedic/rollup-plugin-htaccess)
 [![NPM Downloads](https://img.shields.io/npm/dm/rollup-plugin-htaccess?logo=npm)](https://www.npmjs.com/package/rollup-plugin-htaccess)
 [![NPM License](https://img.shields.io/npm/l/rollup-plugin-htaccess)](https://github.com/marekdedic/rollup-plugin-htaccess/blob/master/LICENSE)
 
