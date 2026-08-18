@@ -57,6 +57,10 @@ jobs:
           node-version: ${{ matrix.versions.node }}
           cache: 'npm'
 
+      - name: "Update NPM"
+        run: |
+          npm install -g npm@11
+
       - name: "Install NPM dependencies"
         run: |
           npm install
