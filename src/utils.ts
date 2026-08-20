@@ -1,4 +1,4 @@
-import { readFile as nodeReadFile, writeFile as nodeWriteFile } from "fs";
+import { readFile as nodeReadFile, writeFile as nodeWriteFile } from "node:fs";
 
 import type { PluginContext } from "./plugin-types";
 
