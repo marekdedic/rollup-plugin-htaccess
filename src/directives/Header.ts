@@ -30,9 +30,6 @@ import {
   type XXssProtectionSpec,
 } from "./Header/XXssProtection";
 
-/**
- * @public
- */
 export type HeaderSpec<T extends keyof HeaderValueSpecMap> = (
   | {
       action: "add" | "append" | "merge" | "set" | "setifempty";
@@ -59,18 +56,12 @@ export type HeaderSpec<T extends keyof HeaderValueSpecMap> = (
   header: T;
 };
 
-/**
- * @public
- */
 export type HeaderSpecUnion = {
   [K in keyof HeaderValueSpecMap]: HeaderSpec<K>;
 }[keyof HeaderValueSpecMap];
 
 /* eslint-disable @typescript-eslint/no-deprecated -- Internal deprecation */
 
-/**
- * @public
- */
 export interface HeaderValueSpecMap {
   "Content-Security-Policy": ContentSecurityPolicySpec;
   "Permissions-Policy": PermissionsPolicySpec;

@@ -3,9 +3,6 @@ import type { Spec } from "../spec";
 
 import { buildInnerSpec } from "../utils";
 
-/**
- * @public
- */
 export interface IfDirectiveSpec {
   directiveName: string;
   innerSpec: Spec;

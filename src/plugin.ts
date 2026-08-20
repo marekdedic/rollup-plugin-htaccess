@@ -8,9 +8,6 @@ import {
 import { buildSpec, type Spec } from "./spec";
 import { readTemplate } from "./template";
 
-/**
- * @public
- */
 export interface HtaccessPlugin {
   closeBundle?: PluginHook<(this: PluginContext) => Promise<void>>;
   configResolved?: PluginHook<(config: { root: string }) => void>;
@@ -19,9 +16,6 @@ export interface HtaccessPlugin {
   renderStart?: PluginHook<(outputOptions: OutputOptions) => void>;
 }
 
-/**
- * @public
- */
 export interface Options {
   extractMetaCSP: ExtractMetaCSPOptions;
   fileName: string;
@@ -29,9 +23,6 @@ export interface Options {
   template: string | undefined;
 }
 
-/**
- * @public
- */
 export function htaccess(opts?: Partial<Options>): HtaccessPlugin {
   const options: Options = {
     extractMetaCSP: { enabled: false },

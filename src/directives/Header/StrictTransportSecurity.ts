@@ -1,8 +1,5 @@
 import type { PluginContext } from "../../plugin-types";
 
-/**
- * @public
- */
 export interface StrictTransportSecuritySpec {
   includeSubDomains?: boolean;
   maxAge: number;
