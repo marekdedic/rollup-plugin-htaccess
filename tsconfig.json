@@ -7,7 +7,6 @@
     "moduleResolution": "bundler",
     "outDir": "dist",
     "rootDir": "src/",
-    "sourceMap": true,
     "target": "es2020",
     "types": ["node"],
 
