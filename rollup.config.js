@@ -1,4 +1,5 @@
 import typescript from "@rollup/plugin-typescript";
+import dts from "unplugin-dts/rollup";
 
 export default {
   external: ["fs", "path", "domutils", "glob", "htmlparser2"],
@@ -8,5 +9,5 @@ export default {
     file: "dist/rollup-plugin-htaccess.js",
     format: "es",
   },
-  plugins: [typescript()],
+  plugins: [typescript(), dts({ bundleTypes: true })],
 };
