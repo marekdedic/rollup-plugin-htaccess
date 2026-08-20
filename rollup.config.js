@@ -1,7 +1,7 @@
 import typescript from "@rollup/plugin-typescript";
 
 export default {
-  external: ["fs", "path", "domutils", "htmlparser2"],
+  external: ["fs", "path", "domutils", "glob", "htmlparser2"],
   input: "src/index.ts",
   output: {
     compact: true,
