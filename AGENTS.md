@@ -23,7 +23,7 @@ Output generation is a pure string pipeline:
 
 `src/extractMetaCSP.ts` is a separate feature: when enabled it registers a post/sequential `closeBundle` hook that globs built HTML files, parses out `<meta http-equiv="Content-Security-Policy">` tags with htmlparser2/domutils, and appends `Header` directives to the already-emitted htaccess file on disk. It needs `renderStart`'s `OutputOptions.dir` (or Vite's resolved `root` from `configResolved`) to locate output.
 
-All public types must be annotated `@public` — `unplugin-dts` bundles the declarations with api-extractor, configured in `rollup.config.js` to error on forgotten exports.
+`unplugin-dts` bundles the `.d.ts` declarations with api-extractor; public types need no release-tag annotations.
 
 ## Tests
 

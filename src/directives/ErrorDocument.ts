@@ -1,6 +1,3 @@
-/**
- * @public
- */
 export type ErrorDocumentSpec = Record<number, string>;
 
 export function buildErrorDocument(spec: ErrorDocumentSpec): string {

@@ -3,9 +3,6 @@ import type { Spec } from "../spec";
 
 import { buildInnerSpec, escapeValue } from "../utils";
 
-/**
- * @public
- */
 export interface IfSpec {
   condition: string;
   Else?: {

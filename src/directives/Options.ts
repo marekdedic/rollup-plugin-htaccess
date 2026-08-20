@@ -1,6 +1,3 @@
-/**
- * @public
- */
 export type OptionName =
   | "All"
   | "ExecCGI"
@@ -11,9 +8,6 @@ export type OptionName =
   | "MultiViews"
   | "SymLinksIfOwnerMatch";
 
-/**
- * @public
- */
 export type OptionsSpec =
   | "None"
   | {

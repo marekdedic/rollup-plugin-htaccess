@@ -3,9 +3,6 @@ import type { Spec } from "../spec";
 
 import { buildInnerSpec } from "../utils";
 
-/**
- * @public
- */
 export interface IfDefineSpec {
   innerSpec: Spec;
   inverted?: boolean;

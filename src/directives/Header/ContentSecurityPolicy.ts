@@ -1,8 +1,5 @@
 import { escapeValue } from "../../utils";
 
-/**
- * @public
- */
 export type ContentSecurityPolicySandboxValue =
   | "allow-downloads-without-user-activation Experimental"
   | "allow-downloads"
@@ -21,9 +18,6 @@ export type ContentSecurityPolicySandboxValue =
   | "allow-top-navigation"
   | null;
 
-/**
- * @public
- */
 export type ContentSecurityPolicySourceDirective =
   | "base-uri"
   | "connect-src"
@@ -45,9 +39,6 @@ export type ContentSecurityPolicySourceDirective =
   | "style-src"
   | "worker-src";
 
-/**
- * @public
- */
 export interface ContentSecurityPolicySources {
   hashes?: {
     sha256?: Array<string>;
@@ -72,9 +63,6 @@ export interface ContentSecurityPolicySources {
   "wasm-unsafe-eval"?: boolean;
 }
 
-/**
- * @public
- */
 export type ContentSecurityPolicySpec = Partial<
   Record<ContentSecurityPolicySourceDirective, ContentSecurityPolicySources> & {
     "report-to": string;
@@ -89,9 +77,6 @@ export type ContentSecurityPolicySpec = Partial<
   }
 >;
 
-/**
- * @public
- */
 export interface ContentSecurityPolicyTrustedTypesValue {
   "allow-duplicates"?: boolean;
   policies?: Array<string>;

@@ -1,6 +1,3 @@
-/**
- * @public
- */
 export type AddOutputFilterByTypeSpec = Array<{
   filters: Array<string>;
   mediaTypes: Array<string>;

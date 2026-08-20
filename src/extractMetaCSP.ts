@@ -7,9 +7,6 @@ import type { OutputOptions, PluginContext } from "./plugin-types";
 
 import { escapeRegexString, escapeValue, readFile, writeFile } from "./utils";
 
-/**
- * @public
- */
 export interface ExtractMetaCSPEnabledOptions {
   defaultPolicyFile?: string;
   enabled: true;
@@ -17,9 +14,6 @@ export interface ExtractMetaCSPEnabledOptions {
   perFilePolicyFiles?: Array<string>;
 }
 
-/**
- * @public
- */
 export type ExtractMetaCSPOptions =
   { enabled: false } | ExtractMetaCSPEnabledOptions;
 

@@ -1,6 +1,3 @@
-/**
- * @public
- */
 export interface XContentTypeOptionsSpec {
   nosniff: true;
 }

@@ -1,13 +1,7 @@
-/**
- * @public
- */
 export interface OutputOptions {
   dir: string | undefined;
 }
 
-/**
- * @public
- */
 export interface PluginContext {
   emitFile(emittedFile: {
     fileName?: string;
@@ -17,9 +11,6 @@ export interface PluginContext {
   error(error: string): never;
 }
 
-/**
- * @public
- */
 export type PluginHook<T> =
   | {
       handler: T;

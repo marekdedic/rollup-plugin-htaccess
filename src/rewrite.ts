@@ -1,8 +1,5 @@
 import { escapeValue } from "./utils";
 
-/**
- * @public
- */
 export interface MetadataRewriteRuleFlags {
   env?: {
     value: string | null;
@@ -12,9 +9,6 @@ export interface MetadataRewriteRuleFlags {
   type?: string;
 }
 
-/**
- * @public
- */
 export interface RewriteCondSpec {
   conditionPattern: string;
   flags?: {
@@ -25,9 +19,6 @@ export interface RewriteCondSpec {
   testString: string;
 }
 
-/**
- * @public
- */
 export interface RewriteOptionsSpec {
   AllowAnyURI?: boolean;
   AllowNoSlash?: boolean;
@@ -40,18 +31,12 @@ export interface RewriteOptionsSpec {
   MergeBase?: boolean;
 }
 
-/**
- * @public
- */
 export interface RewriteRuleCookieFlagMinimalSpec {
   domain: string;
   name: string;
   value: string;
 }
 
-/**
- * @public
- */
 export type RewriteRuleCookieFlagSpec = RewriteRuleCookieFlagMinimalSpec &
   (
     | {
@@ -81,9 +66,6 @@ export type RewriteRuleCookieFlagSpec = RewriteRuleCookieFlagMinimalSpec &
       }
   );
 
-/**
- * @public
- */
 export type RewriteRuleSpec = {
   conditions?: Array<RewriteCondSpec>;
   pattern: string;
@@ -98,18 +80,12 @@ export type RewriteRuleSpec = {
     }
 );
 
-/**
- * @public
- */
 export interface RewriteSpec {
   base?: string;
   options?: RewriteOptionsSpec;
   rules?: Array<RewriteRuleSpec>;
 }
 
-/**
- * @public
- */
 export interface StandardRewriteRuleFlags {
   B?: boolean | string;
   backrefnoplus?: boolean;

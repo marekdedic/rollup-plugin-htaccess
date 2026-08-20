@@ -27,9 +27,6 @@ import { buildIfSection, type IfSectionSpec } from "./directives/IfSection";
 import { buildOptions, type OptionsSpec } from "./directives/Options";
 import { buildRewrite, type RewriteSpec } from "./rewrite";
 
-/**
- * @public
- */
 export interface Spec {
   AddOutputFilterByType?: AddOutputFilterByTypeSpec;
   DirectorySlash?: DirectorySlashSpec;
