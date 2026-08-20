@@ -1,5 +1,5 @@
 import assert from "assert";
-import { type Dirent, readdirSync as nodeReaddir } from "fs";
+import { type Dirent, readdirSync as nodeReaddir } from "node:fs";
 import { rolldown, type RolldownOutput } from "rolldown";
 import {
   type OutputAsset,

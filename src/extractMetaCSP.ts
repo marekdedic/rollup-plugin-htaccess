@@ -1,7 +1,7 @@
 import { findAll } from "domutils";
 import { glob } from "glob";
 import { ElementType, parseDocument } from "htmlparser2";
-import { join } from "path";
+import { join } from "node:path";
 
 import type { OutputOptions, PluginContext } from "./plugin-types";
 

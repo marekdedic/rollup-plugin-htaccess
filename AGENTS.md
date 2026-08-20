@@ -4,7 +4,7 @@ This file provides guidance to coding agents when working with code in this repo
 
 ## Commands
 
-- `npm run build` — rollup bundle + api-extractor `.d.ts` rollup (`dist/types` is removed afterwards). `npm start` watches.
+- `npm run build` — a single `rollup -c` that bundles the code and, via `unplugin-dts`, the `.d.ts`. `npm start` watches.
 - `npm run lint` — runs eslint, `tsc` over `tests/` (`test.tsconfig.json`), and `attw --pack` in parallel.
 - `npm test` — vitest in watch mode; `npm run test-coverage` for a single run with coverage.
 - Run one spec test: `npx vitest run tests/specs.test.ts -- <spec-path-prefix>` — `specs.test.ts` reads the argument after its own path from `process.argv` and uses it as the directory to scan instead of `tests/specs` (e.g. `tests/specs/Header`).
@@ -23,7 +23,7 @@ Output generation is a pure string pipeline:
 
 `src/extractMetaCSP.ts` is a separate feature: when enabled it registers a post/sequential `closeBundle` hook that globs built HTML files, parses out `<meta http-equiv="Content-Security-Policy">` tags with htmlparser2/domutils, and appends `Header` directives to the already-emitted htaccess file on disk. It needs `renderStart`'s `OutputOptions.dir` (or Vite's resolved `root` from `configResolved`) to locate output.
 
-All public types must be annotated `@public` — api-extractor is configured to error on forgotten exports.
+All public types must be annotated `@public` — `unplugin-dts` bundles the declarations with api-extractor, configured in `rollup.config.js` to error on forgotten exports.
 
 ## Tests
 

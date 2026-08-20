@@ -1,4 +1,4 @@
-import { join, resolve } from "path";
+import { join, resolve } from "node:path";
 import { describe, expect, test, vi } from "vitest";
 
 import type { Options } from "../src";
