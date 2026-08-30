@@ -200,7 +200,7 @@ export default tseslint.config(
     files: ["tests/**/*.ts"],
     languageOptions: {
       parserOptions: {
-        project: "test.tsconfig.json",
+        project: "lint.tsconfig.json",
         projectService: false,
       },
     },
