@@ -155,9 +155,7 @@ export default tseslint.config(
     files: ["**/*.ts"],
     languageOptions: {
       parserOptions: {
-        projectService: {
-          allowDefaultProject: ["*.config.ts"],
-        },
+        projectService: true,
       },
     },
     rules: {
@@ -198,12 +196,6 @@ export default tseslint.config(
   {
     extends: [vitest.configs.recommended],
     files: ["tests/**/*.ts"],
-    languageOptions: {
-      parserOptions: {
-        project: "test.tsconfig.json",
-        projectService: false,
-      },
-    },
     rules: {
       "vitest/consistent-test-it": ["error", { withinDescribe: "test" }],
       "vitest/no-alias-methods": "error",

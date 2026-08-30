@@ -36,7 +36,7 @@
     "lint": "run-p -c --aggregate-output lint:*",
     "lint:attw": "attw --pack",
     "lint:eslint": "eslint",
-    "lint:typecheck": "tsc --project lint.tsconfig.json",
+    "lint:typecheck": "tsc --noEmit",
     "prepack": "npm run build",
     "start": "rollup -cw",
     "test": "vitest",
