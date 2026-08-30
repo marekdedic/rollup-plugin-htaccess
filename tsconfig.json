@@ -3,7 +3,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "outDir": "dist",
-    "rootDir": "src/",
+    "rootDir": ".",
     "target": "es2020",
     "types": ["node"],
 
@@ -17,5 +17,5 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["./**/*.ts"]
 }
