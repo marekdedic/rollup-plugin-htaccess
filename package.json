@@ -42,8 +42,8 @@
     "lint:ts:typecheck": "tsc --noEmit",
     "prepack": "npm run build",
     "start": "rollup -cw",
-    "test": "vitest",
-    "test-coverage": "vitest run --coverage"
+    "test": "vitest run --coverage",
+    "test-watch": "vitest"
   },
   "dependencies": {
     "domutils": "^4.0.2",

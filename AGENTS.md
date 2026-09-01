@@ -6,7 +6,7 @@ This file provides guidance to coding agents when working with code in this repo
 
 - `npm run build` — a single `rollup -c` that bundles the code and, via `unplugin-dts`, the `.d.ts`. `npm start` watches.
 - `npm run lint` — runs eslint, `tsc` over `tests/` (`test.tsconfig.json`), and `attw --pack` in parallel.
-- `npm test` — vitest in watch mode; `npm run test-coverage` for a single run with coverage.
+- `npm test` — single vitest run with coverage (what CI runs); `npm run test-watch` for vitest in watch mode.
 - Run one spec test: `npx vitest run tests/specs.test.ts -- <spec-path-prefix>` — `specs.test.ts` reads the argument after its own path from `process.argv` and uses it as the directory to scan instead of `tests/specs` (e.g. `tests/specs/Header`).
 
 ## Architecture
