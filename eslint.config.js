@@ -22,6 +22,12 @@ export default tseslint.config(
   ]),
   packageJson.configs.recommended,
   {
+    linterOptions: {
+      reportUnusedDisableDirectives: "error",
+      reportUnusedInlineConfigs: "error",
+    },
+  },
+  {
     extends: [json.configs.recommended],
     files: ["**/*.json"],
     ignores: ["package.json"],
@@ -61,7 +67,6 @@ export default tseslint.config(
       "default-case": "error",
       "default-case-last": "error",
       eqeqeq: "error",
-      "eslint-comments/no-unused-disable": "error",
       "eslint-comments/require-description": [
         "error",
         {
