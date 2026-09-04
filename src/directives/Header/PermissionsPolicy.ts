@@ -51,7 +51,7 @@ export function buildPermissionsPolicyValue(
 ): string {
   const parts = [];
   for (const key in spec) {
-    if (!Object.prototype.hasOwnProperty.call(spec, key)) {
+    if (!Object.hasOwn(spec, key)) {
       continue;
     }
     const allowlistSpec = spec[key as PermissionsPolicyDirectives];
