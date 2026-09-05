@@ -31,7 +31,7 @@
   ],
   "scripts": {
     "prebuild": "npm run clean",
-    "build": "rollup -c",
+    "build": "rollup -c rollup.config.ts --configPlugin typescript",
     "check": "FORCE_COLOR=1 run-p -c --aggregate-output check:*",
     "check:js-compat": "es-check es2023 --module --checkFeatures 'dist/**/*.js'",
     "clean": "rimraf dist/*",
@@ -41,7 +41,7 @@
     "lint:ts:attw": "attw --pack",
     "lint:ts:typecheck": "tsc --noEmit",
     "prepack": "npm run build",
-    "start": "rollup -cw",
+    "start": "rollup -cw rollup.config.ts --configPlugin typescript",
     "test": "vitest run --coverage",
     "test-watch": "vitest"
   },
@@ -68,6 +68,7 @@
     "eslint-plugin-perfectionist": "^5.0.0",
     "eslint-plugin-prefer-arrow-functions": "^3.4.0 <3.11",
     "eslint-plugin-prettier": "^5.1.3",
+    "jiti": "^2.7.0",
     "npm-run-all2": "^8.0.4",
     "prettier": "^3.3.0",
     "rimraf": "^6.0.1",
