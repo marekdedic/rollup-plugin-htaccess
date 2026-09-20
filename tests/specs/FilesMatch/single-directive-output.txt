@@ -1,0 +1,4 @@
+Header always set Permissions-Policy "camera=(), display-capture=(), fullscreen=(), geolocation=(), microphone=(), web-share=()"
+<FilesMatch ".+\.(gif|jpe?g|png)$">
+	Header always set Permissions-Policy "camera=(), display-capture=(), fullscreen=(self), geolocation=(), microphone=(), web-share=()"
+</FilesMatch>

@@ -1,0 +1,1 @@
+The strict transport security header with preloading requires max age >= 31536000.

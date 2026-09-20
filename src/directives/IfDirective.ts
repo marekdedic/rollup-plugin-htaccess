@@ -1,0 +1,17 @@
+import type { PluginContext } from "../plugin-types";
+import type { Spec } from "../spec";
+
+import { buildInnerSpec } from "../utils";
+
+export interface IfDirectiveSpec {
+  directiveName: string;
+  innerSpec: Spec;
+  inverted?: boolean;
+}
+
+export function buildIfDirective(
+  context: PluginContext,
+  spec: IfDirectiveSpec,
+): string {
+  return `<IfDirective ${spec.inverted === true ? "!" : ""}${spec.directiveName}>\n${buildInnerSpec(context, spec.innerSpec)}\n</IfDirective>`;
+}

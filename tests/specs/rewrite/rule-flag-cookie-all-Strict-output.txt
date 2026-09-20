@@ -1,0 +1,2 @@
+RewriteEngine on
+RewriteRule "foo" "bar" [CO=cookie1:val1:example.test:60:/folder:true:true:Strict]

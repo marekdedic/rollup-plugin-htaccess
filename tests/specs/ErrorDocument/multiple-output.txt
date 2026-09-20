@@ -1,0 +1,4 @@
+ErrorDocument 401 "This is forbidden!"
+ErrorDocument 403 Forbidden!
+ErrorDocument 404 https://site.example/uh-oh
+ErrorDocument 500 /uh-oh

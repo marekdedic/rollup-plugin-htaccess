@@ -1,0 +1,41 @@
+import { readFile as nodeReadFile, writeFile as nodeWriteFile } from "node:fs";
+
+import type { PluginContext } from "./plugin-types";
+
+import { buildSpec, type Spec } from "./spec";
+
+export function buildInnerSpec(
+  context: PluginContext,
+  innerSpec: Spec,
+): string {
+  return buildSpec(context, innerSpec).trim().replace(/^/gmu, "\t");
+}
+
+export function escapeRegexString(input: string): string {
+  return input
+    .replace(/([\\^.$|()[*+?{#])/gu, "\\$1")
+    .replace(/\//gu, "\\x{2f}");
+}
+
+export function escapeValue(value: string): string {
+  return value.replace(/"/gu, '\\"');
+}
+
+export async function readFile(path: string): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    nodeReadFile(path, "utf8", (err, data) => {
+      if (err !== null) {
+        reject(err);
+      }
+      resolve(data);
+    });
+  });
+}
+
+export async function writeFile(path: string, contents: string): Promise<void> {
+  return new Promise<void>((resolve) => {
+    nodeWriteFile(path, contents, () => {
+      resolve();
+    });
+  });
+}

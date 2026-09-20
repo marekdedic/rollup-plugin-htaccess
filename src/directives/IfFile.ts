@@ -1,0 +1,14 @@
+import type { PluginContext } from "../plugin-types";
+import type { Spec } from "../spec";
+
+import { buildInnerSpec } from "../utils";
+
+export interface IfFileSpec {
+  fileName: string;
+  innerSpec: Spec;
+  inverted?: boolean;
+}
+
+export function buildIfFile(context: PluginContext, spec: IfFileSpec): string {
+  return `<IfFile ${spec.inverted === true ? "!" : ""}${spec.fileName}>\n${buildInnerSpec(context, spec.innerSpec)}\n</IfFile>`;
+}

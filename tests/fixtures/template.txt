@@ -1,0 +1,3 @@
+HTACCESS template
+These isn't even valid .htacccess file
+# Comment

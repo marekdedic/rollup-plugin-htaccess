@@ -1,0 +1,6 @@
+AddOutputFilterByType DEFLATE application/javascript
+Header always set Permissions-Policy "camera=(), display-capture=(), fullscreen=(), geolocation=(), microphone=(), web-share=()"
+<Files "index.html">
+	AddOutputFilterByType INCLUDES;DEFLATE text/html text/plain application/javascript
+	Header always set Permissions-Policy "camera=(), display-capture=(), fullscreen=(self), geolocation=(), microphone=(), web-share=()"
+</Files>

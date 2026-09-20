@@ -1,0 +1,6 @@
+RewriteEngine on
+RewriteCond "%{HTTP_USER_AGENT}" "=This Robot/1.0" [OR]
+RewriteCond "%{REMOTE_HOST}" "^host1"
+RewriteRule "foo" "bar"
+RewriteCond "%{REMOTE_HOST}" "^host2"
+RewriteRule "baz" "-" [B,T=text/plain]

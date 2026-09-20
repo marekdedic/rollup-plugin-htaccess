@@ -1,0 +1,16 @@
+import type { PluginContext } from "../plugin-types";
+import type { Spec } from "../spec";
+
+import { buildInnerSpec, escapeValue } from "../utils";
+
+export interface FilesMatchSpec {
+  innerSpec: Spec;
+  regex: string;
+}
+
+export function buildFilesMatch(
+  context: PluginContext,
+  spec: FilesMatchSpec,
+): string {
+  return `<FilesMatch "${escapeValue(spec.regex)}">\n${buildInnerSpec(context, spec.innerSpec)}\n</FilesMatch>`;
+}

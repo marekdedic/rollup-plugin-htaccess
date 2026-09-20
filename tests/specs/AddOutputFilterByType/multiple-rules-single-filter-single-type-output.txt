@@ -1,0 +1,3 @@
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType INCLUDES text/plain
+AddOutputFilterByType INCLUDES application/javascript

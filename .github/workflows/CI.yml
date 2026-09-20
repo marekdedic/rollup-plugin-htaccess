@@ -1,0 +1,110 @@
+---
+name: "CI"
+"on":
+  push:
+    branches: "*"
+  pull_request:
+
+env:
+  cache-version: 1
+
+jobs:
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v7
+
+      - name: "Cache NPM dependencies"
+        uses: actions/cache@v6
+        with:
+          path: "~/.npm"
+          key: >-
+            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{
+            hashFiles('package.json') }}
+          restore-keys: |
+            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
+            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-
+
+      - name: "Install NPM dependencies"
+        run: |
+          npm ci
+
+      - name: "Build"
+        run: |
+          npm run build
+
+      - name: "Check the built output"
+        run: |
+          npm run check
+
+  test:
+    name: "Test"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        versions: [
+          {node: "20", rolldown: "1", rollup: "3", vite: "4"},
+          {node: "20", rolldown: "1", rollup: "4", vite: "5"},
+          {node: "22", rolldown: "1", rollup: "4", vite: "6"},
+          {node: "24", rolldown: "1", rollup: "4", vite: "7"},
+          {node: "26", rolldown: "1", rollup: "4", vite: "8"},
+        ]
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v7
+
+      - name: "Setup Node.js"
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.versions.node }}
+          cache: 'npm'
+
+      - name: "Update NPM"
+        run: |
+          npm install -g npm@11
+
+      - name: "Install NPM dependencies"
+        run: |
+          npm install
+
+      - name: "Install rolldown, rollup & vite"
+        run: |
+          npm install rolldown@${{matrix.versions.rolldown}} rollup@${{ matrix.versions.rollup }} vite@${{ matrix.versions.vite }}
+
+      - name: "Run tests"
+        run: |
+          npm test
+
+      - name: "Upload coverage results"
+        uses: codecov/codecov-action@v7.0.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+
+  lint:
+    name: "Lint"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v7
+
+      - name: "Cache NPM dependencies"
+        uses: actions/cache@v6
+        with:
+          path: "~/.npm"
+          key: >-
+            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{
+            hashFiles('package.json') }}
+          restore-keys: |
+            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-${{ hashFiles('package.json') }}
+            npm-dependencies-${{ runner.os }}-${{ env.cache-version }}-
+
+      - name: "Install NPM dependencies"
+        run: |
+          npm ci
+
+      - name: "Lint"
+        run: |
+          npm run lint
