@@ -45,11 +45,11 @@ jobs:
     strategy:
       matrix:
         versions: [
-          {node: "20", rolldown: "1", rollup: "3", vite: "4"},
-          {node: "20", rolldown: "1", rollup: "4", vite: "5"},
-          {node: "22", rolldown: "1", rollup: "4", vite: "6"},
-          {node: "24", rolldown: "1", rollup: "4", vite: "7"},
-          {node: "26", rolldown: "1", rollup: "4", vite: "8"},
+          {node: "20", rolldown: "1", rollup: "3", vite: "4", vitest: "4"},
+          {node: "20", rolldown: "1", rollup: "4", vite: "5", vitest: "4"},
+          {node: "22", rolldown: "1", rollup: "4", vite: "6", vitest: "5"},
+          {node: "24", rolldown: "1", rollup: "4", vite: "7", vitest: "5"},
+          {node: "26", rolldown: "1", rollup: "4", vite: "8", vitest: "5"},
         ]
     steps:
       - name: "Checkout"
@@ -69,9 +69,9 @@ jobs:
         run: |
           npm install
 
-      - name: "Install rolldown, rollup & vite"
+      - name: "Install rolldown, rollup, vite & vitest"
         run: |
-          npm install rolldown@${{matrix.versions.rolldown}} rollup@${{ matrix.versions.rollup }} vite@${{ matrix.versions.vite }}
+          npm install rolldown@${{matrix.versions.rolldown}} rollup@${{ matrix.versions.rollup }} vite@${{ matrix.versions.vite }} vitest@${{ matrix.versions.vitest }} @vitest/coverage-v8@${{ matrix.versions.vitest }}
 
       - name: "Run tests"
         run: |
