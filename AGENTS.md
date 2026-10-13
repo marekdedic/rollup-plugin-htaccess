@@ -21,7 +21,7 @@ Output generation is a pure string pipeline:
 - Container directives (`<Files>`, `<If>`, `<IfModule>`, …) recurse via `buildInnerSpec()` in `src/utils.ts`, which re-runs `buildSpec` and tab-indents the result. `escapeRegexString`/`escapeValue` there are the standard escaping helpers.
 - Validation errors are reported through `context.error()` (which throws), never by returning error values.
 
-`src/extractMetaCSP.ts` is a separate feature: when enabled it registers a post/sequential `closeBundle` hook that globs built HTML files, parses out `<meta http-equiv="Content-Security-Policy">` tags with htmlparser2/domutils, and appends `Header` directives to the already-emitted htaccess file on disk. It needs `renderStart`'s `OutputOptions.dir` (or Vite's resolved `root` from `configResolved`) to locate output.
+`src/extractMetaCSP.ts` is a separate feature: when enabled it registers a post/sequential `closeBundle` hook that globs built HTML files, parses out `<meta http-equiv="Content-Security-Policy">` tags with htmlparser2/domutils, and appends `Header` directives to the already-emitted htaccess file on disk. It needs `renderStart`'s `OutputOptions.dir` (or Vite's resolved `root` from `configResolved`) to locate output. Under Vite it additionally runs in a post `buildApp` hook (once at least one environment is built), because frameworks like SvelteKit write prerendered HTML there, after `closeBundle`; this relies on extraction being idempotent (it strips the meta tags it extracts).
 
 `unplugin-dts` bundles the `.d.ts` declarations with api-extractor; public types need no release-tag annotations.
 

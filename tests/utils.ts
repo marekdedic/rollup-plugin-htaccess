@@ -7,7 +7,7 @@ import {
   type RollupOutput,
   type Plugin as RollupPlugin,
 } from "rollup";
-import { build, type Plugin as VitePlugin } from "vite";
+import { build, createBuilder, type Plugin as VitePlugin } from "vite";
 
 import htaccess, { type Options } from "../src";
 
@@ -21,6 +21,26 @@ export interface CompileOptions {
 }
 
 type Directory = Pick<Dirent, "isDirectory" | "isFile" | "name">;
+
+export async function buildViteApp(
+  pluginOptions: Partial<Options>,
+  plugins: Array<VitePlugin> = [],
+): Promise<void> {
+  const builder = await createBuilder({
+    build: {
+      outDir: "tests/dist-vite",
+      rollupOptions: {
+        input: {
+          app: "tests/fixtures/dummy.html",
+        },
+      },
+    },
+    builder: {},
+    logLevel: "silent",
+    plugins: [...plugins, htaccess(pluginOptions)],
+  });
+  await builder.buildApp();
+}
 
 export async function compileRolldown(
   pluginOptions: Partial<Options>,

@@ -18,7 +18,7 @@ export type ExtractMetaCSPOptions =
   { enabled: false } | ExtractMetaCSPEnabledOptions;
 
 export async function extractMetaCSP(
-  context: PluginContext,
+  context: Pick<PluginContext, "error">,
   options: ExtractMetaCSPEnabledOptions,
   rollupOutputOptions: OutputOptions | undefined,
   htaccessFileName: string,
@@ -55,7 +55,7 @@ export async function extractMetaCSP(
 }
 
 async function extractCSPValueFromHTMLFile(
-  context: PluginContext,
+  context: Pick<PluginContext, "error">,
   fileName: string,
 ): Promise<string | null> {
   // eslint-disable-next-line no-useless-assignment -- no way to assign this in the try block and have it available afterwards
