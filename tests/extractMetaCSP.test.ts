@@ -1,5 +1,6 @@
 import { join } from "node:path";
 import { rimraf } from "rimraf";
+import { version as viteVersion } from "vite";
 import { beforeEach, expect, test } from "vitest";
 
 import htaccess, { type Options } from "../src";
@@ -11,6 +12,8 @@ import {
   compileRollup,
   compileVite,
 } from "./utils";
+
+const viteMajor = parseInt(viteVersion.split(".")[0], 10);
 
 beforeEach(async () => {
   await rimraf("tests/dist-rolldown");
@@ -658,71 +661,79 @@ test("CSP extraction with files in subdirectories", async () => {
   expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
-test("CSP extraction from HTML written in a post buildApp hook", async () => {
-  expect.assertions(2);
+// Vite 7 introduced the buildApp plugin hook
+test.skipIf(viteMajor < 7)(
+  "CSP extraction from HTML written in a post buildApp hook",
+  async () => {
+    expect.assertions(2);
 
-  await buildViteApp(
-    {
-      extractMetaCSP: {
-        defaultPolicyFile: "index.html",
-        enabled: true,
-      },
-    },
-    [
+    await buildViteApp(
       {
-        buildApp: {
-          handler: async (builder): Promise<void> => {
-            await Promise.all(
-              Object.values(builder.environments).map(async (environment) =>
-                builder.build(environment),
-              ),
-            );
-            await writeFile(
-              "tests/dist-vite/index.html",
-              '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
-            );
+        extractMetaCSP: {
+          defaultPolicyFile: "index.html",
+          enabled: true,
+        },
+      },
+      [
+        {
+          buildApp: {
+            handler: async (builder): Promise<void> => {
+              await Promise.all(
+                Object.values(builder.environments).map(async (environment) =>
+                  builder.build(environment),
+                ),
+              );
+              await writeFile(
+                "tests/dist-vite/index.html",
+                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+              );
+            },
+            order: "post",
           },
-          order: "post",
+          name: "Build and write index.html",
         },
-        name: "Build and write index.html",
-      },
-    ],
-  );
+      ],
+    );
 
-  expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(
-    'Header always set Content-Security-Policy "CSP-value"',
-  );
-  await expect(readFile("tests/dist-vite/index.html")).resolves.toBe(
-    "<!DOCTYPE html><html><head></head><body></body></html>",
-  );
-});
+    expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(
+      'Header always set Content-Security-Policy "CSP-value"',
+    );
+    await expect(readFile("tests/dist-vite/index.html")).resolves.toBe(
+      "<!DOCTYPE html><html><head></head><body></body></html>",
+    );
+  },
+);
 
-test("CSP extraction with the Vite app builder", async () => {
-  expect.assertions(1);
+// Vite 6 introduced createBuilder
+test.skipIf(viteMajor < 6)(
+  "CSP extraction with the Vite app builder",
+  async () => {
+    expect.assertions(1);
 
-  await buildViteApp(
-    {
-      extractMetaCSP: {
-        defaultPolicyFile: "index.html",
-        enabled: true,
-      },
-    },
-    [
+    await buildViteApp(
       {
-        generateBundle(): void {
-          this.emitFile({
-            fileName: "index.html",
-            source:
-              '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
-            type: "asset",
-          });
+        extractMetaCSP: {
+          defaultPolicyFile: "index.html",
+          enabled: true,
         },
-        name: "Emit index.html",
       },
-    ],
-  );
+      [
+        {
+          generateBundle(): void {
+            this.emitFile({
+              fileName: "index.html",
+              source:
+                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+              type: "asset",
+            });
+          },
+          name: "Emit index.html",
+        },
+      ],
+    );
 
-  expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(
-    'Header always set Content-Security-Policy "CSP-value"',
-  );
-});
+    expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(
+      'Header always set Content-Security-Policy "CSP-value"',
+    );
+  },
+);
