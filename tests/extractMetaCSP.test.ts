@@ -1,9 +1,12 @@
 import { join } from "node:path";
 import { rimraf } from "rimraf";
-import { version as viteVersion } from "vite";
+import { type Plugin as VitePlugin, version as viteVersion } from "vite";
 import { beforeEach, expect, test } from "vitest";
 
-import htaccess, { type Options } from "../src";
+import htaccess, {
+  type ExtractMetaCSPEnabledOptions,
+  type Options,
+} from "../src";
 import { readFile, writeFile } from "../src/utils";
 import {
   buildViteApp,
@@ -675,23 +678,10 @@ test.skipIf(viteMajor < 7)(
         },
       },
       [
-        {
-          buildApp: {
-            handler: async (builder): Promise<void> => {
-              await Promise.all(
-                Object.values(builder.environments).map(async (environment) =>
-                  builder.build(environment),
-                ),
-              );
-              await writeFile(
-                "tests/dist-vite/index.html",
-                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
-              );
-            },
-            order: "post",
-          },
-          name: "Build and write index.html",
-        },
+        buildAndWriteFiles({
+          "index.html":
+            '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+        }),
       ],
     );
 
@@ -744,6 +734,14 @@ test.skipIf(viteMajor < 7)(
   async () => {
     expect.assertions(1);
 
+    const files = {
+      "file1.html":
+        '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-1"></head><body></body></html>',
+      "index.html":
+        '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+      "subdir/file2.html":
+        '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-2"></head><body></body></html>',
+    };
     await buildViteApp(
       {
         extractMetaCSP: {
@@ -755,52 +753,13 @@ test.skipIf(viteMajor < 7)(
       [
         {
           generateBundle(): void {
-            this.emitFile({
-              fileName: "index.html",
-              source:
-                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
-              type: "asset",
-            });
-            this.emitFile({
-              fileName: "file1.html",
-              source:
-                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-1"></head><body></body></html>',
-              type: "asset",
-            });
-            this.emitFile({
-              fileName: "subdir/file2.html",
-              source:
-                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-2"></head><body></body></html>',
-              type: "asset",
-            });
+            for (const [fileName, source] of Object.entries(files)) {
+              this.emitFile({ fileName, source, type: "asset" });
+            }
           },
           name: "Emit HTML files",
         },
-        {
-          buildApp: {
-            handler: async (builder): Promise<void> => {
-              await Promise.all(
-                Object.values(builder.environments).map(async (environment) =>
-                  builder.build(environment),
-                ),
-              );
-              await writeFile(
-                "tests/dist-vite/index.html",
-                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
-              );
-              await writeFile(
-                "tests/dist-vite/file1.html",
-                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-1"></head><body></body></html>',
-              );
-              await writeFile(
-                "tests/dist-vite/subdir/file2.html",
-                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-2"></head><body></body></html>',
-              );
-            },
-            order: "post",
-          },
-          name: "Build and rewrite HTML files",
-        },
+        buildAndWriteFiles(files),
       ],
     );
 
@@ -811,103 +770,56 @@ test.skipIf(viteMajor < 7)(
 );
 
 // Vite 7 introduced the buildApp plugin hook
-test.skipIf(viteMajor < 7)(
-  "CSP extraction with a conflicting default policy written in a post buildApp hook",
-  async () => {
+test.skipIf(viteMajor < 7).each<[string, ExtractMetaCSPEnabledOptions]>([
+  ["default", { defaultPolicyFile: "file1.html", enabled: true }],
+  ["per-file", { enabled: true, perFilePolicyFiles: ["file1.html"] }],
+])(
+  "CSP extraction with a conflicting %s policy written in a post buildApp hook",
+  async (_, extractMetaCSPOptions) => {
     expect.assertions(1);
 
     await expect(
-      buildViteApp(
+      buildViteApp({ extractMetaCSP: extractMetaCSPOptions }, [
         {
-          extractMetaCSP: {
-            defaultPolicyFile: "index.html",
-            enabled: true,
+          generateBundle(): void {
+            this.emitFile({
+              fileName: "file1.html",
+              source:
+                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+              type: "asset",
+            });
           },
+          name: "Emit file1.html",
         },
-        [
-          {
-            generateBundle(): void {
-              this.emitFile({
-                fileName: "index.html",
-                source:
-                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
-                type: "asset",
-              });
-            },
-            name: "Emit index.html",
-          },
-          {
-            buildApp: {
-              handler: async (builder): Promise<void> => {
-                await Promise.all(
-                  Object.values(builder.environments).map(async (environment) =>
-                    builder.build(environment),
-                  ),
-                );
-                await writeFile(
-                  "tests/dist-vite/index.html",
-                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-different-value"></head><body></body></html>',
-                );
-              },
-              order: "post",
-            },
-            name: "Build and rewrite index.html",
-          },
-        ],
-      ),
-    ).rejects.toThrow(
-      'Found a CSP meta tag in "index.html" that conflicts with a policy previously extracted from it.',
-    );
-  },
-);
-
-// Vite 7 introduced the buildApp plugin hook
-test.skipIf(viteMajor < 7)(
-  "CSP extraction with a conflicting per-file policy written in a post buildApp hook",
-  async () => {
-    expect.assertions(1);
-
-    await expect(
-      buildViteApp(
-        {
-          extractMetaCSP: {
-            enabled: true,
-            perFilePolicyFiles: ["file1.html"],
-          },
-        },
-        [
-          {
-            generateBundle(): void {
-              this.emitFile({
-                fileName: "file1.html",
-                source:
-                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-1"></head><body></body></html>',
-                type: "asset",
-              });
-            },
-            name: "Emit file1.html",
-          },
-          {
-            buildApp: {
-              handler: async (builder): Promise<void> => {
-                await Promise.all(
-                  Object.values(builder.environments).map(async (environment) =>
-                    builder.build(environment),
-                  ),
-                );
-                await writeFile(
-                  "tests/dist-vite/file1.html",
-                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-different-value"></head><body></body></html>',
-                );
-              },
-              order: "post",
-            },
-            name: "Build and rewrite file1.html",
-          },
-        ],
-      ),
+        buildAndWriteFiles({
+          "file1.html":
+            '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-different-value"></head><body></body></html>',
+        }),
+      ]),
     ).rejects.toThrow(
       'Found a CSP meta tag in "file1.html" that conflicts with a policy previously extracted from it.',
     );
   },
 );
+
+// Builds all Vite environments in a post buildApp hook, then writes the given files to the output directory, like e.g. a SvelteKit prerender step
+function buildAndWriteFiles(files: Record<string, string>): VitePlugin {
+  return {
+    buildApp: {
+      handler: async (builder): Promise<void> => {
+        await Promise.all(
+          Object.values(builder.environments).map(async (environment) =>
+            builder.build(environment),
+          ),
+        );
+        await Promise.all(
+          Object.entries(files).map(async ([fileName, contents]) =>
+            writeFile(join("tests/dist-vite", fileName), contents),
+          ),
+        );
+      },
+      order: "post",
+    },
+    name: "Build and write HTML files",
+  };
+}
