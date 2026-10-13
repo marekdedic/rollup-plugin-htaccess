@@ -43,7 +43,13 @@ export {
   type HtaccessPlugin,
   type Options,
 } from "./plugin";
-export type { OutputOptions, PluginContext, PluginHook } from "./plugin-types";
+export type {
+  MinimalPluginContext,
+  OutputOptions,
+  PluginContext,
+  PluginHook,
+  ViteBuilder,
+} from "./plugin-types";
 export type {
   MetadataRewriteRuleFlags,
   RewriteCondSpec,

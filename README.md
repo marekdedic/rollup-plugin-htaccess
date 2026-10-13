@@ -23,3 +23,29 @@ $ npm install --save-dev rollup-plugin-htaccess
 ```
 
 ## [Supported directives](./docs/directives.md)
+
+## Extracting CSP from meta tags
+
+With `extractMetaCSP` enabled, the plugin finds `<meta http-equiv="Content-Security-Policy">` tags in the built HTML files, removes them, and adds matching `Header always set Content-Security-Policy` directives to the generated htaccess file.
+
+```js
+htaccess({
+  extractMetaCSP: {
+    enabled: true,
+    // The directory with the built files. Defaults to the bundler's output directory
+    outputDir: "build",
+    // The file whose policy is set for the whole site
+    defaultPolicyFile: "index.html",
+    // Glob patterns of files whose policy is set only for those files
+    perFilePolicyFiles: ["admin/**/*.html"],
+  },
+});
+```
+
+When using Vite with a framework that writes HTML after the bundle is built (e.g. SvelteKit prerendering), add `htaccess()` **after** the framework's plugin, so that extraction runs after the HTML is written:
+
+```js
+export default defineConfig({
+  plugins: [sveltekit(), htaccess({ extractMetaCSP: { enabled: true } })],
+});
+```
