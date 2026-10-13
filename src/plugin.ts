@@ -1,6 +1,7 @@
 import { resolve } from "node:path";
 
 import type {
+  MinimalPluginContext,
   OutputOptions,
   PluginContext,
   PluginHook,
@@ -13,7 +14,7 @@ import { readTemplate } from "./template";
 
 export interface HtaccessPlugin {
   buildApp?: PluginHook<
-    (this: Pick<PluginContext, "error">, builder: ViteBuilder) => Promise<void>
+    (this: MinimalPluginContext, builder: ViteBuilder) => Promise<void>
   >;
   closeBundle?: PluginHook<(this: PluginContext) => Promise<void>>;
   configResolved?: PluginHook<(config: { root: string }) => void>;
