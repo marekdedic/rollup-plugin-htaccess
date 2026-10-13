@@ -8,7 +8,12 @@ import type {
   ViteBuilder,
 } from "./plugin-types";
 
-import { extractMetaCSP, type ExtractMetaCSPOptions } from "./extractMetaCSP";
+import {
+  type ExtractedPolicies,
+  extractMetaCSP,
+  type ExtractMetaCSPOptions,
+  htaccessFilePath,
+} from "./extractMetaCSP";
 import { buildSpec, type Spec } from "./spec";
 import { readTemplate } from "./template";
 
@@ -41,10 +46,11 @@ export function htaccess(opts?: Partial<Options>): HtaccessPlugin {
   const extractMetaCSPOptions = options.extractMetaCSP;
   let rollupOutputOptions: OutputOptions | undefined = undefined;
   let root = "";
+  const extractedPolicies: ExtractedPolicies = new Map();
 
   return {
     ...(extractMetaCSPOptions.enabled && {
-      // Frameworks such as SvelteKit build the environments in their own buildApp hook and write prerendered HTML in a post buildApp hook, after closeBundle has already run. Extraction is idempotent, so running it in both hooks is harmless.
+      // Frameworks such as SvelteKit build the environments in their own buildApp hook and write prerendered HTML in a post buildApp hook, after closeBundle has already run. Extraction skips policies it has already written, so running it in both hooks is harmless.
       buildApp: {
         async handler(builder: ViteBuilder): Promise<void> {
           // If no environment has been built yet, Vite builds them after all buildApp hooks and closeBundle handles extraction
@@ -61,6 +67,7 @@ export function htaccess(opts?: Partial<Options>): HtaccessPlugin {
             extractMetaCSPOptions,
             { dir: resolve(config.root, config.build.outDir) },
             options.fileName,
+            extractedPolicies,
           );
         },
         order: "post",
@@ -72,6 +79,7 @@ export function htaccess(opts?: Partial<Options>): HtaccessPlugin {
             extractMetaCSPOptions,
             rollupOutputOptions,
             options.fileName,
+            extractedPolicies,
           );
         },
         order: "post",
@@ -91,6 +99,10 @@ export function htaccess(opts?: Partial<Options>): HtaccessPlugin {
     name: "htaccess",
     renderStart: (outputOptions: OutputOptions): void => {
       rollupOutputOptions = outputOptions;
+      // If this hook is running, we are about to emit a new htaccess file.
+      extractedPolicies.delete(
+        htaccessFilePath(outputOptions.dir, options.fileName),
+      );
     },
   };
 }

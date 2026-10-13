@@ -1,11 +1,14 @@
 import { findAll } from "domutils";
 import { glob } from "glob";
 import { ElementType, parseDocument } from "htmlparser2";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 
 import type { MinimalPluginContext, OutputOptions } from "./plugin-types";
 
 import { escapeRegexString, escapeValue, readFile, writeFile } from "./utils";
+
+// Policies already written to each htaccess file (keyed by its absolute path), so that repeated extraction runs don't append them again
+export type ExtractedPolicies = Map<string, ExtractedFilePolicies>;
 
 export interface ExtractMetaCSPEnabledOptions {
   defaultPolicyFile?: string;
@@ -17,11 +20,17 @@ export interface ExtractMetaCSPEnabledOptions {
 export type ExtractMetaCSPOptions =
   { enabled: false } | ExtractMetaCSPEnabledOptions;
 
+interface ExtractedFilePolicies {
+  defaultPolicy: string | null;
+  perFilePolicies: Map<string, string>;
+}
+
 export async function extractMetaCSP(
   context: MinimalPluginContext,
   options: ExtractMetaCSPEnabledOptions,
   rollupOutputOptions: OutputOptions | undefined,
   htaccessFileName: string,
+  extractedPolicies: ExtractedPolicies,
 ): Promise<void> {
   const outputDir =
     options.outputDir ?? rollupOutputOptions?.dir ?? process.cwd();
@@ -46,12 +55,47 @@ export async function extractMetaCSP(
       )
     ).filter(([_, policy]) => policy !== null) as Array<[string, string]>,
   );
-  await writeCSPValuesToHtaccessFile(
+  const path = htaccessFilePath(outputDir, htaccessFileName);
+  const extracted = extractedPolicies.get(path) ?? {
+    defaultPolicy: null,
+    perFilePolicies: new Map<string, string>(),
+  };
+  const newDefaultPolicy = filterExtractedPolicy(
+    context,
+    options.defaultPolicyFile ?? "",
     defaultPolicy,
-    perFilePolicies,
-    outputDir,
-    htaccessFileName,
+    extracted.defaultPolicy,
   );
+  const newPerFilePolicies = Object.fromEntries(
+    Object.entries(perFilePolicies).filter(
+      ([fileName, policy]) =>
+        filterExtractedPolicy(
+          context,
+          fileName,
+          policy,
+          extracted.perFilePolicies.get(fileName) ?? null,
+        ) !== null,
+    ),
+  );
+  if (newDefaultPolicy !== null) {
+    extracted.defaultPolicy = newDefaultPolicy;
+  }
+  for (const [fileName, policy] of Object.entries(newPerFilePolicies)) {
+    extracted.perFilePolicies.set(fileName, policy);
+  }
+  extractedPolicies.set(path, extracted);
+  await writeCSPValuesToHtaccessFile(
+    newDefaultPolicy,
+    newPerFilePolicies,
+    path,
+  );
+}
+
+export function htaccessFilePath(
+  outputDir: string | undefined,
+  htaccessFileName: string,
+): string {
+  return resolve(outputDir ?? process.cwd(), htaccessFileName);
 }
 
 async function extractCSPValueFromHTMLFile(
@@ -99,13 +143,29 @@ async function extractCSPValueFromHTMLFile(
   return cspValues[0];
 }
 
+// Returns the policy if it hasn't been written to the htaccess file yet, null if it has
+function filterExtractedPolicy(
+  context: MinimalPluginContext,
+  fileName: string,
+  policy: string | null,
+  extractedPolicy: string | null,
+): string | null {
+  if (policy === null || extractedPolicy === null) {
+    return policy;
+  }
+  if (policy !== extractedPolicy) {
+    context.error(
+      `Found a CSP meta tag in "${fileName}" that conflicts with a policy previously extracted from it.`,
+    );
+  }
+  return null;
+}
+
 async function writeCSPValuesToHtaccessFile(
   defaultPolicy: string | null,
   perFilePolicies: Record<string, string>,
-  outputDir: string,
-  htaccessFileName: string,
+  path: string,
 ): Promise<void> {
-  const path = join(outputDir, htaccessFileName);
   let fileContents = await readFile(path).catch(() => "");
   if (defaultPolicy !== null) {
     fileContents += `Header always set Content-Security-Policy "${escapeValue(defaultPolicy)}"\n`;
