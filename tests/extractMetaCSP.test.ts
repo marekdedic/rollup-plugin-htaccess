@@ -737,3 +737,177 @@ test.skipIf(viteMajor < 6)(
     );
   },
 );
+
+// Vite 7 introduced the buildApp plugin hook
+test.skipIf(viteMajor < 7)(
+  "CSP extraction doesn't duplicate directives when HTML is rewritten in a post buildApp hook",
+  async () => {
+    expect.assertions(1);
+
+    await buildViteApp(
+      {
+        extractMetaCSP: {
+          defaultPolicyFile: "index.html",
+          enabled: true,
+          perFilePolicyFiles: ["file1.html", "subdir/file2.html"],
+        },
+      },
+      [
+        {
+          generateBundle(): void {
+            this.emitFile({
+              fileName: "index.html",
+              source:
+                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+              type: "asset",
+            });
+            this.emitFile({
+              fileName: "file1.html",
+              source:
+                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-1"></head><body></body></html>',
+              type: "asset",
+            });
+            this.emitFile({
+              fileName: "subdir/file2.html",
+              source:
+                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-2"></head><body></body></html>',
+              type: "asset",
+            });
+          },
+          name: "Emit HTML files",
+        },
+        {
+          buildApp: {
+            handler: async (builder): Promise<void> => {
+              await Promise.all(
+                Object.values(builder.environments).map(async (environment) =>
+                  builder.build(environment),
+                ),
+              );
+              await writeFile(
+                "tests/dist-vite/index.html",
+                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+              );
+              await writeFile(
+                "tests/dist-vite/file1.html",
+                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-1"></head><body></body></html>',
+              );
+              await writeFile(
+                "tests/dist-vite/subdir/file2.html",
+                '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-2"></head><body></body></html>',
+              );
+            },
+            order: "post",
+          },
+          name: "Build and rewrite HTML files",
+        },
+      ],
+    );
+
+    expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(
+      'Header always set Content-Security-Policy "CSP-value"\n<Files "file1.html">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>\n<If "%{REQUEST_FILENAME} =~ /subdir\\x{2f}file2\\.html$/">\n\tHeader always set Content-Security-Policy "CSP-value-2"\n</If>',
+    );
+  },
+);
+
+// Vite 7 introduced the buildApp plugin hook
+test.skipIf(viteMajor < 7)(
+  "CSP extraction with a conflicting default policy written in a post buildApp hook",
+  async () => {
+    expect.assertions(1);
+
+    await expect(
+      buildViteApp(
+        {
+          extractMetaCSP: {
+            defaultPolicyFile: "index.html",
+            enabled: true,
+          },
+        },
+        [
+          {
+            generateBundle(): void {
+              this.emitFile({
+                fileName: "index.html",
+                source:
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+                type: "asset",
+              });
+            },
+            name: "Emit index.html",
+          },
+          {
+            buildApp: {
+              handler: async (builder): Promise<void> => {
+                await Promise.all(
+                  Object.values(builder.environments).map(async (environment) =>
+                    builder.build(environment),
+                  ),
+                );
+                await writeFile(
+                  "tests/dist-vite/index.html",
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-different-value"></head><body></body></html>',
+                );
+              },
+              order: "post",
+            },
+            name: "Build and rewrite index.html",
+          },
+        ],
+      ),
+    ).rejects.toThrow(
+      'Found a CSP meta tag in "index.html" that conflicts with a policy previously extracted from it.',
+    );
+  },
+);
+
+// Vite 7 introduced the buildApp plugin hook
+test.skipIf(viteMajor < 7)(
+  "CSP extraction with a conflicting per-file policy written in a post buildApp hook",
+  async () => {
+    expect.assertions(1);
+
+    await expect(
+      buildViteApp(
+        {
+          extractMetaCSP: {
+            enabled: true,
+            perFilePolicyFiles: ["file1.html"],
+          },
+        },
+        [
+          {
+            generateBundle(): void {
+              this.emitFile({
+                fileName: "file1.html",
+                source:
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-1"></head><body></body></html>',
+                type: "asset",
+              });
+            },
+            name: "Emit file1.html",
+          },
+          {
+            buildApp: {
+              handler: async (builder): Promise<void> => {
+                await Promise.all(
+                  Object.values(builder.environments).map(async (environment) =>
+                    builder.build(environment),
+                  ),
+                );
+                await writeFile(
+                  "tests/dist-vite/file1.html",
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-different-value"></head><body></body></html>',
+                );
+              },
+              order: "post",
+            },
+            name: "Build and rewrite file1.html",
+          },
+        ],
+      ),
+    ).rejects.toThrow(
+      'Found a CSP meta tag in "file1.html" that conflicts with a policy previously extracted from it.',
+    );
+  },
+);
