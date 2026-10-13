@@ -7,11 +7,7 @@ import type {
   ViteBuilder,
 } from "./plugin-types";
 
-import {
-  extractMetaCSP,
-  type ExtractMetaCSPEnabledOptions,
-  type ExtractMetaCSPOptions,
-} from "./extractMetaCSP";
+import { extractMetaCSP, type ExtractMetaCSPOptions } from "./extractMetaCSP";
 import { buildSpec, type Spec } from "./spec";
 import { readTemplate } from "./template";
 
@@ -41,11 +37,12 @@ export function htaccess(opts?: Partial<Options>): HtaccessPlugin {
     template: undefined,
     ...opts,
   };
+  const extractMetaCSPOptions = options.extractMetaCSP;
   let rollupOutputOptions: OutputOptions | undefined = undefined;
   let root = "";
 
   return {
-    ...(options.extractMetaCSP.enabled && {
+    ...(extractMetaCSPOptions.enabled && {
       // Frameworks such as SvelteKit build the environments in their own buildApp hook and write prerendered HTML in a post buildApp hook, after closeBundle has already run. Extraction is idempotent, so running it in both hooks is harmless.
       buildApp: {
         async handler(builder: ViteBuilder): Promise<void> {
@@ -60,7 +57,7 @@ export function htaccess(opts?: Partial<Options>): HtaccessPlugin {
           const { config } = builder.environments["client"] ?? builder;
           await extractMetaCSP(
             this,
-            options.extractMetaCSP as ExtractMetaCSPEnabledOptions,
+            extractMetaCSPOptions,
             { dir: resolve(config.root, config.build.outDir) },
             options.fileName,
           );
@@ -71,7 +68,7 @@ export function htaccess(opts?: Partial<Options>): HtaccessPlugin {
         async handler(): Promise<void> {
           await extractMetaCSP(
             this,
-            options.extractMetaCSP as ExtractMetaCSPEnabledOptions,
+            extractMetaCSPOptions,
             rollupOutputOptions,
             options.fileName,
           );
