@@ -65,7 +65,7 @@ export function htaccess(opts?: Partial<Options>): HtaccessPlugin {
           await extractMetaCSP(
             this,
             extractMetaCSPOptions,
-            { dir: resolve(config.root, config.build.outDir) },
+            resolve(config.root, config.build.outDir),
             options.fileName,
             extractedPolicies,
           );
@@ -77,7 +77,7 @@ export function htaccess(opts?: Partial<Options>): HtaccessPlugin {
           await extractMetaCSP(
             this,
             extractMetaCSPOptions,
-            rollupOutputOptions,
+            rollupOutputOptions?.dir,
             options.fileName,
             extractedPolicies,
           );

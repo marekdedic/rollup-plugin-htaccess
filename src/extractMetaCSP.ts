@@ -3,12 +3,12 @@ import { glob } from "glob";
 import { ElementType, parseDocument } from "htmlparser2";
 import { join, resolve } from "node:path";
 
-import type { MinimalPluginContext, OutputOptions } from "./plugin-types";
+import type { MinimalPluginContext } from "./plugin-types";
 
 import { escapeRegexString, escapeValue, readFile, writeFile } from "./utils";
 
 // Policies already written to each htaccess file (keyed by its absolute path)
-export type ExtractedPolicies = Map<string, Map<string | null, string>>;
+export type ExtractedPolicies = Map<string, Map<string, string>>;
 
 export interface ExtractMetaCSPEnabledOptions {
   defaultPolicyFile?: string;
@@ -33,12 +33,11 @@ interface PolicySource {
 export async function extractMetaCSP(
   context: MinimalPluginContext,
   options: ExtractMetaCSPEnabledOptions,
-  rollupOutputOptions: OutputOptions | undefined,
+  bundlerOutputDir: string | undefined,
   htaccessFileName: string,
   extractedPolicies: ExtractedPolicies,
 ): Promise<void> {
-  const outputDir =
-    options.outputDir ?? rollupOutputOptions?.dir ?? process.cwd();
+  const outputDir = options.outputDir ?? bundlerOutputDir ?? process.cwd();
   const path = htaccessFilePath(outputDir, htaccessFileName);
   const policies = await readPolicies(
     context,
@@ -46,7 +45,7 @@ export async function extractMetaCSP(
     await findPolicySources(options, outputDir),
   );
   const writtenPolicies =
-    extractedPolicies.get(path) ?? new Map<string | null, string>();
+    extractedPolicies.get(path) ?? new Map<string, string>();
   extractedPolicies.set(path, writtenPolicies);
   const newPolicies = skipWrittenPolicies(context, policies, writtenPolicies);
   await appendToFile(path, newPolicies.map(buildCSPDirective).join(""));
@@ -81,22 +80,24 @@ function buildCSPDirective({
 
 async function extractCSPFromHTMLFile(
   context: MinimalPluginContext,
+  outputDir: string,
   fileName: string,
 ): Promise<string | null> {
-  const html = await readFile(fileName).catch(() => null);
+  const path = join(outputDir, fileName);
+  const html = await readFile(path).catch(() => null);
   if (html === null) {
     return null;
   }
   const { html: strippedHTML, policies } = stripCSPMetaTags(html);
-  if (policies.length < 1) {
+  if (policies.length === 0) {
     return null;
   }
   if (policies.length > 1) {
     context.error(
-      "Found multiple conflicting CSP directives when extracting from meta tags.",
+      `Found multiple conflicting CSP directives in "${fileName}" when extracting from meta tags.`,
     );
   }
-  await writeFile(fileName, strippedHTML);
+  await writeFile(path, strippedHTML);
   return policies[0];
 }
 
@@ -134,10 +135,7 @@ async function readPolicies(
   const policies = await Promise.all(
     sources.map(async (source) => ({
       ...source,
-      policy: await extractCSPFromHTMLFile(
-        context,
-        join(outputDir, source.fileName),
-      ),
+      policy: await extractCSPFromHTMLFile(context, outputDir, source.fileName),
     })),
   );
   return policies.filter(
@@ -149,14 +147,12 @@ async function readPolicies(
 function skipWrittenPolicies(
   context: MinimalPluginContext,
   policies: Array<ExtractedPolicy>,
-  writtenPolicies: Map<string | null, string>,
+  writtenPolicies: Map<string, string>,
 ): Array<ExtractedPolicy> {
-  return policies.filter(({ fileName, isDefault, policy }) => {
-    // The default policy is recorded under null, so that it doesn't clash with a per-file policy for the same file
-    const target = isDefault ? null : fileName;
-    const writtenPolicy = writtenPolicies.get(target);
+  return policies.filter(({ fileName, policy }) => {
+    const writtenPolicy = writtenPolicies.get(fileName);
     if (writtenPolicy === undefined) {
-      writtenPolicies.set(target, policy);
+      writtenPolicies.set(fileName, policy);
       return true;
     }
     if (writtenPolicy !== policy) {
