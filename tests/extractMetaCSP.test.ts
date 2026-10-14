@@ -414,6 +414,66 @@ test("CSP extraction with other meta tags", async () => {
   expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
+test("CSP extraction with repeated identical meta tags", async () => {
+  expect.assertions(6);
+
+  function configGenerator(
+    distFolder: string,
+  ): [Partial<Options>, CompileOptions] {
+    const pluginOptions: Partial<Options> = {
+      extractMetaCSP: {
+        defaultPolicyFile: "index.html",
+        enabled: true,
+        outputDir: join("tests", distFolder),
+      },
+    };
+    const compileOptions: CompileOptions = {
+      bundlerOptions: {
+        plugins: [
+          htaccess(pluginOptions),
+          {
+            generateBundle(): void {
+              this.emitFile({
+                fileName: "index.html",
+                source:
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"><title>Title</title><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+                type: "asset",
+              });
+            },
+            name: "Emit index.html",
+          },
+        ],
+      },
+      write: true,
+    };
+    return [pluginOptions, compileOptions];
+  }
+  const output = 'Header always set Content-Security-Policy "CSP-value"';
+  const strippedHTML =
+    "<!DOCTYPE html><html><head><title>Title</title></head><body></body></html>";
+
+  await compileRolldown(...configGenerator("dist-rolldown"));
+
+  expect((await readFile("tests/dist-rolldown/.htaccess")).trim()).toBe(output);
+  await expect(readFile("tests/dist-rolldown/index.html")).resolves.toBe(
+    strippedHTML,
+  );
+
+  await compileRollup(...configGenerator("dist-rollup"));
+
+  expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
+  await expect(readFile("tests/dist-rollup/index.html")).resolves.toBe(
+    strippedHTML,
+  );
+
+  await compileVite(...configGenerator("dist-vite"));
+
+  expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
+  await expect(readFile("tests/dist-vite/index.html")).resolves.toBe(
+    strippedHTML,
+  );
+});
+
 test("CSP extraction with per-file policies", async () => {
   expect.assertions(3);
 
