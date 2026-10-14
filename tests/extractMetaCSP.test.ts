@@ -602,6 +602,63 @@ test("CSP extraction with glob per-file policies", async () => {
   expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
 });
 
+test("CSP extraction with the default policy file matched by per-file policies", async () => {
+  expect.assertions(3);
+
+  function configGenerator(
+    distFolder: string,
+  ): [Partial<Options>, CompileOptions] {
+    const pluginOptions: Partial<Options> = {
+      extractMetaCSP: {
+        defaultPolicyFile: "index.html",
+        enabled: true,
+        outputDir: join("tests", distFolder),
+        perFilePolicyFiles: ["*.html"],
+      },
+    };
+    const compileOptions: CompileOptions = {
+      bundlerOptions: {
+        plugins: [
+          htaccess(pluginOptions),
+          {
+            generateBundle(): void {
+              this.emitFile({
+                fileName: "index.html",
+                source:
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value"></head><body></body></html>',
+                type: "asset",
+              });
+              this.emitFile({
+                fileName: "file1.html",
+                source:
+                  '<!DOCTYPE html><html><head><meta http-equiv="content-security-policy" content="CSP-value-1"></head><body></body></html>',
+                type: "asset",
+              });
+            },
+            name: "Emit index.html",
+          },
+        ],
+      },
+      write: true,
+    };
+    return [pluginOptions, compileOptions];
+  }
+  const output =
+    'Header always set Content-Security-Policy "CSP-value"\n<Files "file1.html">\n\tHeader always set Content-Security-Policy "CSP-value-1"\n</Files>';
+
+  await compileRolldown(...configGenerator("dist-rolldown"));
+
+  expect((await readFile("tests/dist-rolldown/.htaccess")).trim()).toBe(output);
+
+  await compileRollup(...configGenerator("dist-rollup"));
+
+  expect((await readFile("tests/dist-rollup/.htaccess")).trim()).toBe(output);
+
+  await compileVite(...configGenerator("dist-vite"));
+
+  expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
+});
+
 test("CSP extraction with files in subdirectories", async () => {
   expect.assertions(3);
 
