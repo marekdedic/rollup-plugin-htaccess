@@ -181,7 +181,8 @@ function stripCSPMetaTags(html: string): {
     dom.children,
   );
   let strippedHTML = html;
-  for (const cspMetaElem of cspMetaElems) {
+  // Removed last to first so that the indices of the remaining elements stay valid
+  for (const cspMetaElem of cspMetaElems.toReversed()) {
     if (cspMetaElem.startIndex !== null && cspMetaElem.endIndex !== null) {
       strippedHTML =
         strippedHTML.substring(0, cspMetaElem.startIndex) +
