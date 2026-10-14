@@ -48,6 +48,10 @@ export async function extractMetaCSP(
     extractedPolicies.get(path) ?? new Map<string, string>();
   extractedPolicies.set(path, writtenPolicies);
   const newPolicies = skipWrittenPolicies(context, policies, writtenPolicies);
+  // Don't create an htaccess file where the plugin hasn't emitted one
+  if (newPolicies.length === 0) {
+    return;
+  }
   await appendToFile(path, newPolicies.map(buildCSPDirective).join(""));
 }
 

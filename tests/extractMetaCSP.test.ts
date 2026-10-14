@@ -1,3 +1,4 @@
+import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { rimraf } from "rimraf";
 import { type Plugin as VitePlugin, version as viteVersion } from "vite";
@@ -215,6 +216,39 @@ test("CSP extraction with non-existent HTML file", async () => {
   await compileVite(...configGenerator("dist-vite"));
 
   expect((await readFile("tests/dist-vite/.htaccess")).trim()).toBe(output);
+});
+
+test("CSP extraction doesn't create an htaccess file when nothing is extracted", async () => {
+  expect.assertions(3);
+
+  function pluginOptions(distFolder: string): Partial<Options> {
+    return {
+      extractMetaCSP: {
+        defaultPolicyFile: "index.html",
+        enabled: true,
+        outputDir: join("tests", distFolder),
+      },
+    };
+  }
+  await mkdir("tests/dist-rolldown", { recursive: true });
+  await mkdir("tests/dist-rollup", { recursive: true });
+  await mkdir("tests/dist-vite", { recursive: true });
+
+  await compileRolldown(pluginOptions("dist-rolldown"));
+
+  await expect(readFile("tests/dist-rolldown/.htaccess")).rejects.toThrow(
+    "ENOENT",
+  );
+
+  await compileRollup(pluginOptions("dist-rollup"));
+
+  await expect(readFile("tests/dist-rollup/.htaccess")).rejects.toThrow(
+    "ENOENT",
+  );
+
+  await compileVite(pluginOptions("dist-vite"));
+
+  await expect(readFile("tests/dist-vite/.htaccess")).rejects.toThrow("ENOENT");
 });
 
 test("CSP extraction with no valid meta tags", async () => {
