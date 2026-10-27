@@ -29,6 +29,7 @@ export async function buildViteApp(
   const builder = await createBuilder({
     build: {
       outDir: "tests/dist-vite",
+      // eslint-disable-next-line @typescript-eslint/no-deprecated -- testing also on older Vite versions
       rollupOptions: {
         input: {
           app: "tests/fixtures/dummy.html",
@@ -91,6 +92,7 @@ export async function compileVite(
   const output = (await build({
     build: {
       outDir: "tests/dist-vite",
+      // eslint-disable-next-line @typescript-eslint/no-deprecated -- testing also on older Vite versions
       rollupOptions: {
         input: {
           app: "tests/fixtures/dummy.html",
