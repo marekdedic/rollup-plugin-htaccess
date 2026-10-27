@@ -7,6 +7,7 @@ const options: Partial<Options> = {
         action: "set",
         header: "Content-Security-Policy",
         value: {
+          // eslint-disable-next-line @typescript-eslint/no-deprecated -- testing deprecated option
           "report-uri": ["https://report-uri.example", "http://site2.example"],
         },
       },
